@@ -1,0 +1,410 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "EC2 Stack with; SecurityGroup, LaunchConfiguration and AutoScalingGroup",
+  "Parameters": {
+    "ServiceName": {
+      "Description": "The name of the service this belongs to",
+      "Type": "String"
+    },
+    "TechnicalOwner": {
+      "Description": "A valid LDAP email",
+      "Type": "String"
+    },
+    "Environment": {
+      "Description": "Environment we are deploying into",
+      "Default": "sandbox",
+      "Type": "String",
+      "AllowedValues": [
+        "prod",
+        "dev",
+        "sandbox"
+      ],
+      "ConstraintDescription": "Must specify prod, dev, or sandbox."
+    },
+    "VpcId": {
+      "Description": "Id of the VPC",
+      "Type": "String"
+    },
+    "Subnets": {
+      "Description": "Coma, seperated, list, of, subnets",
+      "Type": "CommaDelimitedList"
+    },
+    "AmiId": {
+      "Description": "The id of the ami for this region",
+      "Type": "String"
+    },
+    "KeyName": {
+      "Description": "Existing ssh key to deploy to instances",
+      "Type": "String"
+    },
+    "ProjectName": {
+      "Description": "Name of this deployment",
+      "Type": "String"
+    },
+    "ConsulSecret": {
+      "Description": "Key to connect to Consul with",
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "ConsulEndpoint": {
+      "Description": "Consul endpoint to connect to.",
+      "Type": "String",
+      "AllowedValues": [
+        "us-west-2.consul.sandbox.nubis.allizom.org",
+        "us-east-1.consul.sandbox.nubis.allizom.org"
+      ]
+    },
+    "SslKey": {
+      "Description": "Consul SSL key",
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "SslCert": {
+      "Description": "Consul SSL cert",
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "ELB": {
+      "Description": "ELB Endpoint",
+      "Type": "String"
+    }
+  },
+  "Mappings": {
+    "InstanceTypeMap": {
+      "prod": {
+        "InstanceType": "m3.large"
+      },
+      "dev": {
+        "InstanceType": "m3.medium"
+      },
+      "sandbox": {
+        "InstanceType": "m3.medium"
+      }
+    }
+  },
+  "Resources": {
+    "EC2SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Inbound traffic rules",
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "0",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "0",
+            "ToPort": "80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "8300",
+            "ToPort": "8303",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "udp",
+            "FromPort": "8300",
+            "ToPort": "8303",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Web Server Security Group"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never"
+          }
+        ]
+      }
+    },
+    "LaunchConfig": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "ImageId": {
+          "Ref": "AmiId"
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "EC2SecurityGroup"
+          }
+        ],
+        "InstanceType": {
+          "Fn::FindInMap": [
+            "InstanceTypeMap",
+            {
+              "Ref": "Environment"
+            },
+            "InstanceType"
+          ]
+        },
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_PROJECT='",
+                      {
+                        "Ref": "ProjectName"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_ENVIRONMENT='",
+                      {
+                        "Ref": "Environment"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                "CONSUL_PUBLIC='0'",
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "CONSUL_DC='",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "CONSUL_SECRET='",
+                      {
+                        "Ref": "ConsulSecret"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "CONSUL_JOIN='",
+                      {
+                        "Ref": "ConsulEndpoint"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "CONSUL_KEY=",
+                      {
+                        "Fn::Join": [
+                          "\n",
+                          [
+                            "\"-----BEGIN PRIVATE KEY-----",
+                            {
+                              "Ref": "SslKey"
+                            },
+                            "-----END PRIVATE KEY-----\""
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "CONSUL_CERT=",
+                      {
+                        "Fn::Join": [
+                          "\n",
+                          [
+                            "\"-----BEGIN CERTIFICATE-----",
+                            {
+                              "Ref": "SslCert"
+                            },
+                            "-----END CERTIFICATE-----\""
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_MIGRATE='",
+                      "1",
+                      "'"
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "AutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": {
+        "AutoScalingScheduledAction": {
+          "IgnoreUnmodifiedGroupSizeProperties": "true"
+        },
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1",
+          "WaitOnResourceSignals": "false",
+          "PauseTime": "PT1M"
+        }
+      },
+      "Properties": {
+        "AvailabilityZones": {
+          "Fn::GetAZs": ""
+        },
+        "VPCZoneIdentifier": [
+          {
+            "Fn::Select": [
+              "0",
+              {
+                "Ref": "Subnets"
+              }
+            ]
+          },
+          {
+            "Fn::Select": [
+              "1",
+              {
+                "Ref": "Subnets"
+              }
+            ]
+          },
+          {
+            "Fn::Select": [
+              "2",
+              {
+                "Ref": "Subnets"
+              }
+            ]
+          }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfig"
+        },
+        "MinSize": "1",
+        "DesiredCapacity": "1",
+        "MaxSize": "2",
+        "LoadBalancerNames": [
+          {
+            "Ref": "ELB"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Web Server",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "EC2SecurityGroup": {
+      "Description": "EC2SecurityGroup Id",
+      "Value": {
+        "Ref": "EC2SecurityGroup"
+      }
+    },
+    "GroupId": {
+      "Description": "EC2SecurityGroup Group Id",
+      "Value": {
+        "Fn::GetAtt": [
+          "EC2SecurityGroup",
+          "GroupId"
+        ]
+      }
+    }
+  }
+}

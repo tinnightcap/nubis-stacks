@@ -64,22 +64,14 @@
       "Type": "String",
       "NoEcho": "true"
     },
+    "InstanceType": {
+      "Description": "EC2 Instance type",
+      "Type": "String",
+      "NoEcho": "true"
+    },
     "ELB": {
       "Description": "ELB Endpoint",
       "Type": "String"
-    }
-  },
-  "Mappings": {
-    "InstanceTypeMap": {
-      "prod": {
-        "InstanceType": "m3.large"
-      },
-      "dev": {
-        "InstanceType": "m3.medium"
-      },
-      "sandbox": {
-        "InstanceType": "m3.medium"
-      }
     }
   },
   "Resources": {
@@ -162,13 +154,7 @@
           }
         ],
         "InstanceType": {
-          "Fn::FindInMap": [
-            "InstanceTypeMap",
-            {
-              "Ref": "Environment"
-            },
-            "InstanceType"
-          ]
+            "Ref": "InstanceType"
         },
         "KeyName": {
           "Ref": "KeyName"

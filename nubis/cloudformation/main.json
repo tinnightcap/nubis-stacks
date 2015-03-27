@@ -1,0 +1,89 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Nubis Stacks Deployment",
+  "Parameters": {
+    "ProjectName": {
+      "Description": "Name of this project / deployment",
+      "Type": "String"
+    },
+    "Environment": {
+      "Description": "Environment we are deploying into",
+      "Default": "sandbox",
+      "Type": "String",
+      "AllowedValues": [
+        "prod",
+        "dev",
+        "sandbox"
+      ],
+      "ConstraintDescription": "Must specify prod, dev, or sandbox"
+    },
+    "BucketName": {
+      "Description": "Name of S3 bucket to manage",
+      "Type": "String"
+    },
+    "TechnicalOwner": {
+      "Description": "A valid LDAP email",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "S3Bucket": {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "AccessControl" : "PublicRead",
+        "BucketName" : {
+          "Ref": "BucketName"
+        },
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": "S3 Bucket for storing nubisproject nested stacks templates and READMEs"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Never"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "S3Bucket": {
+      "Description": "Resource Name",
+      "Value": {
+          "Ref": "S3Bucket"
+      }
+    },
+    "DomainName": {
+      "Description": "The DNS name of the bucket",
+      "Value": {
+        "Fn::GetAtt": [
+          "S3Bucket",
+          "DomainName"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "ProjectName",
+    "ParameterValue": "name-of-project"
+  }, 
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "{sandbox|dev|prod}"
+  }, 
+  {
+    "ParameterKey": "BucketName",
+    "ParameterValue": "name-of-s3-bucket"
+  },
+  {
+    "ParameterKey": "TechnicalOwner",
+    "ParameterValue": "email contact"
+  }
+]

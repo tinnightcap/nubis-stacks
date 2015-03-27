@@ -87,23 +87,28 @@ while [ "$1" != "" ]; do
         ;;
          -h | -H | --help )
             echo -en "$0\n\n"
-            echo -en "Usage: $0 [options] command\n\n"
+            echo -en "Usage: $0 [options] command [file]\n\n"
             echo -en "Commands:\n"
-            echo -en "  push              Push files from the local directory to s3\n"
+            echo -en "  push [file]       Push files from the local directory to s3\n"
+            echo -en "                      If file is given push only that file\n"
+            echo -en "                      If no file is given push everything in the directory\n"
             echo -en "Options:\n"
             echo -en "  --help      -h    Print this help information and exit\n"
             echo -en "  --bucket    -b    Specify the s3 bucket to upload to\n"
             echo -en "                      Defaults to 'nubisproject-stacks'\n"
             echo -en "  --path      -p    Specify a path to place the files in the s3 bucket\n"
             echo -en "                      Defaults to 'master'\n"
-            echo -en "  --verbose   -v    Turn on verbosity\n"
+            echo -en "  --verbose   -v    Turn on verbosity, this should be set as the first argument\n"
             echo -en "                      Basically set -x\n\n"
             exit 0
         ;;
         push-files | push )
-            # This simply grabs everything defined as an output and dumps it.
-            # See --file if you wish to save to a file without a redirect
-            get_files_list
+            # Push file if named otherwise push everything
+            if [ -z $2 ]; then
+                get_files_list
+            else
+                FILES_LIST=$2
+            fi
             push-files
             GOT_COMMAND=1
         ;;
@@ -116,98 +121,4 @@ if [ ${GOT_COMMAND:-0} == 0 ]; then
     $0 --help
 fi
 
-exit 0
-
-{
-    "Id": "Policy1427394589534",
-    "Statement": [
-        {
-            "Sid": "Stmt1427394583787",
-            "Action": "s3:*",
-            "Effect": "Allow",
-            "Resource": "arn:aws:s3:::nubisproject-stacks/*",
-            "Principal": {
-                "AWS": [
-                    "arn:aws:iam::647505682097:user/jcrowe"
-                ]
-            }
-        }
-    ]
-}
-
-{
-  "Version":"2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Stmt1427394583787",
-      "Action": "s3:*",
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::nubisproject-stacks/*",
-      "Principal": { "AWS": [ "arn:aws:iam::647505682097:user/jcrowe" ] }
-    }
-  ]
-}
-
-{
-   "Statement":[
-      {
-         "Effect":"Allow",
-         "Action":[
-            "s3:ListAllMyBuckets"
-         ],
-         "Resource":"arn:aws:s3:::*"
-      },
-      {
-         "Effect":"Allow",
-         "Action":[
-            "s3:ListBucket",
-            "s3:GetBucketLocation"
-         ],
-         "Resource":"arn:aws:s3:::nubisproject-stacks"
-      },
-      {
-         "Effect":"Allow",
-         "Action":[
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DeleteObject"
-         ],
-         "Resource":"arn:aws:s3:::nubisproject-stacks/*"
-      }
-   ]
-}
-
-{
-   "Version": "2012-10-17",
-   "Statement": [
-      {
-         "Sid": "statement1",
-         "Effect": "Allow",
-         "Principal": {
-            "AWS": "arn:aws:iam::647505682097:user/jcrowe"
-         },
-         "Action": [
-            "s3:GetBucketLocation",
-            "s3:ListBucket"
-         ],
-         "Resource": [
-            "arn:aws:s3:::nubisproject-stacks"
-         ]
-      },
-      {
-         "Sid": "statement2",
-         "Effect": "Allow",
-         "Principal": {
-            "AWS": "arn:aws:iam::647505682097:user/jcrowe"
-         },
-         "Action": [
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DeleteObject"
-         ],
-         "Resource": [
-            "arn:aws:s3:::nubisproject-stacks/*"
-         ]
-      }
-   ]
-}
+# fin

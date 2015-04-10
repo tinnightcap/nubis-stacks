@@ -41,7 +41,6 @@
       "Description": "Name of this deployment",
       "Type": "String",
       "AllowedValues": [
-        "prod",
         "db.t1.micro",
         "db.m1.small",
         "db.m1.medium",

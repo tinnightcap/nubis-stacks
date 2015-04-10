@@ -26,7 +26,7 @@ To use this stack you will need to set the required input parameters and include
             "Fn::Join": [
               ",",
               {
-                "Ref": "ELBSubnets"
+                "Ref": "Subnets"
               }
             ]
           },

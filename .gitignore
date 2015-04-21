@@ -1,2 +1,3 @@
 bin/variables
 nubis/cloudformation/parameters.json
+lambda/LookupStackOutputs/LookupStackOutputs.zip

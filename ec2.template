@@ -2,8 +2,8 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "EC2 Stack with; SecurityGroup, LaunchConfiguration and AutoScalingGroup",
   "Parameters": {
-    "ServiceName": {
-      "Description": "The name of the service this belongs to",
+    "ProjectName": {
+      "Description": "Name of this deployment",
       "Type": "String"
     },
     "TechnicalOwner": {
@@ -37,32 +37,10 @@
       "Description": "Existing ssh key to deploy to instances",
       "Type": "String"
     },
-    "ProjectName": {
-      "Description": "Name of this deployment",
+    "NubisDomain": {
+      "Description": "The domain used to discover the consul endpoint",
+      "Default": "nubis.allizom.org",
       "Type": "String"
-    },
-    "ConsulSecret": {
-      "Description": "Key to connect to Consul with",
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "ConsulEndpoint": {
-      "Description": "Consul endpoint to connect to.",
-      "Type": "String",
-      "AllowedValues": [
-        "us-west-2.consul.sandbox.nubis.allizom.org",
-        "us-east-1.consul.sandbox.nubis.allizom.org"
-      ]
-    },
-    "SslKey": {
-      "Description": "Consul SSL key",
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "SslCert": {
-      "Description": "Consul SSL cert",
-      "Type": "String",
-      "NoEcho": "true"
     },
     "InstanceType": {
       "Description": "EC2 Instance type",
@@ -112,7 +90,7 @@
           {
             "Key": "ServiceName",
             "Value": {
-              "Ref": "ServiceName"
+              "Ref": "ProjectName"
             }
           },
           {
@@ -151,7 +129,9 @@
         "SecurityGroups": [
           {
             "Ref": "EC2SecurityGroup"
-          }
+          },
+          "sg-e8efef8d",
+          "sg-e9efef8c"
         ],
         "InstanceType": {
             "Ref": "InstanceType"
@@ -188,80 +168,15 @@
                     ]
                   ]
                 },
-                "CONSUL_PUBLIC='0'",
                 {
                   "Fn::Join": [
                     "",
                     [
-                      "CONSUL_DC='",
+                      "NUBIS_DOMAIN='",
                       {
-                        "Ref": "AWS::Region"
+                        "Ref": "NubisDomain"
                       },
                       "'"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "CONSUL_SECRET='",
-                      {
-                        "Ref": "ConsulSecret"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "CONSUL_JOIN='",
-                      {
-                        "Ref": "ConsulEndpoint"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "CONSUL_KEY=",
-                      {
-                        "Fn::Join": [
-                          "\n",
-                          [
-                            "\"-----BEGIN PRIVATE KEY-----",
-                            {
-                              "Ref": "SslKey"
-                            },
-                            "-----END PRIVATE KEY-----\""
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "CONSUL_CERT=",
-                      {
-                        "Fn::Join": [
-                          "\n",
-                          [
-                            "\"-----BEGIN CERTIFICATE-----",
-                            {
-                              "Ref": "SslCert"
-                            },
-                            "-----END CERTIFICATE-----\""
-                          ]
-                        ]
-                      }
                     ]
                   ]
                 },
@@ -339,7 +254,7 @@
           {
             "Key": "ServiceName",
             "Value": {
-              "Ref": "ServiceName"
+              "Ref": "ProjectName"
             },
             "PropagateAtLaunch": "true"
           },

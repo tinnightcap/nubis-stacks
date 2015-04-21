@@ -39,18 +39,6 @@ To use this stack you will need to set the required input parameters and include
           "ProjectName": {
             "Ref": "ProjectName"
           },
-          "ConsulEndpoint": {
-            "Ref": "ConsulEndpoint"
-          },
-          "ConsulSecret": {
-            "Ref": "ConsulSecret"
-          },
-          "SslKey": {
-            "Ref": "SslKey"
-          },
-          "SslCert": {
-            "Ref": "SslCert"
-          },
           "ELB": {
             "Fn::GetAtt": [
               "ELBStack",

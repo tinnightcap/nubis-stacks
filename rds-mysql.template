@@ -34,14 +34,13 @@
     "AllocatedStorage": {
       "Description": "Name of this deployment",
       "Type": "String",
-      "AllowedPattern" : "^[5-9]{1}$|^[1-9][0-9]{1}[0-7]{0,1}[0-2]{0,1}$",
+      "AllowedPattern" : "^[5-9]|[1-9][0-9]{1,2}|[12][0-9]{3}|30[0-6][0-9]|307[0-2]$",
       "ConstraintDescription": "Must be an integer from 5 to 3072."
     },
     "DBInstanceClass": {
       "Description": "Name of this deployment",
       "Type": "String",
       "AllowedValues": [
-        "prod",
         "db.t1.micro",
         "db.m1.small",
         "db.m1.medium",

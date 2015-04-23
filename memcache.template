@@ -21,26 +21,41 @@
       ],
       "ConstraintDescription": "Must specify prod, dev, or sandbox."
     },
-    "VpcId": {
-      "Description": "Id of the VPC",
-      "Type": "String"
-    },
-    "Subnets": {
-      "Description": "Coma, seperated, list, of, subnets",
-      "Type": "CommaDelimitedList"
-    },
     "EC2SecurityGroup": {
       "Description": "EC2SecurityGroup id",
       "Type": "String"
     }
   },
   "Resources": {
+    "VpcInfo": {
+      "Type": "Custom::VpcInfo",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
+        "StackName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::Region"
+              },
+              {
+                "Ref": "Environment"
+              },
+              "vpc"
+            ]
+          ]
+        }
+      }
+    },
     "ElastiCacheSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "Inbound ElastiCache traffic rules",
         "VpcId": {
-          "Ref": "VpcId"
+          "Fn::GetAtt": [
+            "VpcInfo",
+            "VpcId"
+          ]
         },
         "SecurityGroupIngress": [
           {
@@ -92,27 +107,21 @@
         "Description": "ElastiCache Subnet Group",
         "SubnetIds": [
           {
-            "Fn::Select": [
-              "0",
-              {
-                "Ref": "Subnets"
-              }
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PrivateSubnetAZ1"
             ]
           },
           {
-            "Fn::Select": [
-              "1",
-              {
-                "Ref": "Subnets"
-              }
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PrivateSubnetAZ2"
             ]
           },
           {
-            "Fn::Select": [
-              "2",
-              {
-                "Ref": "Subnets"
-              }
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PrivateSubnetAZ3"
             ]
           }
         ]

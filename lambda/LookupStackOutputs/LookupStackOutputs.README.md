@@ -106,6 +106,17 @@ If everything worked as expected you should see some output similar to this:
     "Description": "Gather outputs from Cloudformation stacks to be used in other Cloudformation stacks"
 }
 ```
+#### Test Function
+To test the function log into the AWS web consol, navigate to [Lambda](https://us-west-2.console.aws.amazon.com/lambda/home?region=us-west-2#/functions), select your function and enter the following into the 'Sample Event' input box (You may need to select your region and adjust the StackName):
+
+
+```json
+{
+  "ResourceProperties": {
+    "StackName": "us-west-2-sandbox-vpc"
+  }
+}
+```
 
 #### Delete Function
 Just in case you wish to remove the function yo can do so (just be sure to remove the nubis-lambda-roll stack first if you no longer need it):

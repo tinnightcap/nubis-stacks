@@ -19,13 +19,13 @@ fi
 declare -a FILES_LIST
 get_files_list () {
     # Include all markdown files
-    FILES=`find ./ -name "*.md" -printf "%f\n"`
+    FILES=`find ./ -maxdepth 1 -name "*.md" -printf "%f\n"`
     for FILE in $FILES; do
         FILES_LIST=(${FILES_LIST[@]} $FILE)
     done
 
     # Include all template files
-    FILES=`find ./ -name "*.template" -printf "%f\n"`
+    FILES=`find ./ -maxdepth 1 -name "*.template" -printf "%f\n"`
     for FILE in $FILES; do
         FILES_LIST=(${FILES_LIST[@]} $FILE)
     done

@@ -86,7 +86,7 @@ LAMBDA_ROLL_ARN=$(aws cloudformation describe-stacks --stack-name nubis-lambda-r
 
 Then using the roll arn we set in the environment variable, upload the bundle to Lambda:
 ```bash
-aws lambda upload-function --region us-west-2 --function-name LookupStackOutputs --function-zip lambda/LookupStackOutputs/LookupStackOutputs.zip --runtime nodejs --role ${LAMBDA_ROLL_ARN} --handler LookupStackOutputs.handler --mode event --timeout 10 --memory-size 1024 --description 'Gather outputs from Cloudformation stacks to be used in other Cloudformation stacks'
+aws lambda upload-function --region us-west-2 --function-name LookupStackOutputs --function-zip lambda/LookupStackOutputs/LookupStackOutputs.zip --runtime nodejs --role ${LAMBDA_ROLL_ARN} --handler LookupStackOutputs.handler --mode event --timeout 10 --memory-size 128 --description 'Gather outputs from Cloudformation stacks to be used in other Cloudformation stacks'
 ```
 
 If everything worked as expected you should see some output similar to this:
@@ -95,7 +95,7 @@ If everything worked as expected you should see some output similar to this:
     "FunctionName": "LookupStackOutputs", 
     "CodeSize": 1397, 
     "ConfigurationId": "92c44c94-b648-423c-ab6f-79db6fef7930", 
-    "MemorySize": 1024, 
+    "MemorySize": 128, 
     "FunctionARN": "arn:aws:lambda:us-west-2:647505682097:function:LookupStackOutputs", 
     "Handler": "LookupStackOutputs.handler", 
     "Role": "arn:aws:iam::647505682097:role/nubis-lambda-roll-LambdaIamRole-15M0SCFBIWYQE", 

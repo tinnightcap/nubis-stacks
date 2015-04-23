@@ -19,17 +19,6 @@ To use this stack you will need to set the required input parameters and include
           "Environment": {
             "Ref": "Environment"
           },
-          "VpcId": {
-            "Ref": "VpcId"
-          },
-          "Subnets": {
-            "Fn::Join": [
-              ",",
-              {
-                "Ref": "Subnets"
-              }
-            ]
-          },
           "AmiId": {
             "Ref": "AmiId"
           },

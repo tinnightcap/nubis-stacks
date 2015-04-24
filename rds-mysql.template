@@ -88,6 +88,13 @@
         }
       }
     },
+    "MetaInfo": {
+      "Type": "Custom::VpcInfo",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
+        "StackName": "nubis-meta"
+      }
+    },
     "RDSInstance": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
@@ -96,6 +103,12 @@
         },
         "DBInstanceClass": {
           "Ref": "DBInstanceClass"
+        },
+        "DBParameterGroupName": {
+          "Fn::GetAtt": [
+            "MetaInfo",
+            "NubisMySQL56ParameterGroup"
+          ]
         },
         "DBSubnetGroupName": {
           "Ref": "RDSSubnetGroup"

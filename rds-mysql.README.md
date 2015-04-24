@@ -11,24 +11,13 @@ To use this stack you will need to set the required input parameters and include
         "TimeoutInMinutes": "60",
         "Parameters": {
           "ServiceName": {
-            "Ref": "AWS::StackName"
+            "Ref": "ProjectName"
           },
           "TechnicalOwner": {
             "Ref": "TechnicalOwner"
           },
           "Environment": {
             "Ref": "Environment"
-          },
-          "VpcId": {
-            "Ref": "VpcId"
-          },
-          "Subnets": {
-            "Fn::Join": [
-              ",",
-              {
-                "Ref": "Subnets"
-              }
-            ]
           },
           "AllocatedStorage": "15",
           "DBInstanceClass": "db.t1.micro",

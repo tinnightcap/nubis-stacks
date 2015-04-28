@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Nubis Storage Ceph Cluster",
   "Parameters": {
-    "ProjectName": {
+    "ServiceName": {
       "Description": "The name of the service this belongs to",
       "Type": "String"
     },
@@ -189,7 +189,7 @@
                 "\n",
                 "NUBIS_PROJECT=",
                 {
-                  "Ref": "ProjectName"
+                  "Ref": "ServiceName"
                 },
                 "\n",
                 "NUBIS_STORAGE_CLUSTER_SIZE=",
@@ -262,7 +262,7 @@
                 [
                   "Nubis Storage Node (",
                   {
-                    "Ref": "ProjectName"
+                    "Ref": "ServiceName"
                   },
                   ")"
                 ]
@@ -271,9 +271,9 @@
             "PropagateAtLaunch": "true"
           },
           {
-            "Key": "ProjectName",
+            "Key": "ServiceName",
             "Value": {
-              "Ref": "ProjectName"
+              "Ref": "ServiceName"
             },
             "PropagateAtLaunch": "true"
           },

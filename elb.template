@@ -65,7 +65,7 @@
           {
             "Key": "ServiceName",
             "Value": {
-              "Ref": "AWS::StackName"
+              "Ref": "ServiceName"
             }
           },
           {

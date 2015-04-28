@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "EC2 Stack with; SecurityGroup, LaunchConfiguration and AutoScalingGroup",
   "Parameters": {
-    "ProjectName": {
+    "ServiceName": {
       "Description": "Name of this deployment",
       "Type": "String"
     },
@@ -105,7 +105,7 @@
           {
             "Key": "ServiceName",
             "Value": {
-              "Ref": "ProjectName"
+              "Ref": "ServiceName"
             }
           },
           {
@@ -175,7 +175,7 @@
                     [
                       "NUBIS_PROJECT='",
                       {
-                        "Ref": "ProjectName"
+                        "Ref": "ServiceName"
                       },
                       "'"
                     ]
@@ -273,7 +273,7 @@
           {
             "Key": "ServiceName",
             "Value": {
-              "Ref": "ProjectName"
+              "Ref": "ServiceName"
             },
             "PropagateAtLaunch": "true"
           },

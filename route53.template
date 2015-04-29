@@ -13,7 +13,7 @@
       ],
       "ConstraintDescription": "Must specify prod, dev, or sandbox."
     },
-    "ProjectName": {
+    "ServiceName": {
       "Description": "Name of this deployment",
       "Type": "String"
     },
@@ -78,7 +78,7 @@
             ".",
             [
               {
-                "Ref": "ProjectName"
+                "Ref": "ServiceName"
               },
               {
                 "Ref": "Environment"
@@ -101,7 +101,7 @@
             "",
             [
               {
-                "Ref": "ProjectName"
+                "Ref": "ServiceName"
               },
               ".",
               {
@@ -122,7 +122,7 @@
               "www",
               ".",
               {
-                "Ref": "ProjectName"
+                "Ref": "ServiceName"
               },
               ".",
               {
@@ -154,7 +154,7 @@
             "",
             [
               {
-                "Ref": "ProjectName"
+                "Ref": "ServiceName"
               },
               ".",
               {
@@ -175,7 +175,7 @@
               "www",
               ".",
               {
-                "Ref": "ProjectName"
+                "Ref": "ServiceName"
               },
               ".",
               {

@@ -26,28 +26,6 @@
       "Type": "String"
     }
   },
-  "Conditions": {
-    "CreateSandboxResources": {
-      "Fn::Equals": [
-        {
-          "Ref": "Environment"
-        },
-        "sandbox"
-      ]
-    },
-    "CreateAutomationResources": {
-      "Fn::Not": [
-        {
-          "Fn::Equals": [
-            {
-              "Ref": "Environment"
-            },
-            "sandbox"
-          ]
-        }
-      ]
-    }
-  },
   "Resources": {
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
@@ -71,7 +49,6 @@
     },
     "HostedZone": {
       "Type": "AWS::Route53::HostedZone",
-      "Condition": "CreateSandboxResources",
       "Properties": {
         "Name": {
           "Fn::Join": [
@@ -93,61 +70,7 @@
     },
     "WWWRecord": {
       "Type": "AWS::Route53::RecordSet",
-      "Condition": "CreateSandboxResources",
       "DependsOn" : "HostedZone",
-      "Properties": {
-        "HostedZoneName": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Ref": "ServiceName"
-              },
-              ".",
-              {
-                "Ref": "Environment"
-              },
-              ".",
-              {
-                "Ref": "BaseZone"
-              },
-              "."
-            ]
-          ]
-        },
-        "Name": {
-          "Fn::Join": [
-            "",
-            [
-              "www",
-              ".",
-              {
-                "Ref": "ServiceName"
-              },
-              ".",
-              {
-                "Ref": "Environment"
-              },
-              ".",
-              {
-                "Ref": "BaseZone"
-              },
-              "."
-            ]
-          ]
-        },
-        "Type": "CNAME",
-        "TTL": "300",
-        "ResourceRecords": [
-          {
-            "Ref": "ELBStack"
-          }
-        ]
-      }
-    },
-    "WWWRecord": {
-      "Type": "AWS::Route53::RecordSet",
-      "Condition": "CreateAutomationResources",
       "Properties": {
         "HostedZoneName": {
           "Fn::Join": [

@@ -67,10 +67,10 @@
   "Mappings" : {
    "AMIs" : {
     "us-west-2" : {
-      "AMI" : "ami-473d0b77"
+      "AMI" : "ami-932c1aa3"
     },
     "us-east-1" : {
-      "AMI" : "ami-aeb4bbc6"
+      "AMI" : "ami-9c505ef4"
     }
    }
   },

@@ -18,7 +18,8 @@ To use this stack you will need to set the required input parameters and include
           },
           "Environment": {
             "Ref": "Environment"
-          }
+          },
+          "ElbHealthTarget": "HTTP:80/index.html"
         }
       }
     }

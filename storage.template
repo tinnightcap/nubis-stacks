@@ -52,12 +52,12 @@
     "VolumeSize": {
       "Description": "Size in GB of the volume",
       "Type": "String",
-      "Default": "50"
+      "Default": "16"
     },
     "ClusterSize": {
       "Description": "Members of the cluster, keep an odd number",
       "Type": "String",
-      "Default": "1"
+      "Default": "3"
     },
     "EC2SecurityGroup": {
       "Description": "The security group ID of clients of this cluster",

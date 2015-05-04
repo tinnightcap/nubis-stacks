@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [[ $# -lt 2 ]]; then
+   echo "Usage: $0 <YAML file> <JSON file>"
+   echo
+   echo "Please make sure that <JSON file> doesn't already exist."
+   exit 1
+fi
+
+if [[ ! -r "$1" ]]; then
+   echo "Source YAML file $1 is not readable"
+   exit 1
+fi
+
+if [[ -e "$2" ]]; then
+   echo "Output JSON file $2 already exists, refusing to clobber"
+   exit 1
+fi
+
+ruby -ryaml -rjson -e 'puts JSON.pretty_generate(YAML.load(ARGF))' < "$1" > "$2"
+if [[ $? -eq 0 ]]; then
+   echo "Successfully wrote JSON to $2"
+else
+   echo
+   echo "Ruby had a non-zero exit status. Please check for parse errors and try again"
+fi

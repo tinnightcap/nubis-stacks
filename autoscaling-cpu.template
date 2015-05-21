@@ -3,8 +3,18 @@
   "Description": "EC2 AutoScaling Policies with CloudWatch alarms. Scales up an dscales down.",
   "Parameters": {
     "AutoScalingGroup": {
-      "Description": "EC2 AutoScalingGroup",
+      "Description": "The EC2 AutoScalingGroup name we wish to attach these scaling policies to.",
       "Type": "String"
+    },
+    "CPUAlarmHighThreshold": {
+      "Description": "Overall cluster CPU usage by percentage where we trigger a scale up action.",
+      "Type": "String",
+      "Default": "70"
+    },
+    "CPUAlarmLowThreshold": {
+      "Description": "Overall cluster CPU usage by percentage where we trigger a scale down action.",
+      "Type": "String",
+      "Default": "40"
     }
   },
   "Resources": {
@@ -31,7 +41,7 @@
        "Properties": {
           "EvaluationPeriods": "2",
           "Statistic": "Average",
-          "Threshold": "60",
+          "Threshold": { "Ref": "CPUAlarmHighThreshold" },
           "AlarmDescription": "Alarm if cpu too high or metric disappears indicating instance is down",
           "Period": "60",
           "AlarmActions": [ { "Ref": "ScaleUpPolicy" } ],
@@ -49,7 +59,7 @@
        "Properties": {
           "EvaluationPeriods": "2",
           "Statistic": "Average",
-          "Threshold": "50",
+          "Threshold": { "Ref": "CPUAlarmLowThreshold" },
           "AlarmDescription": "Alarm if cpu too low",
           "Period": "60",
           "AlarmActions": [ { "Ref": "ScaleDownPolicy" } ],

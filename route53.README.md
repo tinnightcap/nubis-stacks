@@ -10,11 +10,11 @@ To use this stack you will need to set the required input parameters and include
         "TemplateURL": "https://s3.amazonaws.com/nubisproject-stacks/master/route53.template",
         "TimeoutInMinutes": "60",
         "Parameters": {
+          "DNSName": {
+            "Ref": "AWS::StackName"
+          },
           "Environment": {
             "Ref": "Environment"
-          },
-          "ServiceName": {
-            "Ref": "ServiceName"
           },
           "BaseZone": {
             "Ref": "BaseZone"

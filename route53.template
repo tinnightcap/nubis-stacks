@@ -13,8 +13,8 @@
       ],
       "ConstraintDescription": "Must specify prod, dev, or sandbox."
     },
-    "ServiceName": {
-      "Description": "Name of this deployment",
+    "DNSName": {
+      "Description": "DNS name of this deployment",
       "Type": "String"
     },
     "BaseZone": {
@@ -55,7 +55,7 @@
             ".",
             [
               {
-                "Ref": "ServiceName"
+                "Ref": "DNSName"
               },
               {
                 "Ref": "Environment"
@@ -77,7 +77,7 @@
             "",
             [
               {
-                "Ref": "ServiceName"
+                "Ref": "DNSName"
               },
               ".",
               {
@@ -98,7 +98,7 @@
               "www",
               ".",
               {
-                "Ref": "ServiceName"
+                "Ref": "DNSName"
               },
               ".",
               {

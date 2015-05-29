@@ -18,10 +18,10 @@
       "Type": "String",
       "AllowedValues": [
         "prod",
-        "dev",
+        "stage",
         "sandbox"
       ],
-      "ConstraintDescription": "Must specify prod, dev, or sandbox."
+      "ConstraintDescription": "Must specify prod, stage, or sandbox."
     },
     "AllocatedStorage": {
       "Description": "Name of this deployment",

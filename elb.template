@@ -16,10 +16,10 @@
       "Type": "String",
       "AllowedValues": [
         "prod",
-        "dev",
+        "stage",
         "sandbox"
       ],
-      "ConstraintDescription": "Must specify prod, dev, or sandbox."
+      "ConstraintDescription": "Must specify prod, stage, or sandbox."
     },
     "ElbHealthTarget": {
       "Description": "The protocol and url to use for checking the health of the service",

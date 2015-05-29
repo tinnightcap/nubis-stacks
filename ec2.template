@@ -2,6 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "EC2 Stack with; SecurityGroup, LaunchConfiguration and AutoScalingGroup",
   "Parameters": {
+    "StackName": {
+      "Description": "Name of the parent stack",
+      "Type": "String"
+    },
     "ServiceName": {
       "Description": "Name of this deployment",
       "Type": "String"
@@ -42,6 +46,26 @@
     "ELB": {
       "Description": "ELB Endpoint",
       "Type": "String"
+    },
+    "AutoScalingGroupMinSize": {
+      "Description": "ELB Endpoint",
+      "Type": "String",
+      "Default": "1"
+    },
+    "AutoScalingGroupDesiredCapacity": {
+      "Description": "ELB Endpoint",
+      "Type": "String",
+      "Default": "1"
+    },
+    "AutoScalingGroupMaxSize": {
+      "Description": "ELB Endpoint",
+      "Type": "String",
+      "Default": "2"
+    },
+    "Migrate": {
+      "Description": "Set the migrate flag to 1 or 0",
+      "Type": "String",
+      "Default": "1"
     }
   },
   "Resources": {
@@ -173,6 +197,18 @@
                   "Fn::Join": [
                     "",
                     [
+                      "NUBIS_STACK='",
+                      {
+                        "Ref": "StackName"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
                       "NUBIS_PROJECT='",
                       {
                         "Ref": "ServiceName"
@@ -210,7 +246,9 @@
                     "",
                     [
                       "NUBIS_MIGRATE='",
-                      "1",
+                      {
+                        "Ref": "Migrate"
+                      },
                       "'"
                     ]
                   ]
@@ -261,9 +299,15 @@
         "LaunchConfigurationName": {
           "Ref": "LaunchConfig"
         },
-        "MinSize": "1",
-        "DesiredCapacity": "1",
-        "MaxSize": "2",
+        "MinSize": {
+          "Ref": "AutoScalingGroupMinSize"
+        },
+        "DesiredCapacity": {
+          "Ref": "AutoScalingGroupDesiredCapacity"
+        },
+        "MaxSize": {
+          "Ref": "AutoScalingGroupMaxSize"
+        },
         "LoadBalancerNames": [
           {
             "Ref": "ELB"

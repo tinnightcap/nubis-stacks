@@ -10,6 +10,9 @@ To use this stack you will need to set the required input parameters and include
         "TemplateURL": "https://s3.amazonaws.com/nubisproject-stacks/master/ec2.template",
         "TimeoutInMinutes": "60",
         "Parameters": {
+          "StackName": {
+            "Ref": "AWS::StackName"
+          },
           "ServiceName": {
             "Ref": "ServiceName"
           },

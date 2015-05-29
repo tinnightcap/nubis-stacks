@@ -2,6 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Nubis Storage Ceph Cluster",
   "Parameters": {
+    "StackName": {
+      "Description": "Name of the parent stack",
+      "Type": "String"
+    },
     "ServiceName": {
       "Description": "The name of the service this belongs to",
       "Type": "String"
@@ -52,33 +56,49 @@
     "VolumeSize": {
       "Description": "Size in GB of the volume",
       "Type": "String",
-      "Default": "16"
+      "Default": "50"
     },
     "ClusterSize": {
       "Description": "Members of the cluster, keep an odd number",
       "Type": "String",
-      "Default": "3"
+      "Default": "1"
     },
     "EC2SecurityGroup": {
       "Description": "The security group ID of clients of this cluster",
       "Type": "String"
     }
   },
-  "Mappings" : {
-   "AMIs" : {
-    "us-west-2" : {
-      "AMI" : "ami-932c1aa3"
-    },
-    "us-east-1" : {
-      "AMI" : "ami-9c505ef4"
+  "Mappings": {
+    "AMIs": {
+      "us-west-2": {
+        "AMI": "ami-b9d9e689"
+      },
+      "us-east-1": {
+        "AMI": "ami-1900e072"
+      }
     }
-   }
   },
   "Resources": {
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
-        "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
+        },
         "StackName": {
           "Fn::Join": [
             "-",
@@ -141,7 +161,13 @@
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
         "ImageId": {
-          "Fn::FindInMap" : [ "AMIs", { "Ref" : "AWS::Region" }, "AMI"]
+          "Fn::FindInMap": [
+            "AMIs",
+            {
+              "Ref": "AWS::Region"
+            },
+            "AMI"
+          ]
         },
         "SecurityGroups": [
           {
@@ -185,6 +211,19 @@
                 "NUBIS_ENVIRONMENT=",
                 {
                   "Ref": "Environment"
+                },
+                "\n",
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_STACK='",
+                      {
+                        "Ref": "StackName"
+                      },
+                      "'"
+                    ]
+                  ]
                 },
                 "\n",
                 "NUBIS_PROJECT=",

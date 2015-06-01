@@ -161,7 +161,8 @@
             "Value": "Never"
           }
         ]
-      }
+      },
+      "DeletionPolicy" : "Snapshot"
     },
     "RDSSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",

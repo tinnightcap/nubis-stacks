@@ -3,4 +3,6 @@
 # File for secrets that we do not want on github
 #
 
+AWS_ACCESS_KEY='XXX'
+AWS_SECRET_KEY='XXXYYYZZZ'
 CANONICAL_USER_ID='fjkdsalkjfdsa'

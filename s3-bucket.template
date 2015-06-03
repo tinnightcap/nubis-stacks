@@ -6,10 +6,6 @@
       "Description": "The name of the service this belongs to",
       "Type": "String"
     },
-    "ProjectName": {
-      "Description": "Name of this project / deployment",
-      "Type": "String"
-    },
     "Environment": {
       "Description": "Environment we are deploying into",
       "Default": "sandbox",

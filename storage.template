@@ -20,10 +20,10 @@
       "Type": "String",
       "AllowedValues": [
         "prod",
-        "dev",
+        "stage",
         "sandbox"
       ],
-      "ConstraintDescription": "Must specify prod, dev, or sandbox."
+      "ConstraintDescription": "Must specify prod, stage, or sandbox."
     },
     "KeyName": {
       "Description": "Name of and existing EC2 KeyPair to enable SSH access to the instance",
@@ -61,7 +61,7 @@
     "ClusterSize": {
       "Description": "Members of the cluster, keep an odd number",
       "Type": "String",
-      "Default": "1"
+      "Default": "3"
     },
     "EC2SecurityGroup": {
       "Description": "The security group ID of clients of this cluster",

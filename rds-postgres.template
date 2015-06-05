@@ -82,7 +82,7 @@
                 "DBInstanceClass": { "Ref": "DBInstanceClass" },
                 "DBSubnetGroupName": { "Ref": "RDSSubnetGroup" },
                 "Engine": "PostgreSQL",
-                "EngineVersion": "9.2",
+                "EngineVersion": "9.3",
                 "MultiAz": "true",
                 "BackupRetentionPeriod": "7",
                 "VPCSecurityGroups": [ { "Ref": "RDSSecurityGroup" } ],

@@ -1,7 +1,7 @@
 {
-  "AWSTemplateFormatVersion" : "2010-09-09",
-  "Description" : "Creates an ELB with a security group",
-  "Parameters" : {
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Creates an ELB with a security group",
+  "Parameters": {
     "ServiceName": {
       "Description": "The name of the service this belongs to",
       "Type": "String"
@@ -31,7 +31,23 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
-        "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
+        },
         "StackName": {
           "Fn::Join": [
             "-",
@@ -212,7 +228,7 @@
     "ELB": {
       "Description": "ELB Id",
       "Value": {
-          "Ref": "ELB"
+        "Ref": "ELB"
       }
     }
   }

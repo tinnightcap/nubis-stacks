@@ -66,13 +66,44 @@
       "Description": "Set the migrate flag to 1 or 0",
       "Type": "String",
       "Default": "1"
+    },
+    "IamInstanceProfile": {
+      "Description": "IAM Instance Profile to attach to the instance",
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "NotSet_IamInstanceProfile": {
+      "Fn::Equals": [
+        {
+          "Ref": "IamInstanceProfile"
+        },
+        ""
+      ]
     }
   },
   "Resources": {
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
-        "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
+        },
         "StackName": {
           "Fn::Join": [
             "-",
@@ -183,10 +214,21 @@
           }
         ],
         "InstanceType": {
-            "Ref": "InstanceType"
+          "Ref": "InstanceType"
         },
         "KeyName": {
           "Ref": "KeyName"
+        },
+        "IamInstanceProfile": {
+          "Fn::If": [
+            "NotSet_IamInstanceProfile",
+            {
+              "Ref": "AWS::NoValue"
+            },
+            {
+              "Ref": "IamInstanceProfile"
+            }
+          ]
         },
         "UserData": {
           "Fn::Base64": {

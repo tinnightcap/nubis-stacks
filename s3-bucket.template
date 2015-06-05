@@ -1,7 +1,7 @@
 {
-  "AWSTemplateFormatVersion" : "2010-09-09",
-  "Description" : "S3Bucket",
-  "Parameters" : {
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "S3Bucket",
+  "Parameters": {
     "ServiceName": {
       "Description": "The name of the service this belongs to",
       "Type": "String"
@@ -32,12 +32,12 @@
   },
   "Resources": {
     "S3Bucket": {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "AccessControl" : {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": {
           "Ref": "AccessControl"
         },
-        "BucketName" : {
+        "BucketName": {
           "Ref": "BucketName"
         },
         "Tags": [
@@ -79,7 +79,7 @@
     "S3Bucket": {
       "Description": "Resource Name",
       "Value": {
-          "Ref": "S3Bucket"
+        "Ref": "S3Bucket"
       }
     },
     "DomainName": {

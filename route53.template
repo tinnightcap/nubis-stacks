@@ -30,7 +30,23 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
-        "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
+        },
         "StackName": {
           "Fn::Join": [
             "-",
@@ -70,7 +86,7 @@
     },
     "WWWRecord": {
       "Type": "AWS::Route53::RecordSet",
-      "DependsOn" : "HostedZone",
+      "DependsOn": "HostedZone",
       "Properties": {
         "HostedZoneName": {
           "Fn::Join": [

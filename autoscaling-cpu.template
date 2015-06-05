@@ -18,59 +18,83 @@
     }
   },
   "Resources": {
-    "ScaleUpPolicy" : {
-       "Type" : "AWS::AutoScaling::ScalingPolicy",
-        "Properties" : {
-          "AdjustmentType" : "ChangeInCapacity",
-          "AutoScalingGroupName" : { "Ref" : "AutoScalingGroup" },
-          "Cooldown" : "60",
-          "ScalingAdjustment" : "1"
-       }
+    "ScaleUpPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "AutoScalingGroup"
+        },
+        "Cooldown": "60",
+        "ScalingAdjustment": "1"
+      }
     },
-    "ScaleDownPolicy" : {
-       "Type" : "AWS::AutoScaling::ScalingPolicy",
-       "Properties" : {
-          "AdjustmentType" : "ChangeInCapacity",
-          "AutoScalingGroupName" : { "Ref" : "AutoScalingGroup" },
-          "Cooldown" : "60",
-          "ScalingAdjustment" : "-1"
-       }
+    "ScaleDownPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "AutoScalingGroup"
+        },
+        "Cooldown": "60",
+        "ScalingAdjustment": "-1"
+      }
     },
     "CPUAlarmHigh": {
-       "Type": "AWS::CloudWatch::Alarm",
-       "Properties": {
-          "EvaluationPeriods": "2",
-          "Statistic": "Average",
-          "Threshold": { "Ref": "CPUAlarmHighThreshold" },
-          "AlarmDescription": "Alarm if cpu too high or metric disappears indicating instance is down",
-          "Period": "60",
-          "AlarmActions": [ { "Ref": "ScaleUpPolicy" } ],
-          "Namespace": "AWS/EC2",
-          "Dimensions": [ {
-             "Name": "AutoScalingGroupName",
-             "Value": { "Ref": "AutoScalingGroup" }
-          } ],
-          "ComparisonOperator": "GreaterThanThreshold",
-          "MetricName": "CPUUtilization"
-       }
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "EvaluationPeriods": "2",
+        "Statistic": "Average",
+        "Threshold": {
+          "Ref": "CPUAlarmHighThreshold"
+        },
+        "AlarmDescription": "Alarm if cpu too high or metric disappears indicating instance is down",
+        "Period": "60",
+        "AlarmActions": [
+          {
+            "Ref": "ScaleUpPolicy"
+          }
+        ],
+        "Namespace": "AWS/EC2",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "AutoScalingGroup"
+            }
+          }
+        ],
+        "ComparisonOperator": "GreaterThanThreshold",
+        "MetricName": "CPUUtilization"
+      }
     },
     "CPUAlarmLow": {
-       "Type": "AWS::CloudWatch::Alarm",
-       "Properties": {
-          "EvaluationPeriods": "2",
-          "Statistic": "Average",
-          "Threshold": { "Ref": "CPUAlarmLowThreshold" },
-          "AlarmDescription": "Alarm if cpu too low",
-          "Period": "60",
-          "AlarmActions": [ { "Ref": "ScaleDownPolicy" } ],
-          "Namespace": "AWS/EC2",
-          "Dimensions": [ {
-             "Name": "AutoScalingGroupName",
-             "Value": { "Ref": "AutoScalingGroup" }
-          } ],
-          "ComparisonOperator": "LessThanThreshold",
-          "MetricName": "CPUUtilization"
-       }
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "EvaluationPeriods": "2",
+        "Statistic": "Average",
+        "Threshold": {
+          "Ref": "CPUAlarmLowThreshold"
+        },
+        "AlarmDescription": "Alarm if cpu too low",
+        "Period": "60",
+        "AlarmActions": [
+          {
+            "Ref": "ScaleDownPolicy"
+          }
+        ],
+        "Namespace": "AWS/EC2",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "AutoScalingGroup"
+            }
+          }
+        ],
+        "ComparisonOperator": "LessThanThreshold",
+        "MetricName": "CPUUtilization"
+      }
     }
   }
 }

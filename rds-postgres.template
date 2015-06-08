@@ -1,211 +1,304 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Postgres RDS Stack with; DBInstance, SecurityGroup and DBSubnetGroup",
-    "Parameters": {
-        "ServiceName": {
-            "Description": "The name of the service this belongs to",
-            "Type": "String"
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Postgres RDS Stack with; DBInstance, SecurityGroup and DBSubnetGroup",
+  "Parameters": {
+    "ServiceName": {
+      "Description": "The name of the service this belongs to",
+      "Type": "String"
+    },
+    "TechnicalOwner": {
+      "Description": "A valid LDAP email",
+      "Type": "String",
+      "AllowedPattern": "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
+      "ConstraintDescription": "Must be a valid email address."
+    },
+    "Environment": {
+      "Description": "Environment we are deploying into",
+      "Default": "sandbox",
+      "Type": "String",
+      "AllowedValues": [
+        "prod",
+        "stage",
+        "sandbox"
+      ],
+      "ConstraintDescription": "Must specify prod, stage, or sandbox."
+    },
+    "AllocatedStorage": {
+      "Description": "Name of this deployment",
+      "Type": "String",
+      "AllowedPattern": "^[5-9]|[1-9][0-9]{1,2}|[12][0-9]{3}|30[0-6][0-9]|307[0-2]$",
+      "ConstraintDescription": "Must be an integer from 5 to 3072."
+    },
+    "DBInstanceClass": {
+      "Description": "Name of this deployment",
+      "Type": "String",
+      "AllowedValues": [
+        "db.t1.micro",
+        "db.m1.small",
+        "db.m1.medium",
+        "db.m1.large",
+        "db.m1.xlarge",
+        "db.m2.xlarge",
+        "db.m2.2xlarge",
+        "db.m2.4xlarge",
+        "db.m3.medium",
+        "db.m3.large",
+        "db.m3.xlarge",
+        "db.m3.2xlarge",
+        "db.r3.large",
+        "db.r3.xlarge",
+        "db.r3.2xlarge",
+        "db.r3.4xlarge",
+        "db.r3.8xlarge",
+        "db.t2.micro",
+        "db.t2.small",
+        "db.t2.medium"
+      ],
+      "ConstraintDescription": "Must specify a valid instance class."
+    },
+    "DBName": {
+      "Description": "Name of this deployment",
+      "Type": "String",
+      "AllowedPattern": "[a-zA-Z0-9]{1,15}",
+      "ConstraintDescription": "Must only contain upper and lower case letters and numbers, between 1 and 15 characters."
+    },
+    "EC2SecurityGroup": {
+      "Description": "EC2SecurityGroup id",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "VpcInfo": {
+      "Type": "Custom::VpcInfo",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
         },
-        "TechnicalOwner": {
-            "Description": "A valid LDAP email",
-            "Type": "String",
-            "AllowedPattern": "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
-            "ConstraintDescription": "Must be a valid email address."
-        },
-        "Environment": {
-            "Description": "Environment we are deploying into",
-            "Default": "sandbox",
-            "Type": "String",
-            "AllowedValues": [
-                "prod",
-                "stage",
-                "sandbox"
-            ],
-            "ConstraintDescription": "Must specify prod, stage, or sandbox."
-        },
+        "StackName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::Region"
+              },
+              {
+                "Ref": "Environment"
+              },
+              "vpc"
+            ]
+          ]
+        }
+      }
+    },
+    "RDSInstance": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
         "AllocatedStorage": {
-            "Description": "Name of this deployment",
-            "Type": "String",
-            "AllowedPattern": "^[5-9]|[1-9][0-9]{1,2}|[12][0-9]{3}|30[0-6][0-9]|307[0-2]$",
-            "ConstraintDescription": "Must be an integer from 5 to 3072."
+          "Ref": "AllocatedStorage"
         },
         "DBInstanceClass": {
-            "Description": "Name of this deployment",
-            "Type": "String",
-            "AllowedValues": [
-                "db.t1.micro",
-                "db.m1.small",
-                "db.m1.medium",
-                "db.m1.large",
-                "db.m1.xlarge",
-                "db.m2.xlarge",
-                "db.m2.2xlarge",
-                "db.m2.4xlarge",
-                "db.m3.medium",
-                "db.m3.large",
-                "db.m3.xlarge",
-                "db.m3.2xlarge",
-                "db.r3.large",
-                "db.r3.xlarge",
-                "db.r3.2xlarge",
-                "db.r3.4xlarge",
-                "db.r3.8xlarge",
-                "db.t2.micro",
-                "db.t2.small",
-                "db.t2.medium"
-            ],
-            "ConstraintDescription": "Must specify a valid instance class."
+          "Ref": "DBInstanceClass"
         },
+        "DBSubnetGroupName": {
+          "Ref": "RDSSubnetGroup"
+        },
+        "Engine": "PostgreSQL",
+        "EngineVersion": "9.3",
+        "MultiAz": "true",
+        "BackupRetentionPeriod": "7",
+        "VPCSecurityGroups": [
+          {
+            "Ref": "RDSSecurityGroup"
+          }
+        ],
+        "MasterUsername": {
+          "Ref": "DBName"
+        },
+        "MasterUserPassword": "provisioner_password",
         "DBName": {
-            "Description": "Name of this deployment",
-            "Type": "String",
-            "AllowedPattern": "[a-zA-Z0-9]{1,15}",
-            "ConstraintDescription": "Must only contain upper and lower case letters and numbers, between 1 and 15 characters."
+          "Ref": "DBName"
         },
-        "EC2SecurityGroup": {
-            "Description": "EC2SecurityGroup id",
-            "Type": "String"
-        }
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Database Instance"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never"
+          }
+        ]
+      },
+      "DeletionPolicy": "Snapshot"
     },
-    "Resources": {
-        "VpcInfo": {
-            "Type": "Custom::VpcInfo",
-            "Properties": {
-                "ServiceToken": { "Fn::Join": [ "", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":function:", "LookupStackOutputs" ] ] },
-                "StackName": { "Fn::Join": [ "-", [ { "Ref": "AWS::Region" }, { "Ref": "Environment" }, "vpc" ] ] }
+    "RDSSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "DB Subnet Group",
+        "SubnetIds": [
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PrivateSubnetAZ1"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PrivateSubnetAZ2"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PrivateSubnetAZ3"
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
             }
-        },
-        "RDSInstance": {
-            "Type": "AWS::RDS::DBInstance",
-            "Properties": {
-                "AllocatedStorage": { "Ref": "AllocatedStorage" },
-                "DBInstanceClass": { "Ref": "DBInstanceClass" },
-                "DBSubnetGroupName": { "Ref": "RDSSubnetGroup" },
-                "Engine": "PostgreSQL",
-                "EngineVersion": "9.3",
-                "MultiAz": "true",
-                "BackupRetentionPeriod": "7",
-                "VPCSecurityGroups": [ { "Ref": "RDSSecurityGroup" } ],
-                "MasterUsername": { "Ref": "DBName" },
-                "MasterUserPassword": "provisioner_password",
-                "DBName": { "Ref": "DBName" },
-                "Tags": [
-                    {
-                        "Key": "ServiceName",
-                        "Value": { "Ref": "ServiceName" }
-                    },
-                    {
-                        "Key": "TechnicalOwner",
-                        "Value": { "Ref": "TechnicalOwner" }
-                    },
-                    {
-                        "Key": "Environment",
-                        "Value": { "Ref": "Environment" }
-                    },
-                    {
-                        "Key": "Purpose",
-                        "Value": "Database Instance"
-                    },
-                    {
-                        "Key": "Backups",
-                        "Value": "Nightly"
-                    },
-                    {
-                        "Key": "Shutdown",
-                        "Value": "Never"
-                    }
-                ]
-            },
-            "DeletionPolicy": "Snapshot"
-        },
-        "RDSSubnetGroup": {
-            "Type": "AWS::RDS::DBSubnetGroup",
-            "Properties": {
-                "DBSubnetGroupDescription": "DB Subnet Group",
-                "SubnetIds": [ { "Fn::GetAtt": [ "VpcInfo", "PrivateSubnetAZ1" ] },
-                                { "Fn::GetAtt": [ "VpcInfo", "PrivateSubnetAZ2" ] },
-                                { "Fn::GetAtt": [ "VpcInfo", "PrivateSubnetAZ3" ] }
-                ],
-                "Tags": [
-                    {
-                        "Key": "ServiceName",
-                        "Value": { "Ref": "ServiceName" }
-                    },
-                    {
-                        "Key": "TechnicalOwner",
-                        "Value": { "Ref": "TechnicalOwner" }
-                    },
-                    {
-                        "Key": "Environment",
-                        "Value": { "Ref": "Environment" }
-                    },
-                    {
-                        "Key": "Purpose",
-                        "Value": "Database Subnet Group"
-                    },
-                    {
-                        "Key": "Backups",
-                        "Value": "Nightly"
-                    },
-                    {
-                        "Key": "Shutdown",
-                        "Value": "Never"
-                    }
-                ]
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
             }
-        },
-        "RDSSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "VpcId": { "Fn::GetAtt": [ "VpcInfo", "VpcId" ] },
-                "SecurityGroupIngress": {
-                    "SourceSecurityGroupId": { "Ref": "EC2SecurityGroup" },
-                    "IpProtocol": "tcp",
-                    "FromPort": "5432",
-                    "ToPort": "5432"
-                },
-                "GroupDescription": "Front end instance access",
-                "Tags": [
-                    {
-                        "Key": "ServiceName",
-                        "Value": { "Ref": "ServiceName" }
-                    },
-                    {
-                        "Key": "TechnicalOwner",
-                        "Value": { "Ref": "TechnicalOwner" }
-                    },
-                    {
-                        "Key": "Environment",
-                        "Value": { "Ref": "Environment" }
-                    },
-                    {
-                        "Key": "Purpose",
-                        "Value": "Database Security Group"
-                    },
-                    {
-                        "Key": "Backups",
-                        "Value": "Nightly"
-                    },
-                    {
-                        "Key": "Shutdown",
-                        "Value": "Never"
-                    }
-                ]
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
             }
-        }
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Database Subnet Group"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never"
+          }
+        ]
+      }
     },
-    "Outputs": {
-        "RDSEndpoint": {
-            "Description": "Database endpoint",
-            "Value": { "Fn::GetAtt": [ "RDSInstance", "Endpoint.Address" ] }
+    "RDSSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Fn::GetAtt": [
+            "VpcInfo",
+            "VpcId"
+          ]
         },
-        "RDSName": {
-            "Description": "Database name",
-            "Value": { "Ref": "DBName" }
+        "SecurityGroupIngress": {
+          "SourceSecurityGroupId": {
+            "Ref": "EC2SecurityGroup"
+          },
+          "IpProtocol": "tcp",
+          "FromPort": "5432",
+          "ToPort": "5432"
         },
-        "RDSUser": {
-            "Description": "Database user",
-            "Value": { "Ref": "DBName" }
-        }
+        "GroupDescription": "Front end instance access",
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Database Security Group"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never"
+          }
+        ]
+      }
     }
+  },
+  "Outputs": {
+    "RDSEndpoint": {
+      "Description": "Database endpoint",
+      "Value": {
+        "Fn::GetAtt": [
+          "RDSInstance",
+          "Endpoint.Address"
+        ]
+      }
+    },
+    "RDSName": {
+      "Description": "Database name",
+      "Value": {
+        "Ref": "DBName"
+      }
+    },
+    "RDSUser": {
+      "Description": "Database user",
+      "Value": {
+        "Ref": "DBName"
+      }
+    }
+  }
 }

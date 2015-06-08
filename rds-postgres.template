@@ -118,7 +118,7 @@
         },
         "Engine": "PostgreSQL",
         "EngineVersion": "9.3",
-        "MultiAz": "true",
+        "MultiAZ": "true",
         "BackupRetentionPeriod": "7",
         "VPCSecurityGroups": [
           {

@@ -116,7 +116,7 @@
         "DBSubnetGroupName": {
           "Ref": "RDSSubnetGroup"
         },
-        "Engine": "PostgreSQL",
+        "Engine": "postgres",
         "EngineVersion": "9.3",
         "MultiAZ": "true",
         "BackupRetentionPeriod": "7",

@@ -28,6 +28,15 @@
     "AccessControl": {
       "Description": "A canned access control list",
       "Type": "String"
+    },
+    "VersioningConfiguration": {
+      "Description": "Enables multiple variants of all objects in this bucket.",
+      "Type": "String",
+      "Default": "Suspended",
+      "AllowedValues": [
+        "Enabled",
+        "Suspended"
+      ]
     }
   },
   "Resources": {
@@ -36,6 +45,9 @@
       "Properties": {
         "AccessControl": {
           "Ref": "AccessControl"
+        },
+        "VersioningConfiguration": {
+          "Status": { "Ref": "VersioningConfiguration" }
         },
         "BucketName": {
           "Ref": "BucketName"

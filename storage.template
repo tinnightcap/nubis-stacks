@@ -71,10 +71,10 @@
   "Mappings": {
     "AMIs": {
       "us-west-2": {
-        "AMI": "ami-0d36083d"
+        "AMI": "ami-a54e4b95"
       },
       "us-east-1": {
-        "AMI": "ami-9f8d60f4"
+        "AMI": "ami-09dd2062"
       }
     }
   },
@@ -202,6 +202,9 @@
             }
           }
         ],
+        "IamInstanceProfile": {
+          "Ref": "BackupInstanceProfile"
+        },
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -235,11 +238,152 @@
                 {
                   "Ref": "ClusterSize"
                 },
+                "\n",
+                "NUBIS_STORAGE_BUCKET=",
+                {
+                  "Fn::GetAtt": [
+                    "BackupBucketStack",
+                    "Outputs.S3Bucket"
+                  ]
+                },
                 "\n"
               ]
             ]
           }
         }
+      }
+    },
+    "BackupBucketStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/nubisproject-stacks/master/s3-bucket.template",
+        "Parameters": {
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "AccessControl": "Private",
+          "VersioningConfiguration": "Enabled",
+          "BucketName": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Ref": "StackName"
+                },
+                "storage",
+                "backup",
+                "bucket"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "BackupRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "BackupRolePolicies": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "StackName"
+              },
+              "storage",
+              "backup"
+            ]
+          ]
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:*"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Fn::GetAtt": [
+                        "BackupBucketStack",
+                        "Outputs.S3Bucket"
+                      ]
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:*"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Fn::GetAtt": [
+                        "BackupBucketStack",
+                        "Outputs.S3Bucket"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "BackupRole"
+          }
+        ]
+      }
+    },
+    "BackupInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "BackupRole"
+          }
+        ]
       }
     },
     "AutoScalingGroup": {
@@ -349,5 +493,15 @@
       }
     }
   },
-  "Outputs": {}
+  "Outputs": {
+    "BackupBucket": {
+      "Description": "Consul: config/ Backup Bucket Name",
+      "Value": {
+        "Fn::GetAtt": [
+          "BackupBucketStack",
+          "Outputs.S3Bucket"
+        ]
+      }
+    }
+  }
 }

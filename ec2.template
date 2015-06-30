@@ -29,7 +29,7 @@
       "Description": "The id of the ami for this region",
       "Type": "String"
     },
-    "KeyName": {
+    "SSHKeyName": {
       "Description": "Existing ssh key to deploy to instances",
       "Type": "String"
     },
@@ -216,8 +216,8 @@
         "InstanceType": {
           "Ref": "InstanceType"
         },
-        "KeyName": {
-          "Ref": "KeyName"
+        "SSHKeyName": {
+          "Ref": "SSHKeyName"
         },
         "IamInstanceProfile": {
           "Fn::If": [

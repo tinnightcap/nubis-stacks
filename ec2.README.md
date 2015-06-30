@@ -25,8 +25,8 @@ To use this stack you will need to set the required input parameters and include
           "AmiId": {
             "Ref": "AmiId"
           },
-          "KeyName": {
-            "Ref": "KeyName"
+          "SSHKeyName": {
+            "Ref": "SSHKeyName"
           },
           "ProjectName": {
             "Ref": "ProjectName"

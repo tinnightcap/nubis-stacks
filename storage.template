@@ -25,7 +25,7 @@
       ],
       "ConstraintDescription": "Must specify prod, stage, or sandbox."
     },
-    "KeyName": {
+    "SSHKeyName": {
       "Description": "Name of and existing EC2 KeyPair to enable SSH access to the instance",
       "Type": "String"
     },
@@ -189,8 +189,8 @@
         "InstanceType": {
           "Ref": "InstanceType"
         },
-        "KeyName": {
-          "Ref": "KeyName"
+        "SSHKeyName": {
+          "Ref": "SSHKeyName"
         },
         "BlockDeviceMappings": [
           {

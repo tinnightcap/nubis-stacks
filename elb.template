@@ -28,6 +28,29 @@
     }
   },
   "Resources": {
+    "MetaInfo": {
+      "Type": "Custom::VpcInfo",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
+        },
+        "StackName": "nubis-meta"
+      }
+    },
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
@@ -169,6 +192,13 @@
             "InstanceProtocol": "HTTP",
             "LoadBalancerPort": "80",
             "Protocol": "HTTP"
+          },
+          {
+            "InstancePort": "80",
+            "InstanceProtocol": "HTTP",
+            "LoadBalancerPort": "443",
+            "Protocol": "HTTPS",
+            "SSLCertificateId": { "Fn::GetAtt": [ "MetaInfo", "DefaultServerCertificate" ] }
           }
         ],
         "HealthCheck": {

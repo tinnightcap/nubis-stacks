@@ -216,7 +216,7 @@
         "InstanceType": {
           "Ref": "InstanceType"
         },
-        "SSHKeyName": {
+        "KeyName": {
           "Ref": "SSHKeyName"
         },
         "IamInstanceProfile": {

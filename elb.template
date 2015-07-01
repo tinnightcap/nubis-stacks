@@ -25,6 +25,21 @@
       "Description": "The protocol and url to use for checking the health of the service",
       "Type": "String",
       "Default": "HTTP:80/"
+    },
+    "SSLCertificate": {
+      "Description": "The ARN of the SSL cerftificate to use for this ELB",
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "NotSet_SSLCertificate": {
+      "Fn::Equals": [
+        {
+          "Ref": "SSLCertificate"
+        },
+        ""
+      ]
     }
   },
   "Resources": {
@@ -198,7 +213,20 @@
             "InstanceProtocol": "HTTP",
             "LoadBalancerPort": "443",
             "Protocol": "HTTPS",
-            "SSLCertificateId": { "Fn::GetAtt": [ "MetaInfo", "DefaultServerCertificate" ] }
+            "SSLCertificateId": {
+              "Fn::If": [
+                "NotSet_SSLCertificate",
+                {
+                  "Fn::GetAtt": [
+                    "MetaInfo",
+                    "DefaultServerCertificate"
+                  ]
+                },
+                {
+                  "Ref": "SSLCertificate"
+                }
+              ]
+            }
           }
         ],
         "HealthCheck": {

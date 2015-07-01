@@ -189,7 +189,7 @@
         "InstanceType": {
           "Ref": "InstanceType"
         },
-        "SSHKeyName": {
+        "KeyName": {
           "Ref": "SSHKeyName"
         },
         "BlockDeviceMappings": [

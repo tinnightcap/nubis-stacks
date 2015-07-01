@@ -25,9 +25,47 @@
       "Description": "The protocol and url to use for checking the health of the service",
       "Type": "String",
       "Default": "HTTP:80/"
+    },
+    "SSLCertificate": {
+      "Description": "The ARN of the SSL cerftificate to use for this ELB",
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "NotSet_SSLCertificate": {
+      "Fn::Equals": [
+        {
+          "Ref": "SSLCertificate"
+        },
+        ""
+      ]
     }
   },
   "Resources": {
+    "MetaInfo": {
+      "Type": "Custom::VpcInfo",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupStackOutputs"
+            ]
+          ]
+        },
+        "StackName": "nubis-meta"
+      }
+    },
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
@@ -169,6 +207,26 @@
             "InstanceProtocol": "HTTP",
             "LoadBalancerPort": "80",
             "Protocol": "HTTP"
+          },
+          {
+            "InstancePort": "80",
+            "InstanceProtocol": "HTTP",
+            "LoadBalancerPort": "443",
+            "Protocol": "HTTPS",
+            "SSLCertificateId": {
+              "Fn::If": [
+                "NotSet_SSLCertificate",
+                {
+                  "Fn::GetAtt": [
+                    "MetaInfo",
+                    "DefaultServerCertificate"
+                  ]
+                },
+                {
+                  "Ref": "SSLCertificate"
+                }
+              ]
+            }
           }
         ],
         "HealthCheck": {

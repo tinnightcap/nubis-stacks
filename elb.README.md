@@ -19,7 +19,8 @@ To use this stack you will need to set the required input parameters and include
           "Environment": {
             "Ref": "Environment"
           },
-          "ElbHealthTarget": "HTTP:80/index.html"
+          "ElbHealthTarget": "HTTP:80/index.html",
+          "SSLCertificate": "arn:aws:iam::<account-id>:server-certificate/<cert-name>" [optionnal]
         }
       }
     }

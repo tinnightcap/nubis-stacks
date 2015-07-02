@@ -25,7 +25,7 @@ get_files_list () {
     done
 
     # Include all template files
-    FILES=`find . -maxdepth 1 -name "*.template""`
+    FILES=`find . -maxdepth 1 -name "*.template"`
     for FILE in $FILES; do
         FILES_LIST=(${FILES_LIST[@]} $FILE)
     done

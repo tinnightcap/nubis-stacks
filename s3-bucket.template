@@ -59,7 +59,9 @@
           "Ref": "AccessControl"
         },
         "VersioningConfiguration": {
-          "Status": { "Ref": "VersioningConfiguration" }
+          "Status": {
+            "Ref": "VersioningConfiguration"
+          }
         },
         "BucketName": {
           "Ref": "BucketName"

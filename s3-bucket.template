@@ -19,6 +19,7 @@
     },
     "BucketName": {
       "Description": "Name of S3 bucket to manage",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
       "Type": "String"
     },
     "TechnicalOwner": {
@@ -28,7 +29,16 @@
     },
     "AccessControl": {
       "Description": "A canned access control list",
-      "Type": "String"
+      "Type": "String",
+      "AllowedValues": [
+        "Private",
+        "PublicRead",
+        "PublicReadWrite",
+        "AuthenticatedRead",
+        "LogDeliveryWrite",
+        "BucketOwnerRead",
+        "BucketOwnerFullControl"
+      ]
     },
     "VersioningConfiguration": {
       "Description": "Enables multiple variants of all objects in this bucket.",

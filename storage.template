@@ -8,6 +8,7 @@
     },
     "ServiceName": {
       "Description": "The name of the service this belongs to",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
       "Type": "String"
     },
     "TechnicalOwner": {

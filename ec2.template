@@ -8,6 +8,7 @@
     },
     "ServiceName": {
       "Description": "Name of this deployment",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
       "Type": "String"
     },
     "TechnicalOwner": {

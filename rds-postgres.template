@@ -65,6 +65,7 @@
     },
     "EC2SecurityGroup": {
       "Description": "EC2SecurityGroup id",
+      "AllowedPattern": "^sg-[0-9a-f]{8}$",
       "Type": "String"
     }
   },

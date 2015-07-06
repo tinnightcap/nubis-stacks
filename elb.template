@@ -32,7 +32,7 @@
       "Description": "The ARN of the SSL cerftificate to use for this ELB",
       "Type": "String",
       "AllowedPattern": "^arn:aws:iam::[0-9]+:server-certificate/.*$",
-      "Default": ""
+      "Default": "arn:aws:iam::0000:server-certificate/not-set"
     }
   },
   "Conditions": {
@@ -41,7 +41,7 @@
         {
           "Ref": "SSLCertificate"
         },
-        ""
+        "arn:aws:iam::0000:server-certificate/not-set"
       ]
     }
   },

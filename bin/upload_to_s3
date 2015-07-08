@@ -19,15 +19,22 @@ fi
 declare -a FILES_LIST
 get_files_list () {
     # Include all markdown files
-    FILES=`find ./ -maxdepth 1 -name "*.md" -printf "%f\n"`
+    FILES=`find . -maxdepth 1 -name "*.md" | xargs -n1 basename`
     for FILE in $FILES; do
         FILES_LIST=(${FILES_LIST[@]} $FILE)
     done
 
     # Include all template files
-    FILES=`find ./ -maxdepth 1 -name "*.template" -printf "%f\n"`
+    FILES=`find . -maxdepth 1 -name "*.template" | xargs -n1 basename`
     for FILE in $FILES; do
-        FILES_LIST=(${FILES_LIST[@]} $FILE)
+        echo -n "$FILE Valid: "
+        aws cloudformation validate-template --template-body file://$FILE > /dev/null
+        if [ "$?" = "0" ]; then
+          echo "ok"
+          FILES_LIST=(${FILES_LIST[@]} $FILE)
+        else
+          echo "failed"
+        fi
     done
 }
 

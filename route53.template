@@ -15,10 +15,12 @@
     },
     "DNSName": {
       "Description": "DNS name of this deployment",
+      "AllowedPattern": "^([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$",
       "Type": "String"
     },
     "BaseZone": {
       "Description": "Base zone to create route53 zone in",
+      "AllowedPattern": "^[0-9a-z\\-\\.]+$",
       "Type": "String"
     },
     "ELBStack": {

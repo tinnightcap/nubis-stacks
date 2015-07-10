@@ -124,6 +124,12 @@
       "Description": "IAM Instance Profile to attach to the instance",
       "Type": "String",
       "Default": ""
+    },
+    "SubnetLocation": {
+        "Description": "Places your instance in the public or private subnet",
+        "Type": "String",
+        "AllowedValues": [ "Public", "Private" ],
+        "Default": "Private"
     }
   },
   "Conditions": {

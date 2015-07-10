@@ -410,6 +410,13 @@
         ],
         "Tags": [
           {
+            "Key": "Name",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
             "Key": "ServiceName",
             "Value": {
               "Ref": "ServiceName"

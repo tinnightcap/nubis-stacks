@@ -385,6 +385,108 @@
     },
     "AutoScalingGroup": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Condition": "SubnetLocationPublic",
+      "UpdatePolicy": {
+        "AutoScalingScheduledAction": {
+          "IgnoreUnmodifiedGroupSizeProperties": "true"
+        },
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1",
+          "WaitOnResourceSignals": "false",
+          "PauseTime": "PT1M"
+        }
+      },
+      "Properties": {
+        "AvailabilityZones": {
+          "Fn::GetAZs": ""
+        },
+        "VPCZoneIdentifier": [
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PublicSubnetAZ1"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PublicSubnetAZ2"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PublicSubnetAZ3"
+            ]
+          }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfig"
+        },
+        "MinSize": {
+          "Ref": "AutoScalingGroupMinSize"
+        },
+        "DesiredCapacity": {
+          "Ref": "AutoScalingGroupDesiredCapacity"
+        },
+        "MaxSize": {
+          "Ref": "AutoScalingGroupMaxSize"
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "ELB"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Web Server",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "AutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Condition": "NotSubnetLocationPublic",
       "UpdatePolicy": {
         "AutoScalingScheduledAction": {

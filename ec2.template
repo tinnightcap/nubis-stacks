@@ -606,6 +606,7 @@
     },
     "AutoScalingGroup": {
       "Description": "AutoScalingGroup Name",
+      "Condition": "NotSubnetLocationPublic",
       "Value": {
         "Ref": "AutoScalingGroup"
       }

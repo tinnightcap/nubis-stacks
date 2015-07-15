@@ -129,10 +129,10 @@
       "Description": "Places your instance in the public or private subnet",
       "Type": "String",
       "AllowedValues": [
-        "Public",
-        "Private"
+        "public",
+        "private"
       ],
-      "Default": "Private"
+      "Default": "private"
     }
   },
   "Conditions": {
@@ -144,12 +144,24 @@
         ""
       ]
     },
-    "IfSubnetLocationPublic": {
+    "SubnetLocationPublic": {
       "Fn::Equals": [
         {
           "Ref": "SubnetLocation"
         },
-        "Public"
+        "public"
+      ]
+    },
+    "NotSubnetLocationPublic": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "SubnetLocation"
+            },
+            "public"
+          ]
+        }
       ]
     }
   },
@@ -373,6 +385,7 @@
     },
     "AutoScalingGroup": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Condition": "NotSubnetLocationPublic",
       "UpdatePolicy": {
         "AutoScalingScheduledAction": {
           "IgnoreUnmodifiedGroupSizeProperties": "true"
@@ -493,6 +506,12 @@
       "Description": "AutoScalingGroup Name",
       "Value": {
         "Ref": "AutoScalingGroup"
+      }
+    },
+    "SubnetLocation": {
+      "Description": "Location of vpc subnet, public or private",
+      "Value": {
+        "Ref": "SubnetLocation"
       }
     }
   }

@@ -383,7 +383,7 @@
         }
       }
     },
-    "AutoScalingGroup": {
+    "AutoScalingGroupPublic": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Condition": "SubnetLocationPublic",
       "UpdatePolicy": {
@@ -485,7 +485,7 @@
         ]
       }
     },
-    "AutoScalingGroup": {
+    "AutoScalingGroupPrivate": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Condition": "NotSubnetLocationPublic",
       "UpdatePolicy": {
@@ -604,11 +604,18 @@
         ]
       }
     },
-    "AutoScalingGroup": {
+    "AutoScalingGroupPublic": {
+      "Description": "AutoScalingGroup Name",
+      "Condition": "SubnetLocationPublic",
+      "Value": {
+        "Ref": "AutoScalingGroupPublic"
+      }
+    },
+    "AutoScalingGroupPrivate": {
       "Description": "AutoScalingGroup Name",
       "Condition": "NotSubnetLocationPublic",
       "Value": {
-        "Ref": "AutoScalingGroup"
+        "Ref": "AutoScalingGroupPrivate"
       }
     },
     "SubnetLocation": {

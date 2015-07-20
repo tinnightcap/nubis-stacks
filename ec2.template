@@ -386,6 +386,7 @@
     "AutoScalingGroupPublic": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Condition": "SubnetLocationPublic",
+      "AssociatePublicIpAddress": "true",
       "UpdatePolicy": {
         "AutoScalingScheduledAction": {
           "IgnoreUnmodifiedGroupSizeProperties": "true"
@@ -605,13 +606,13 @@
       }
     },
     "AutoScalingGroupPublic": {
-      "Description": "AutoScalingGroup Name",
+      "Description": "Public AutoScalingGroup Name",
       "Condition": "SubnetLocationPublic",
       "Value": {
         "Ref": "AutoScalingGroupPublic"
       }
     },
-    "AutoScalingGroupPrivate": {
+    "AutoScalingGroup": {
       "Description": "AutoScalingGroup Name",
       "Condition": "NotSubnetLocationPublic",
       "Value": {

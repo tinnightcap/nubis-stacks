@@ -152,7 +152,7 @@
         "public"
       ]
     },
-    "NotSubnetLocationPublic": {
+    "SubnetLocationPrivate": {
       "Fn::Not": [
         {
           "Fn::Equals": [
@@ -275,6 +275,15 @@
     "LaunchConfig": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
+        "AssociatePublicIpAddress": {
+          "Fn::If": [
+            "SubnetLocationPublic",
+            "true",
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        },
         "ImageId": {
           "Ref": "AmiId"
         },
@@ -386,7 +395,6 @@
     "AutoScalingGroupPublic": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Condition": "SubnetLocationPublic",
-      "AssociatePublicIpAddress": "true",
       "UpdatePolicy": {
         "AutoScalingScheduledAction": {
           "IgnoreUnmodifiedGroupSizeProperties": "true"
@@ -488,7 +496,7 @@
     },
     "AutoScalingGroupPrivate": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-      "Condition": "NotSubnetLocationPublic",
+      "Condition": "SubnetLocationPrivate",
       "UpdatePolicy": {
         "AutoScalingScheduledAction": {
           "IgnoreUnmodifiedGroupSizeProperties": "true"
@@ -614,7 +622,7 @@
     },
     "AutoScalingGroup": {
       "Description": "AutoScalingGroup Name",
-      "Condition": "NotSubnetLocationPublic",
+      "Condition": "SubnetLocationPrivate",
       "Value": {
         "Ref": "AutoScalingGroupPrivate"
       }

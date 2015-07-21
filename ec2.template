@@ -494,7 +494,7 @@
         ]
       }
     },
-    "AutoScalingGroupPrivate": {
+    "AutoScalingGroup": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Condition": "SubnetLocationPrivate",
       "UpdatePolicy": {
@@ -624,7 +624,7 @@
       "Description": "AutoScalingGroup Name",
       "Condition": "SubnetLocationPrivate",
       "Value": {
-        "Ref": "AutoScalingGroupPrivate"
+        "Ref": "AutoScalingGroup"
       }
     },
     "SubnetLocation": {

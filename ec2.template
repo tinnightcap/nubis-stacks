@@ -124,6 +124,15 @@
       "Description": "IAM Instance Profile to attach to the instance",
       "Type": "String",
       "Default": ""
+    },
+    "SubnetLocation": {
+      "Description": "Places your instance in the public or private subnet",
+      "Type": "String",
+      "AllowedValues": [
+        "public",
+        "private"
+      ],
+      "Default": "private"
     }
   },
   "Conditions": {
@@ -133,6 +142,26 @@
           "Ref": "IamInstanceProfile"
         },
         ""
+      ]
+    },
+    "SubnetLocationPublic": {
+      "Fn::Equals": [
+        {
+          "Ref": "SubnetLocation"
+        },
+        "public"
+      ]
+    },
+    "SubnetLocationPrivate": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "SubnetLocation"
+            },
+            "public"
+          ]
+        }
       ]
     }
   },
@@ -246,6 +275,15 @@
     "LaunchConfig": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
+        "AssociatePublicIpAddress": {
+          "Fn::If": [
+            "SubnetLocationPublic",
+            "true",
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        },
         "ImageId": {
           "Ref": "AmiId"
         },
@@ -354,8 +392,111 @@
         }
       }
     },
-    "AutoScalingGroup": {
+    "AutoScalingGroupPublic": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Condition": "SubnetLocationPublic",
+      "UpdatePolicy": {
+        "AutoScalingScheduledAction": {
+          "IgnoreUnmodifiedGroupSizeProperties": "true"
+        },
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1",
+          "WaitOnResourceSignals": "false",
+          "PauseTime": "PT1M"
+        }
+      },
+      "Properties": {
+        "AvailabilityZones": {
+          "Fn::GetAZs": ""
+        },
+        "VPCZoneIdentifier": [
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PublicSubnetAZ1"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PublicSubnetAZ2"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "PublicSubnetAZ3"
+            ]
+          }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfig"
+        },
+        "MinSize": {
+          "Ref": "AutoScalingGroupMinSize"
+        },
+        "DesiredCapacity": {
+          "Ref": "AutoScalingGroupDesiredCapacity"
+        },
+        "MaxSize": {
+          "Ref": "AutoScalingGroupMaxSize"
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "ELB"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Web Server",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "AutoScalingGroupPrivate": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Condition": "SubnetLocationPrivate",
       "UpdatePolicy": {
         "AutoScalingScheduledAction": {
           "IgnoreUnmodifiedGroupSizeProperties": "true"
@@ -472,10 +613,24 @@
         ]
       }
     },
+    "AutoScalingGroupPublic": {
+      "Description": "Public AutoScalingGroup Name",
+      "Condition": "SubnetLocationPublic",
+      "Value": {
+        "Ref": "AutoScalingGroupPublic"
+      }
+    },
     "AutoScalingGroup": {
       "Description": "AutoScalingGroup Name",
+      "Condition": "SubnetLocationPrivate",
       "Value": {
-        "Ref": "AutoScalingGroup"
+        "Ref": "AutoScalingGroupPrivate"
+      }
+    },
+    "SubnetLocation": {
+      "Description": "Location of vpc subnet, public or private",
+      "Value": {
+        "Ref": "SubnetLocation"
       }
     }
   }

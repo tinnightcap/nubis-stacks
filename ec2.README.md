@@ -40,6 +40,9 @@ To use this stack you will need to set the required input parameters and include
           "ProjectName": {
             "Ref": "ProjectName"
           },
+          "SubnetLocation": {
+            "Ref": "SubnetLocation"
+          },
           "ELB": {
             "Fn::GetAtt": [
               "ELBStack",

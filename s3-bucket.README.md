@@ -22,9 +22,6 @@ To use this stack you will need to set the required input parameters and include
           "ServiceName": {
             "Ref": "ServiceName"
           },
-          "ProjectName": {
-            "Ref": "ProjectName"
-          },
           "Environment": {
             "Ref": "Environment"
           },

@@ -37,9 +37,6 @@ To use this stack you will need to set the required input parameters and include
           "SSHKeyName": {
             "Ref": "SSHKeyName"
           },
-          "ProjectName": {
-            "Ref": "ProjectName"
-          },
           "SubnetLocation": {
             "Ref": "SubnetLocation"
           },

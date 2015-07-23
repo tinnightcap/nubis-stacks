@@ -283,7 +283,7 @@
     "BackupBucketStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/nubisproject-stacks/master/s3-bucket.template",
+        "TemplateURL": "https://s3.amazonaws.com/nubisproject-stacks/v0.9.0/s3-bucket.template",
         "Parameters": {
           "ServiceName": {
             "Ref": "ServiceName"

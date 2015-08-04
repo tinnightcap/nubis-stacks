@@ -25,3 +25,9 @@ To use this stack you will need to set the required input parameters and include
         }
     }
 ```
+
+#### Output values
+* `ElasticIP` - Returns EIP allocation ID
+
+* `IAMInstanceProfile` - Returns name of IAM profile
+

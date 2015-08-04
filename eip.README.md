@@ -19,7 +19,7 @@ To use this stack you will need to set the required input parameters and include
             "TimeoutInMinutes": "60",
             "Parameters": {
                 "StackName": {
-                    "Ref": "AWS::StackName",
+                    "Ref": "AWS::StackName"
                 }
             }
         }

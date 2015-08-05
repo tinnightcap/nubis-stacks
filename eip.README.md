@@ -31,3 +31,5 @@ To use this stack you will need to set the required input parameters and include
 
 * `IAMInstanceProfile` - Returns name of IAM profile
 
+#### Notes
+* This stack requires the `--capabilities CAPABILITY_IAM` flag when calling aws cli

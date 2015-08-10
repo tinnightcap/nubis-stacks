@@ -70,17 +70,6 @@
           }
         ]
       }
-    },
-    "EIPInstanceProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Path": "/",
-        "Roles": [
-          {
-            "Ref": "EIPRole"
-          }
-        ]
-      }
     }
   },
   "Outputs": {
@@ -93,10 +82,10 @@
         ]
       }
     },
-    "IAMInstanceProfile": {
-      "Description": "Name of IAM Instance profile",
+    "IAMRole": {
+      "Description": "Name of IAM role",
       "Value": {
-        "Ref": "EIPInstanceProfile"
+        "Ref": "EIPRole"
       }
     }
   }

@@ -29,7 +29,7 @@ To use this stack you will need to set the required input parameters and include
 #### Output values
 * `ElasticIP` - Returns EIP allocation ID
 
-* `IAMInstanceProfile` - Returns name of IAM profile
+* `IAMRole` - Returns name of the IAM role
 
 #### Notes
 * This stack requires the `--capabilities CAPABILITY_IAM` flag when calling aws cli

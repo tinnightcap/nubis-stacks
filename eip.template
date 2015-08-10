@@ -43,7 +43,7 @@
             "-",
             [
               {
-                "Ref": "AWS::StackName"
+                "Ref": "StackName"
               },
               "eip",
               "associate",

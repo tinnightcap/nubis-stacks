@@ -91,7 +91,8 @@
     },
     "ELB": {
       "Description": "ELB Endpoint",
-      "Type": "String"
+      "Type": "String",
+      "Default": ""
     },
     "AutoScalingGroupMinSize": {
       "Description": "ELB Endpoint",
@@ -140,6 +141,14 @@
       "Fn::Equals": [
         {
           "Ref": "IamInstanceProfile"
+        },
+        ""
+      ]
+    },
+    "NotSet_ELB": {
+      "Fn::Equals": [
+        {
+          "Ref": "ELB"
         },
         ""
       ]
@@ -444,7 +453,15 @@
         },
         "LoadBalancerNames": [
           {
-            "Ref": "ELB"
+            "Fn::If": [
+              "NotSet_ELB",
+              {
+                "Ref": "AWS::NoValue"
+              },
+              {
+                "Ref": "ELB"
+              }
+            ]
           }
         ],
         "Tags": [
@@ -546,7 +563,15 @@
         },
         "LoadBalancerNames": [
           {
-            "Ref": "ELB"
+            "Fn::If": [
+              "NotSet_ELB",
+              {
+                "Ref": "AWS::NoValue"
+              },
+              {
+                "Ref": "ELB"
+              }
+            ]
           }
         ],
         "Tags": [

@@ -49,6 +49,33 @@
         "Enabled",
         "Suspended"
       ]
+    },
+    "Ec2Backups": {
+      "Description": "Create s3 bucket for ec2 instance with associated IAM roles",
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": [
+        "true",
+        "false"
+      ]
+    }
+  },
+  "Conditions": {
+    "Ec2BackupsEnable": {
+      "Fn::Equals": [
+        {
+          "Ref": "Ec2Backups"
+        },
+        "true"
+      ]
+    },
+    "Ec2BackupsDisable": {
+      "Fn::Equals": [
+        {
+          "Ref": "Ec2Backups"
+        },
+        "false"
+      ]
     }
   },
   "Resources": {
@@ -99,6 +126,94 @@
           }
         ]
       }
+    },
+    "S3BackupIAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Condition": "Ec2BackupsEnable",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "S3BackupIAMPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Condition": "Ec2BackupsEnable",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::StackName"
+              },
+              "backup",
+              "policy"
+            ]
+          ]
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3Bucket"
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3Bucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "S3BackupIAMRole"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
@@ -115,6 +230,13 @@
           "S3Bucket",
           "DomainName"
         ]
+      }
+    },
+    "S3BackupIAMRole": {
+      "Description": "IAM role for S3 Backup bucket",
+      "Condition": "Ec2BackupsEnable",
+      "Value": {
+        "Ref": "S3BackupIAMRole"
       }
     }
   }

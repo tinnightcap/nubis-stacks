@@ -82,6 +82,12 @@
         ]
       }
     },
+    "ElasticIP": {
+      "Description": "The elastic IP address allocated to you",
+      "Value": {
+        "Ref": "EIP"
+      }
+    },
     "IAMRole": {
       "Description": "Name of IAM role",
       "Value": {

@@ -1,0 +1,98 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Nubis EIP stack",
+  "Parameters": {
+    "StackName": {
+      "Description": "Name of the parent stack",
+      "AllowedPattern": "^[a-zA-Z][a-zA-Z0-9-]{0,254}$",
+      "ConstraintDescription": "A stack name can contain only alphanumeric characters (case sensitive) and hyphens. It must start with an alphabetic character and cannot be longer than 255 characters.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "EIP": {
+      "Type": "AWS::EC2::EIP"
+    },
+    "EIPRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "EIPRolePolicies": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "StackName"
+              },
+              "eip",
+              "associate",
+              "policy"
+            ]
+          ]
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AssociateAddress",
+                "ec2:DisassociateAddress"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "EIPRole"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "EIPAllocationID": {
+      "Description": "Consul: config/ Elastic IP",
+      "Value": {
+        "Fn::GetAtt": [
+          "EIP",
+          "AllocationId"
+        ]
+      }
+    },
+    "ElasticIP": {
+      "Description": "Allocated Elastic IP address",
+      "Value": {
+        "Ref": "EIP"
+      }
+    },
+    "IAMRole": {
+      "Description": "Name of IAM role",
+      "Value": {
+        "Ref": "EIPRole"
+      }
+    }
+  }
+}

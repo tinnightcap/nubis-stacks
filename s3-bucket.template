@@ -50,7 +50,7 @@
         "Suspended"
       ]
     },
-    "S3Storage": {
+    "WithRole": {
       "Description": "Create s3 bucket for ec2 instance with associated IAM roles",
       "Type": "String",
       "Default": "false",
@@ -61,18 +61,18 @@
     }
   },
   "Conditions": {
-    "S3StorageEnable": {
+    "WithRoleEnable": {
       "Fn::Equals": [
         {
-          "Ref": "S3Storage"
+          "Ref": "WithRole"
         },
         "true"
       ]
     },
-    "S3StorageDisable": {
+    "WithRoleDisable": {
       "Fn::Equals": [
         {
-          "Ref": "S3Storage"
+          "Ref": "WithRole"
         },
         "false"
       ]
@@ -129,7 +129,7 @@
     },
     "S3BackupIAMRole": {
       "Type": "AWS::IAM::Role",
-      "Condition": "S3StorageEnable",
+      "Condition": "WithRoleEnable",
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
@@ -152,7 +152,7 @@
     },
     "S3BackupIAMPolicy": {
       "Type": "AWS::IAM::Policy",
-      "Condition": "S3StorageEnable",
+      "Condition": "WithRoleEnable",
       "Properties": {
         "PolicyName": {
           "Fn::Join": [
@@ -232,9 +232,9 @@
         ]
       }
     },
-    "S3BackupIAMRole": {
+    "S3Role": {
       "Description": "IAM role for S3 Backup bucket",
-      "Condition": "S3StorageEnable",
+      "Condition": "WithRoleEnable",
       "Value": {
         "Ref": "S3BackupIAMRole"
       }

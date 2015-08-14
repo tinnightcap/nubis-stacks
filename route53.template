@@ -134,7 +134,15 @@
         "TTL": "300",
         "ResourceRecords": [
           {
-            "Ref": "ELBStack"
+            "Fn::Join": [
+              ".",
+              [
+                "dualstack",
+                {
+                  "Ref": "ELBStack"
+                }
+              ]
+            ]
           }
         ]
       }

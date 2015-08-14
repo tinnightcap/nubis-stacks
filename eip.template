@@ -83,7 +83,7 @@
       }
     },
     "ElasticIP": {
-      "Description": "The elastic IP address allocated to you",
+      "Description": "Allocated Elastic IP address",
       "Value": {
         "Ref": "EIP"
       }

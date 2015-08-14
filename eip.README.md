@@ -27,7 +27,7 @@ To use this stack you will need to set the required input parameters and include
 ```
 
 #### Output values
-* `ElasticIP` - Returns EIP allocation ID
+* `EIPAllocationID` - Returns EIP allocation ID
 
 * `IAMRole` - Returns name of the IAM role
 

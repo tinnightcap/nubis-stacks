@@ -134,6 +134,11 @@
         "private"
       ],
       "Default": "private"
+    },
+    "ConsulToken": {
+      "Description": "Optionnal ACL Token for Consul",
+      "Type": "String",
+      "Default": "anonymous"
     }
   },
   "Conditions": {
@@ -390,6 +395,18 @@
                       "NUBIS_MIGRATE='",
                       {
                         "Ref": "Migrate"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "CONSUL_ACL_TOKEN='",
+                      {
+                        "Ref": "ConsulToken"
                       },
                       "'"
                     ]

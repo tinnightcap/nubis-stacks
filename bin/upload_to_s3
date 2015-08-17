@@ -7,7 +7,7 @@
 # Set some defaults
 #+ If you have a variables file it can be used to override these
 #+ Options given from the command line always get precidence
-S3_BUCKET='nubisproject-stacks'
+S3_BUCKET='nubis-stacks'
 S3_PATH='master'
 
 # Source the variables file if it exists
@@ -48,20 +48,13 @@ push-files () {
         MD5=`openssl md5 -binary < $FILE | base64`
 
         # Upload the file
-        OUT=$(aws s3api put-object --bucket $S3_BUCKET --content-md5 $MD5 --content-type $CONTENT_TYPE --key ${S3_PATH}/${FILE} --body $FILE 2>&1) 2> /dev/null
+        OUT=$(aws s3api put-object --bucket $S3_BUCKET --acl public-read --content-md5 $MD5 --content-type $CONTENT_TYPE --key ${S3_PATH}/${FILE} --body $FILE 2>&1) 2> /dev/null
         RV=$?
         if [ $RV != 0 ]; then
             echo "ERROR: $OUT"
             exit $RV
         fi
 
-        # Set acl for public read and anyone in this account read / write
-        OUT=$(aws s3api put-object-acl --bucket $S3_BUCKET --key ${S3_PATH}/${FILE} --grant-full-control "id=\"$CANONICAL_USER_ID\"" --grant-read 'uri="http://acs.amazonaws.com/groups/global/AllUsers"' 2>&1) 2> /dev/null
-        RV=$?
-        if [ $RV != 0 ]; then
-            echo "ERROR: $OUT"
-            exit $RV
-        fi
         let COUNT=$COUNT+1
     done
 }

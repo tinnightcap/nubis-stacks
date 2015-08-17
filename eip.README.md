@@ -35,3 +35,9 @@ To use this stack you will need to set the required input parameters and include
 
 #### Notes
 * This stack requires the `--capabilities CAPABILITY_IAM` flag when calling aws cli
+
+* This stack will also need to be used in conjunction with the nubis-puppet-eip puppet module, this module will associate an EIP to the instance
+
+```
+include nubis::eip
+```

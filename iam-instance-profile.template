@@ -4,7 +4,7 @@
   "Parameters": {
     "IAMRoles": {
       "Description": "IAM instance profile name",
-      "Type": "CommaDelimitedList"
+      "Type": "String"
     }
   },
   "Resources": {

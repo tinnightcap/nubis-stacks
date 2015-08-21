@@ -1,0 +1,319 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "A VPN connection from a VPC to an endpoint in a datacenter",
+  "Parameters": {
+    "VpcId": {
+      "Description": "The VPC ID to attach this vpn onto.",
+      "Type": "AWS::EC2::VPC::Id"
+    },
+    "ServiceName": {
+      "Description": "Name of this deployment",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
+      "Type": "String"
+    },
+    "TechnicalOwner": {
+      "Description": "A valid LDAP email",
+      "AllowedPattern": "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
+      "Type": "String"
+    },
+    "Environment": {
+      "Description": "The name of the environment we are deploying into: sandbox, stage, or production.",
+      "Type": "String",
+      "AllowedValues": [
+        "sandbox",
+        "stage",
+        "prod",
+        "admin"
+      ],
+      "Default": "sandbox",
+      "ConstraintDescription": "Must be one of these types of Mozilla VPCs"
+    },
+    "PublicRouteTable": {
+      "Description": "The ID of the Public Route Table",
+      "Type": "String"
+    },
+    "PrivateRouteTableAZ1": {
+      "Description": "The ID of the Private Route Table in Avalibility Zone 1.",
+      "Type": "String"
+    },
+    "PrivateRouteTableAZ2": {
+      "Description": "The ID of the Private Route Table in Avalibility Zone 2.",
+      "Type": "String"
+    },
+    "PrivateRouteTableAZ3": {
+      "Description": "The ID of the Private Route Table in Avalibility Zone 3.",
+      "Type": "String"
+    },
+    "BgpAutonomousSystemNumber": {
+      "Description": "The ASN of Mozilla's router in our datacenter",
+      "Type": "Number",
+      "MinValue": "1",
+      "MaxValue": "65536",
+      "Default": "65022"
+    },
+    "IPSecTunnelTarget": {
+      "Description": "The IP address of our firewall where the IPSec tunnels will terminate",
+      "Type": "String",
+      "MinLength": "7",
+      "MaxLength": "15",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x"
+    },
+    "DataCenterCidrBlock": {
+      "Description": "The CIDR range of our datacenter for routing traffic.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "Default": "10.0.0.0/10",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "OfficeCidrBlock": {
+      "Description": "The CIDR range of our office for routing traffic.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "Default": "10.192.0.0/10",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    }
+  },
+  "Resources": {
+    "CustomerGateway": {
+      "Type": "AWS::EC2::CustomerGateway",
+      "Properties": {
+        "Type": "ipsec.1",
+        "IpAddress": {
+          "Ref": "IPSecTunnelTarget"
+        },
+        "BgpAsn": {
+          "Ref": "BgpAutonomousSystemNumber"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "CustomerGateway"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      }
+    },
+    "VpnGateway": {
+      "Type": "AWS::EC2::VPNGateway",
+      "Properties": {
+        "Type": "ipsec.1",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VpnGateway"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      }
+    },
+    "VpcVpnGatewayAttachment": {
+      "DependsOn": "VpnGateway",
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "VpnGatewayId": {
+          "Ref": "VpnGateway"
+        }
+      }
+    },
+    "VpcVpnConnection": {
+      "Type": "AWS::EC2::VPNConnection",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "Type": "ipsec.1",
+        "CustomerGatewayId": {
+          "Ref": "CustomerGateway"
+        },
+        "StaticRoutesOnly": "False",
+        "VpnGatewayId": {
+          "Ref": "VpnGateway"
+        }
+      }
+    },
+    "PublicRouteTableRouteToDataCenter": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnConnection",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "DataCenterCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PublicRouteTableRouteToOffice": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnConnection",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "OfficeCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PrivateRouteTableAZ1RouteToDataCenter": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateRouteTableAZ1"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "DataCenterCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PrivateRouteTableAZ2RouteToDataCenter": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateRouteTableAZ2"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "DataCenterCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PrivateRouteTableAZ3RouteToDataCenter": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateRouteTableAZ3"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "DataCenterCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PrivateRouteTableAZ1RouteToOffice": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateRouteTableAZ1"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "OfficeCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PrivateRouteTableAZ2RouteToOffice": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateRouteTableAZ2"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "OfficeCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    },
+    "PrivateRouteTableAZ3RouteToOffice": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VpcVpnGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateRouteTableAZ3"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "OfficeCidrBlock"
+        },
+        "GatewayId": {
+          "Ref": "VpnGateway"
+        }
+      },
+      "Metadata": {
+        "Comment": "You have to add routes to each route table pointing to the VPN gateway to make routing work"
+      }
+    }
+  }
+}

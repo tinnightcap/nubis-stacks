@@ -153,7 +153,16 @@
   },
   "Conditions": {
     "IsSet_IamRole": {
-      "Fn::Not": [ { "Fn::Equals": [ { "Ref": "IamRole" }, "" ] } ]
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "IamRole"
+            },
+            ""
+          ]
+        }
+      ]
     },
     "NotSet_IamInstanceProfile": {
       "Fn::Equals": [
@@ -312,12 +321,17 @@
           "Ref": "AmiId"
         },
         "SecurityGroups": [
-           {
-           "Fn::If": [
-            "NotSet_SecurityGroup",
-            { "Ref": "EC2SecurityGroup" },
-            { "Ref": "SecurityGroup" }
-          ]},
+          {
+            "Fn::If": [
+              "NotSet_SecurityGroup",
+              {
+                "Ref": "EC2SecurityGroup"
+              },
+              {
+                "Ref": "SecurityGroup"
+              }
+            ]
+          },
           {
             "Fn::GetAtt": [
               "VpcInfo",

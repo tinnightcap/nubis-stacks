@@ -17,23 +17,47 @@ if [ -f "bin/variables" ]; then
 fi
 
 declare -a FILES_LIST
+
+validate-file () {
+    echo -n "Validating $1: "
+    aws cloudformation validate-template --template-body file://$1 > /dev/null
+    if [ "$?" = "0" ]; then
+        echo "Passed"
+        FILES_LIST=(${FILES_LIST[@]} $1)
+    else
+        echo "Failed! Excluding from upload."
+    fi
+}
+
 get_files_list () {
-    # Include all markdown files
-    FILES=`find . -maxdepth 1 -name "*.md" | xargs -n1 basename`
+    # Find all files that are not part of automation or configuration
+    FILES=`find . \
+                -name . -a -type d -o \
+                -name .git -a -type d -prune -o \
+                -name bin -a -type d -prune -o \
+                -name nubis -a -type d -prune -o \
+                -name lambda -a -type d -prune -o \
+                -name parameters -a -type d -prune -o \
+                -name vpc -a -type d -o \
+                -name README.md -a -type f -o \
+                -name CHANGELOG.md -a -type f -o \
+                -name LICENSE -a -type f -o \
+                -name parameters.json-dist -a -type f -o \
+                -name template-dist -a -type f -o \
+                -name .gitignore -a -type f -o \
+                -print | sed 's|^./||'`
+
+    # Include all markdown (README.md) files
     for FILE in $FILES; do
-        FILES_LIST=(${FILES_LIST[@]} $FILE)
+        if [[ $FILE == *\.README.md ]]; then
+            FILES_LIST=(${FILES_LIST[@]} $FILE)
+        fi
     done
 
-    # Include all template files
-    FILES=`find . -maxdepth 1 -name "*.template" | xargs -n1 basename`
+    # Include all template files that pass validation
     for FILE in $FILES; do
-        echo -n "$FILE Valid: "
-        aws cloudformation validate-template --template-body file://$FILE > /dev/null
-        if [ "$?" = "0" ]; then
-          echo "ok"
-          FILES_LIST=(${FILES_LIST[@]} $FILE)
-        else
-          echo "failed"
+        if [[ $FILE == *\.template ]]; then
+            validate-file $FILE
         fi
     done
 }
@@ -107,7 +131,7 @@ while [ "$1" != "" ]; do
             if [ -z $2 ]; then
                 get_files_list
             else
-                FILES_LIST=$2
+                validate-file $2
             fi
             push-files
             GOT_COMMAND=1

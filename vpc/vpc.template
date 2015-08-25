@@ -1,0 +1,674 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs and a VPN connection",
+  "Parameters": {
+    "ServiceName": {
+      "Description": "Name of this deployment",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
+      "Type": "String"
+    },
+    "TechnicalOwner": {
+      "Description": "A valid LDAP email",
+      "AllowedPattern": "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
+      "Type": "String"
+    },
+    "Environment": {
+      "Description": "The name of the environment we are deploying into: sandbox, stage, or production.",
+      "Type": "String",
+      "AllowedValues": [
+        "sandbox",
+        "stage",
+        "prod",
+        "admin"
+      ],
+      "Default": "sandbox",
+      "ConstraintDescription": "must be one of these types of Mozilla VPCs"
+    },
+    "StacksVersion": {
+      "Description": "Version of Nubis Stacks to use for the nested stacks.",
+      "Type": "String",
+      "Default": "v1.0.0"
+    },
+    "VpcCidr": {
+      "Description": "The CIDR for the VPC Subnet.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "NubisDomain": {
+      "Description": "The domain used for DHCP Search.",
+      "Default": "nubis.allizom.org",
+      "AllowedPattern": "^[0-9a-z\\-\\.]+$",
+      "Type": "String"
+    },
+    "PublicSubnetAZ1Cidr": {
+      "Description": "The CIDR for the Public Subnet in Availability Zone 1.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "PublicSubnetAZ2Cidr": {
+      "Description": "The CIDR for the Public Subnet in Availability Zone 2.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "PublicSubnetAZ3Cidr": {
+      "Description": "The CIDR for the Public Subnet in Availability Zone 3.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "PrivateSubnetAZ1Cidr": {
+      "Description": "The CIDR for the Private Subnet in Availability Zone 1.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "Default": "0.0.0.0/32",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "PrivateSubnetAZ2Cidr": {
+      "Description": "The CIDR for the Private Subnet in Availability Zone 2.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "Default": "0.0.0.0/32",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "PrivateSubnetAZ3Cidr": {
+      "Description": "The CIDR for the Private Subnet in Availability Zone 3.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "19",
+      "Default": "0.0.0.0/32",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))/([0-9]|[12][0-9]|3[0-2])",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
+    },
+    "SSHKeyName": {
+      "Description": "Name of an existing EC2 SSH KeyPair to install on the instance",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "ConstraintDescription": "Must be the name of an existing EC2 KeyPair."
+    },
+    "IPSecTunnelTarget": {
+      "Description": "The IP address of our firewall where the IPSec tunnels will terminate",
+      "Type": "String",
+      "MinLength": "7",
+      "MaxLength": "15",
+      "Default": "0.0.0.0",
+      "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x"
+    }
+  },
+  "Conditions": {
+    "CreatePrivateSubnets": {
+      "Fn::Not": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "PrivateSubnetAZ1Cidr"
+                },
+                "0.0.0.0/32"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "PrivateSubnetAZ2Cidr"
+                },
+                "0.0.0.0/32"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "PrivateSubnetAZ3Cidr"
+                },
+                "0.0.0.0/32"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "CreateVPNResources": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "IPSecTunnelTarget"
+            },
+            "0.0.0.0"
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "NubisVpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "CidrBlock": {
+          "Ref": "VpcCidr"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  {
+                    "Ref": "Environment"
+                  },
+                  "VPC"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      }
+    },
+    "VpcDhcpOptionsAssociation": {
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "DhcpOptionsId": {
+          "Ref": "DhcpOptions"
+        }
+      }
+    },
+    "DhcpOptions": {
+      "Type": "AWS::EC2::DHCPOptions",
+      "Properties": {
+        "DomainName": {
+          "Fn::Join": [
+            " ",
+            [
+              {
+                "Fn::Join": [
+                  ".",
+                  [
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "compute.internal"
+                  ]
+                ]
+              },
+              {
+                "Fn::Join": [
+                  ".",
+                  [
+                    {
+                      "Ref": "Environment"
+                    },
+                    {
+                      "Ref": "NubisDomain"
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "DomainNameServers": [
+          "AmazonProvidedDNS"
+        ]
+      }
+    },
+    "SharedServicesSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "GroupDescription": "The security group for all instances.",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "icmp",
+            "FromPort": "8",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "SharedServicesSecurityGroup"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      }
+    },
+    "SssgAllowConsulTcpIn": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "8300",
+        "ToPort": "8302",
+        "SourceSecurityGroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        }
+      }
+    },
+    "SssgAllowConsulUdpIn": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "udp",
+        "FromPort": "8300",
+        "ToPort": "8302",
+        "SourceSecurityGroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        }
+      }
+    },
+    "SssgAllowAnyTcpOut": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "SourceSecurityGroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        }
+      }
+    },
+    "SssgAllowAnyUdpOut": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "udp",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "SourceSecurityGroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        }
+      }
+    },
+    "SssgAllowAnyIcmpOut": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "icmp",
+        "FromPort": "-1",
+        "ToPort": "-1",
+        "SourceSecurityGroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        }
+      }
+    },
+    "InternetAccessSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "GroupDescription": "Internet Access security group",
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "0",
+            "ToPort": "65535",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "udp",
+            "FromPort": "0",
+            "ToPort": "65535",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "icmp",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "InternetAccessSecurityGroup"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "Comment": "This security group must be applied to any instances that need to get out to the Internet."
+      }
+    },
+    "PublicSubnetStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubisproject-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/vpc-public-subnet.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "VpcId": {
+            "Ref": "NubisVpc"
+          },
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "PublicSubnetAZ1Cidr": {
+            "Ref": "PublicSubnetAZ1Cidr"
+          },
+          "PublicSubnetAZ2Cidr": {
+            "Ref": "PublicSubnetAZ2Cidr"
+          },
+          "PublicSubnetAZ3Cidr": {
+            "Ref": "PublicSubnetAZ3Cidr"
+          }
+        }
+      }
+    },
+    "PrivateSubnetStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Condition": "CreatePrivateSubnets",
+      "DependsOn": "PublicSubnetStack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubisproject-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/vpc-private-subnet.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "VpcId": {
+            "Ref": "NubisVpc"
+          },
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "PrivateSubnetAZ1Cidr": {
+            "Ref": "PrivateSubnetAZ1Cidr"
+          },
+          "PrivateSubnetAZ2Cidr": {
+            "Ref": "PrivateSubnetAZ2Cidr"
+          },
+          "PrivateSubnetAZ3Cidr": {
+            "Ref": "PrivateSubnetAZ3Cidr"
+          },
+          "SSHKeyName": {
+            "Ref": "SSHKeyName"
+          },
+          "PublicSubnetAZ1": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ1"
+            ]
+          },
+          "PublicSubnetAZ2": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ2"
+            ]
+          },
+          "PublicSubnetAZ3": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ3"
+            ]
+          },
+          "InternetAccessSecurityGroup": {
+            "Ref": "InternetAccessSecurityGroup"
+          }
+        }
+      }
+    },
+    "VPNStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Condition": "CreateVPNResources",
+      "DependsOn": "PrivateSubnetStack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubisproject-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/vpc-vpn.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "VpcId": {
+            "Ref": "NubisVpc"
+          },
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "PublicRouteTable": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicRouteTable"
+            ]
+          },
+          "PrivateRouteTableAZ1": {
+            "Fn::GetAtt": [
+              "PrivateSubnetStack",
+              "Outputs.PrivateRouteTableAZ1"
+            ]
+          },
+          "PrivateRouteTableAZ2": {
+            "Fn::GetAtt": [
+              "PrivateSubnetStack",
+              "Outputs.PrivateRouteTableAZ2"
+            ]
+          },
+          "PrivateRouteTableAZ3": {
+            "Fn::GetAtt": [
+              "PrivateSubnetStack",
+              "Outputs.PrivateRouteTableAZ3"
+            ]
+          },
+          "IPSecTunnelTarget": {
+            "Ref": "IPSecTunnelTarget"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ServiceName": {
+      "Description": "Name of this deployment.",
+      "Value": {
+        "Ref": "ServiceName"
+      }
+    },
+    "Environment": {
+      "Description": "The VPC environment.",
+      "Value": {
+        "Ref": "Environment"
+      }
+    },
+    "VpcId": {
+      "Description": "The ID of the VPC that was created.",
+      "Value": {
+        "Ref": "NubisVpc"
+      }
+    },
+    "PublicSubnetAZ1": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicSubnetAZ1"
+        ]
+      }
+    },
+    "PublicSubnetAZ2": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicSubnetAZ2"
+        ]
+      }
+    },
+    "PublicSubnetAZ3": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicSubnetAZ3"
+        ]
+      }
+    },
+    "PrivateSubnetAZ1": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.PrivateSubnetAZ1"
+        ]
+      }
+    },
+    "PrivateSubnetAZ2": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.PrivateSubnetAZ1"
+        ]
+      }
+    },
+    "PrivateSubnetAZ3": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.PrivateSubnetAZ1"
+        ]
+      }
+    },
+    "SharedServicesSecurityGroupId": {
+      "Value": {
+        "Ref": "SharedServicesSecurityGroup"
+      }
+    },
+    "InternetAccessSecurityGroupId": {
+      "Value": {
+        "Ref": "InternetAccessSecurityGroup"
+      }
+    }
+  }
+}

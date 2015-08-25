@@ -121,11 +121,6 @@
       ],
       "Default": "1"
     },
-    "IamInstanceProfile": {
-      "Description": "IAM Instance Profile to attach to the instance",
-      "Type": "String",
-      "Default": ""
-    },
     "SubnetLocation": {
       "Description": "Places your instance in the public or private subnet",
       "Type": "String",
@@ -162,14 +157,6 @@
             ""
           ]
         }
-      ]
-    },
-    "NotSet_IamInstanceProfile": {
-      "Fn::Equals": [
-        {
-          "Ref": "IamInstanceProfile"
-        },
-        ""
       ]
     },
     "NotSet_ELB": {
@@ -353,12 +340,12 @@
         },
         "IamInstanceProfile": {
           "Fn::If": [
-            "NotSet_IamInstanceProfile",
+            "IsSet_IamRole",
             {
-              "Ref": "AWS::NoValue"
+              "Ref": "Ec2IamInstanceProfile"
             },
             {
-              "Ref": "IamInstanceProfile"
+              "Ref": "AWS::NoValue"
             }
           ]
         },

@@ -1,0 +1,31 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Attach role to IAM Instance profile",
+  "Parameters": {
+    "IAMRoles": {
+      "Description": "IAM instance profile name",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "IAMInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "IAMRoles"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "IAMInstanceProfileName": {
+      "Description": "Name of IAM Instance profile",
+      "Value": {
+        "Ref": "IAMInstanceProfile"
+      }
+    }
+  }
+}

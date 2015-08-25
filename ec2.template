@@ -701,6 +701,13 @@
       "Value": {
         "Ref": "SubnetLocation"
       }
+    },
+    "IamRole": {
+      "Description": "Iam role name",
+      "Condition": "IsSet_IamRole",
+      "Value": {
+        "Ref": "Ec2IamInstanceProfile"
+      }
     }
   }
 }

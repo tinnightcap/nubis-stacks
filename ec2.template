@@ -144,9 +144,17 @@
       "Description": "Optionnal Security Group for instances",
       "Type": "String",
       "Default": ""
+    },
+    "IamRole": {
+      "Description": "Optional Iam roles for instances",
+      "Type": "String",
+      "Default": ""
     }
   },
   "Conditions": {
+    "IsSet_IamRole": {
+      "Fn::Not": [ { "Fn::Equals": [ { "Ref": "IamRole" }, "" ] } ]
+    },
     "NotSet_IamInstanceProfile": {
       "Fn::Equals": [
         {
@@ -639,6 +647,18 @@
             "Key": "Shutdown",
             "Value": "Never",
             "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "Ec2IamInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Condition": "IsSet_IamRole",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "IamRole"
           }
         ]
       }

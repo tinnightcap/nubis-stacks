@@ -146,7 +146,7 @@ To local development on your lambda function you would need to install a couple 
         "description": "Looks up stack outputs",
         "main": "LookupStackOutputs.js",
         "author": "nubis",
-        "license": "MPL"
+        "license": "MPL",
         "dependencies": {
             "aws-sdk": "*"
         }

@@ -68,7 +68,7 @@ aws cloudformation delete-stack --stack-name nubis-lambda-roll
 ```
 
 ### Upload Lambda Function
-Now that the role is in place, all that is left is to bundle and upload the lambda function. 
+Now that the role is in place, all that is left is to bundle and upload the lambda function.
 
 #### Generate Bundle
 First create a zip file bundle of the function and any required dependencies:
@@ -92,17 +92,17 @@ aws lambda upload-function --region us-west-2 --function-name LookupStackOutputs
 If everything worked as expected you should see some output similar to this:
 ```json
 {
-    "FunctionName": "LookupStackOutputs", 
-    "CodeSize": 1397, 
-    "ConfigurationId": "92c44c94-b648-423c-ab6f-79db6fef7930", 
-    "MemorySize": 128, 
-    "FunctionARN": "arn:aws:lambda:us-west-2:647505682097:function:LookupStackOutputs", 
-    "Handler": "LookupStackOutputs.handler", 
-    "Role": "arn:aws:iam::647505682097:role/nubis-lambda-roll-LambdaIamRole-15M0SCFBIWYQE", 
-    "Mode": "event", 
-    "Timeout": 10, 
-    "LastModified": "2015-04-21T21:23:48.304+0000", 
-    "Runtime": "nodejs", 
+    "FunctionName": "LookupStackOutputs",
+    "CodeSize": 1397,
+    "ConfigurationId": "92c44c94-b648-423c-ab6f-79db6fef7930",
+    "MemorySize": 128,
+    "FunctionARN": "arn:aws:lambda:us-west-2:647505682097:function:LookupStackOutputs",
+    "Handler": "LookupStackOutputs.handler",
+    "Role": "arn:aws:iam::647505682097:role/nubis-lambda-roll-LambdaIamRole-15M0SCFBIWYQE",
+    "Mode": "event",
+    "Timeout": 10,
+    "LastModified": "2015-04-21T21:23:48.304+0000",
+    "Runtime": "nodejs",
     "Description": "Gather outputs from Cloudformation stacks to be used in other Cloudformation stacks"
 }
 ```
@@ -123,3 +123,67 @@ Just in case you wish to remove the function yo can do so (just be sure to remov
 ```bash
 aws lambda delete-function --function-name LookupStackOutputs
 ```
+
+#### Local development
+To local development on your lambda function you would need to install a couple of things
+
+* Make sure you have `npm` installed, mac users can install it using [homebrew](http://brew.sh/) and there is a nice doc for linux users [here](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager)
+
+* Install `node-lambda` globally
+
+    ```bash
+    $ npm install -g node-lambda
+    ```
+
+* Create a folder for your lambda function or use the current directory that you are in to develop your script
+
+* Create a `package.json` file (note: Dependency '*' means that it will install the latest version)
+
+    ```json
+    {
+        "name": "LookupStackOutputs",
+        "version": "0.0.1",
+        "description": "Looks up stack outputs",
+        "main": "LookupStackOutputs.js",
+        "author": "nubis",
+        "license": "MPL",
+        "dependencies": {
+            "aws-sdk": "*"
+        }
+    }
+    ```
+
+* Run `npm install` in the current directory to install the package dependency
+
+* Run `node-lambda setup` in the current directory to setup the project, it will generate 3 files `event.json`, `deploy.env` and `.env`. The file we really care about is `event.json` and `.env`
+    * `event.json` - where you mock your event
+    * `.env` - where you place your deployment configuration
+
+* If node fails to run with the error:
+    > '/usr/bin/env: node: No such file or directory'
+
+    * You can fix this error by doing the following
+
+        ```bash
+        ln -s /usr/bin/nodejs /usr/bin/node
+        ```
+
+* At this point its probably a good idea to create a gitignore to ignore some of the files
+
+    ```bash
+    $ echo ".env\ndeploy.env\nevent.json" >> .gitignore
+    $ echo "node_modules" >> .gitignore
+    ```
+
+* Edit `event.json` to fit your need
+
+* Now you are ready to test your code, you can test your code by running the `node-lambda run` command
+
+### References
+* http://radify.io/blog/aws-lambda-workflow/
+
+* https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
+
+* https://github.com/RebelMail/node-lambda
+
+* https://www.npmjs.com/package/node-lambda

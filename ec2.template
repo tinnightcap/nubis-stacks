@@ -121,11 +121,6 @@
       ],
       "Default": "1"
     },
-    "IamInstanceProfile": {
-      "Description": "IAM Instance Profile to attach to the instance",
-      "Type": "String",
-      "Default": ""
-    },
     "SubnetLocation": {
       "Description": "Places your instance in the public or private subnet",
       "Type": "String",
@@ -144,15 +139,24 @@
       "Description": "Optionnal Security Group for instances",
       "Type": "String",
       "Default": ""
+    },
+    "IamRole": {
+      "Description": "Optional Iam roles for instances",
+      "Type": "String",
+      "Default": ""
     }
   },
   "Conditions": {
-    "NotSet_IamInstanceProfile": {
-      "Fn::Equals": [
+    "IsSet_IamRole": {
+      "Fn::Not": [
         {
-          "Ref": "IamInstanceProfile"
-        },
-        ""
+          "Fn::Equals": [
+            {
+              "Ref": "IamRole"
+            },
+            ""
+          ]
+        }
       ]
     },
     "NotSet_ELB": {
@@ -304,12 +308,17 @@
           "Ref": "AmiId"
         },
         "SecurityGroups": [
-           {
-           "Fn::If": [
-            "NotSet_SecurityGroup",
-            { "Ref": "EC2SecurityGroup" },
-            { "Ref": "SecurityGroup" }
-          ]},
+          {
+            "Fn::If": [
+              "NotSet_SecurityGroup",
+              {
+                "Ref": "EC2SecurityGroup"
+              },
+              {
+                "Ref": "SecurityGroup"
+              }
+            ]
+          },
           {
             "Fn::GetAtt": [
               "VpcInfo",
@@ -331,12 +340,12 @@
         },
         "IamInstanceProfile": {
           "Fn::If": [
-            "NotSet_IamInstanceProfile",
+            "IsSet_IamRole",
             {
-              "Ref": "AWS::NoValue"
+              "Ref": "Ec2IamInstanceProfile"
             },
             {
-              "Ref": "IamInstanceProfile"
+              "Ref": "AWS::NoValue"
             }
           ]
         },
@@ -642,6 +651,18 @@
           }
         ]
       }
+    },
+    "Ec2IamInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Condition": "IsSet_IamRole",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "IamRole"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
@@ -680,6 +701,13 @@
       "Description": "Location of vpc subnet, public or private",
       "Value": {
         "Ref": "SubnetLocation"
+      }
+    },
+    "IamRole": {
+      "Description": "Iam role name",
+      "Condition": "IsSet_IamRole",
+      "Value": {
+        "Ref": "Ec2IamInstanceProfile"
       }
     }
   }

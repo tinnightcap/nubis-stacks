@@ -1,9 +1,9 @@
 {
-  "name": "LookupNestedStackOutputs",
+  "name": "LookupStackOutputs",
   "version": "0.0.1",
-  "description": "Looks up stack outputs from environment specific nested stacks",
+  "description": "Looks up stack outputs",
   "main": "index.js",
-  "author": "jd",
+  "author": "nubis",
   "license": "MPL",
   "private": "true",
   "dependencies": {

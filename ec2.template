@@ -447,9 +447,6 @@
         }
       },
       "Properties": {
-        "AvailabilityZones": {
-          "Fn::GetAZs": ""
-        },
         "VPCZoneIdentifier": [
           {
             "Fn::GetAtt": [
@@ -557,9 +554,6 @@
         }
       },
       "Properties": {
-        "AvailabilityZones": {
-          "Fn::GetAZs": ""
-        },
         "VPCZoneIdentifier": [
           {
             "Fn::GetAtt": [

@@ -209,7 +209,7 @@
                 "Ref": "AWS::AccountId"
               },
               ":function:",
-              "LookupStackOutputs"
+              "LookupNestedStackOutputs"
             ]
           ]
         },
@@ -220,12 +220,12 @@
               {
                 "Ref": "AWS::Region"
               },
-              {
-                "Ref": "Environment"
-              },
               "vpc"
             ]
           ]
+        },
+        "Environment": {
+          "Ref": "Environment"
         }
       }
     },

@@ -47,7 +47,7 @@
   },
   "Resources": {
     "MetaInfo": {
-      "Type": "Custom::VpcInfo",
+      "Type": "Custom::MetaInfo",
       "Properties": {
         "ServiceToken": {
           "Fn::Join": [
@@ -85,7 +85,7 @@
                 "Ref": "AWS::AccountId"
               },
               ":function:",
-              "LookupStackOutputs"
+              "LookupNestedStackOutputs"
             ]
           ]
         },
@@ -96,12 +96,12 @@
               {
                 "Ref": "AWS::Region"
               },
-              {
-                "Ref": "Environment"
-              },
               "vpc"
             ]
           ]
+        },
+        "Environment": {
+          "Ref": "Environment"
         }
       }
     },

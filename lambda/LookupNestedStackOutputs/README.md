@@ -39,7 +39,7 @@ To use this resource in cloudformation, first declare a custom resource:
             ]
           ]
         },
-        "Environment": {
+        "SearchString": {
           "Ref": "Environment"
         }
       }
@@ -102,7 +102,7 @@ LAMBDA_ROLL_ARN=$(aws cloudformation describe-stacks --region us-west-2 --profil
 
 Then using the roll arn we set in the environment variable, upload the bundle to Lambda:
 ```bash
-aws lambda upload-function --region us-west-2 --profile sandbox --function-name LookupNestedStackOutputs --function-zip LookupNestedStackOutputs.zip --runtime nodejs --role ${LAMBDA_ROLL_ARN} --handler index.handler --mode event --timeout 10 --memory-size 128 --description 'Gather outputs from Cloudformation enviroment specific nested stacks to be used in other Cloudformation stacks'
+aws lambda upload-function --region us-west-2 --profile sandbox --function-name LookupNestedStackOutputs --function-zip lambda/LookupNestedStackOutputs/LookupNestedStackOutputs.zip --runtime nodejs --role ${LAMBDA_ROLL_ARN} --handler index.handler --mode event --timeout 10 --memory-size 128 --description 'Gather outputs from Cloudformation enviroment specific nested stacks to be used in other Cloudformation stacks'
 ```
 
 If everything worked as expected you should see some output similar to this:
@@ -130,7 +130,7 @@ To test the function log into the AWS web consol, navigate to [Lambda](https://u
 {
   "ResourceProperties": {
     "StackName": "us-west-2-vpc",
-    "Environment": "sandbox"
+    "SearchString": "sandbox"
   }
 }```
 

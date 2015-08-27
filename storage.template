@@ -273,6 +273,13 @@
                     "Outputs.S3Bucket"
                   ]
                 },
+                "NUBIS_ACCOUNT=",
+                {
+                  "Fn::GetAtt": [
+                    "VpcInfo",
+                    "ServiceName"
+                  ]
+                },
                 "\n"
               ]
             ]

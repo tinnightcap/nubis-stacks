@@ -13,7 +13,7 @@ exports.handler = function(event, context) {
     }
 
     var stackName = event.ResourceProperties.StackName;
-    var environment = event.ResourceProperties.Environment;
+    var searchString = event.ResourceProperties.SearchString;
     var test = event.ResourceProperties.Test;
     var responseStatus = "FAILED";
     var responseData = {};
@@ -24,20 +24,20 @@ exports.handler = function(event, context) {
         console.log(responseData.Error);
         sendResponse(event, context, responseStatus, responseData);
     }
-    // Verifies that a environment name was passed
-    if (!environment) {
-        responseData = {Error: "You must provide a Environment when calling this function"};
+    // Verifies that a search string name was passed
+    if (!searchString) {
+        responseData = {Error: "You must provide a SearchString when calling this function"};
         console.log(responseData.Error);
         sendResponse(event, context, responseStatus, responseData);
     }
 
-    // Build case insensitive regex for searching for the environment
-    var regex = new RegExp(environment, 'i');
+    // Build case insensitive regex for searching for the search string
+    var regex = new RegExp(searchString, 'i');
 
     var aws = require("aws-sdk");
     var cfn = new aws.CloudFormation();
 
-    // Look up the name of the nested stack corresponding to the environment function
+    // Look up the name of the nested stack corresponding to the search string
     function lookupNestedStack(callback) {
         cfn.describeStackResources({StackName: stackName}, function (err, data){
             if(err) {
@@ -46,7 +46,7 @@ exports.handler = function(event, context) {
             }
             else {
                 // Loop through all resources in the stack one at a time
-                // This will exit with the first nested stack name that matches the given environment
+                // This will exit with the first nested stack name that matches the given search string
                 for (var i = 0; i < data.StackResources.length; i++) {
                     // Pull in the resource Id
                     // arn:aws:cloudformation:us-east-1:177680776199:stack/us-east-1-vpc-ProdVPCStack-18VJXHIHCNTAH/e4675490-4b42-11e5-a12c-50d5017c76e0
@@ -54,7 +54,7 @@ exports.handler = function(event, context) {
                     // Split based on the standard delimiter
                     // http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
                     var stack = physicalResouceId.split("/");
-                    // Check to see if the stack matches the environment we are interested in
+                    // Check to see if the stack matches the search string we are interested in
                     if (stack[1].search(regex) != -1) {
                         nestedStack = stack[1];
                         console.log("\nLOOKUP PAYLOAD:\n", nestedStack);

@@ -101,7 +101,7 @@
             ]
           ]
         },
-        "Environment": {
+        "SearchString": {
           "Ref": "Environment"
         }
       }

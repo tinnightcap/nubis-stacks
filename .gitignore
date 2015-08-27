@@ -1,3 +1,7 @@
 bin/variables
 nubis/cloudformation/parameters.json
-lambda/LookupStackOutputs/LookupStackOutputs.zip
+**/*.zip
+**/node_modules/
+**/.env
+**/deploy.env
+**/event.json

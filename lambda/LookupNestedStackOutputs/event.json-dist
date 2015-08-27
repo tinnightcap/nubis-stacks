@@ -1,0 +1,6 @@
+{
+  "ResourceProperties": {
+    "StackName": "us-west-2-vpc",
+    "Environment": "sandbox"
+  }
+}

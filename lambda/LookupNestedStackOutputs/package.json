@@ -1,0 +1,12 @@
+{
+  "name": "LookupNestedStackOutputs",
+  "version": "0.0.1",
+  "description": "Looks up stack outputs from environment specific nested stacks",
+  "main": "index.js",
+  "author": "jd",
+  "private": "true",
+  "dependencies": {
+    "node-lambda": "0.1.5",
+    "aws-sdk": "*"
+  }
+}

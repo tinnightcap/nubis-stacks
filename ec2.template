@@ -425,6 +425,21 @@
                       "'"
                     ]
                   ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_ACCOUNT'",
+                      {
+                        "Fn::GetAtt": [
+                          "VpcInfo",
+                          "ServiceName"
+                        ]
+                      },
+                      "'"
+                    ]
+                  ]
                 }
               ]
             ]

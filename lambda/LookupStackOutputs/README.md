@@ -1,15 +1,15 @@
-﻿# LookupNestedStackOutputs
+﻿# LookupStackOutputs
 
-This is a script designed to run under the [AWS Lambda](http://aws.amazon.com/lambda/) framework. This is based on a [walkthrough](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html) on using Lambda custom resources in cloudformation templates.
+This is a simple script designed to run under the [AWS Lambda](http://aws.amazon.com/lambda/) framework. This is based on a [walkthrough](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html) on using Lambda custom resources in cloudformation templates.
 
-This script & resource will take all outputs from the named stack plus environment and provide them as lookup parameters.
+This script & resource will take all outputs from the named stack and provide them as a lookup parameters.
 
 ## Usage
 To use this resource in cloudformation, first declare a custom resource:
 
 ```json
-    "VpcInfo": {
-      "Type": "Custom::VpcInfo",
+    "MetaInfo": {
+      "Type": "Custom::MetaInfo",
       "Properties": {
         "ServiceToken": {
           "Fn::Join": [
@@ -24,35 +24,22 @@ To use this resource in cloudformation, first declare a custom resource:
                 "Ref": "AWS::AccountId"
               },
               ":function:",
-              "LookupNestedStackOutputs"
+              "LookupStackOutputs"
             ]
           ]
         },
-        "StackName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Ref": "AWS::Region"
-              },
-              "vpc"
-            ]
-          ]
-        },
-        "SearchString": {
-          "Ref": "Environment"
-        }
+        "StackName": "nubis-meta"
       }
     },
 ```
 
-Then you can access the outputs from the named stack, a Nubis VPC Stack in this example, to use in your other resources:
+Then you can access the outputs from the named stack, a Nubis Meta Stack in this example, to use in your other resources:
 
 ```json
 "VpcId": {
   "Fn::GetAtt": [
-    "VpcInfo",
-    "VpcId"
+    "MetaInfo",
+    "DefaultServerCertificate"
   ]
 },
 ```
@@ -84,12 +71,12 @@ aws cloudformation delete-stack --stack-name nubis-lambda-roll
 ```
 
 ### Upload Lambda Function
-Now that the role is in place, all that is left is to bundle and upload the lambda function. 
+Now that the role is in place, all that is left is to bundle and upload the lambda function.
 
 #### Generate Bundle
 First create a zip file bundle of the function and any required dependencies:
 ```bash
-cd lambda/LookupNestedStackOutputs; zip LookupNestedStackOutputs.zip index.js; cd ../../
+cd lambda/LookupStackOutputs; zip LookupStackOutputs.zip index.js; cd ../../
 ```
 
 #### Upload Bundle
@@ -102,24 +89,24 @@ REGION='us-west-2';PROFILE='sandbx';LAMBDA_ROLL_ARN=$(aws cloudformation describ
 
 Then using the roll arn we set in the environment variable, upload the bundle to Lambda:
 ```bash
-aws lambda upload-function --region $REGION --profile $PROFILE --function-name LookupNestedStackOutputs --function-zip lambda/LookupNestedStackOutputs/LookupNestedStackOutputs.zip --runtime nodejs --role ${LAMBDA_ROLL_ARN} --handler index.handler --mode event --timeout 10 --memory-size 128 --description 'Gather outputs from Cloudformation enviroment specific nested stacks to be used in other Cloudformation stacks'
+aws lambda upload-function --region $REGION --profile $PROFILE --function-name LookupStackOutputs --function-zip lambda/LookupStackOutputs/LookupStackOutputs.zip --runtime nodejs --role ${LAMBDA_ROLL_ARN} --handler index.handler --mode event --timeout 10 --memory-size 128 --description 'Gather outputs from Cloudformation stacks to be used in other Cloudformation stacks'
 ```
 
 If everything worked as expected you should see some output similar to this:
 ```json
 {
-    "FunctionName": "LookupNestedStackOutputs", 
-    "CodeSize": 1891, 
-    "ConfigurationId": "8716646e-5066-4684-872e-f632b2e933cf", 
-    "MemorySize": 128, 
-    "FunctionARN": "arn:aws:lambda:us-east-1:177680776199:function:LookupNestedStackOutputs", 
-    "Handler": "index.handler", 
-    "Role": "arn:aws:iam::177680776199:role/nubis-lambda-roll-LambdaIamRole-1SOCG76WQ33X5", 
-    "Mode": "event", 
-    "Timeout": 10, 
-    "LastModified": "2015-08-26T22:47:49.103+0000", 
-    "Runtime": "nodejs", 
-    "Description": "Gather outputs from Cloudformation enviroment specific nested stacks to be used in other Cloudformation stacks"
+    "FunctionName": "LookupStackOutputs",
+    "CodeSize": 1397,
+    "ConfigurationId": "92c44c94-b648-423c-ab6f-79db6fef7930",
+    "MemorySize": 128,
+    "FunctionARN": "arn:aws:lambda:us-west-2:647505682097:function:LookupStackOutputs",
+    "Handler": "LookupStackOutputs.handler",
+    "Role": "arn:aws:iam::647505682097:role/nubis-lambda-roll-LambdaIamRole-15M0SCFBIWYQE",
+    "Mode": "event",
+    "Timeout": 10,
+    "LastModified": "2015-04-21T21:23:48.304+0000",
+    "Runtime": "nodejs",
+    "Description": "Gather outputs from Cloudformation stacks to be used in other Cloudformation stacks"
 }
 ```
 #### Test Function
@@ -129,13 +116,13 @@ To test the function log into the AWS web consol, navigate to [Lambda](https://u
 ```json
 {
   "ResourceProperties": {
-    "StackName": "us-west-2-vpc",
-    "SearchString": "sandbox"
+    "StackName": "us-west-2-vpc"
   }
-}```
+}
+```
 
 #### Delete Function
-Just in case you wish to remove the function yo can do so (just be sure to remove the nubis-lambda-roll stack after if you no longer need it):
+Just in case you wish to remove the function yo can do so (just be sure to remove the nubis-lambda-roll stack first if you no longer need it):
 ```bash
-aws lambda delete-function --function-name LookupNestedStackOutputs
+aws lambda delete-function --function-name LookupStackOutputs
 ```

@@ -430,7 +430,7 @@
                   "Fn::Join": [
                     "",
                     [
-                      "NUBIS_ACCOUNT'",
+                      "NUBIS_ACCOUNT='",
                       {
                         "Fn::GetAtt": [
                           "VpcInfo",

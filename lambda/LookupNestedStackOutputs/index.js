@@ -55,7 +55,7 @@ exports.handler = function(event, context) {
                     // http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
                     var stack = physicalResouceId.split("/");
                     // Check to see if the stack matches the search string we are interested in
-                    if (stack[1].search(regex) != -1) {
+                    if (stack.length > 1 && stack[1].search(regex) != -1) {
                         nestedStack = stack[1];
                         console.log("\nLOOKUP PAYLOAD:\n", nestedStack);
                         callback();

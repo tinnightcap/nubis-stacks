@@ -647,7 +647,7 @@
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
-          "Outputs.PrivateSubnetAZ1"
+          "Outputs.PrivateSubnetAZ2"
         ]
       }
     },
@@ -656,7 +656,7 @@
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
-          "Outputs.PrivateSubnetAZ1"
+          "Outputs.PrivateSubnetAZ3"
         ]
       }
     },

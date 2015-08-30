@@ -451,6 +451,13 @@
         ]
       }
     },
+    "NatInstanceEipAZ1": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "InstanceId": { "Ref": "NatInstanceAZ1" }
+      }
+    },
     "NatInstanceAZ1": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
@@ -508,6 +515,13 @@
         ]
       }
     },
+    "NatInstanceEipAZ2": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "InstanceId": { "Ref": "NatInstanceAZ2" }
+      }
+    },
     "NatInstanceAZ2": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
@@ -563,6 +577,13 @@
             }
           }
         ]
+      }
+    },
+    "NatInstanceEipAZ3": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "InstanceId": { "Ref": "NatInstanceAZ3" }
       }
     },
     "NatInstanceAZ3": {
@@ -652,6 +673,21 @@
     "PrivateSubnetAZ3": {
       "Value": {
         "Ref": "PrivateSubnetAZ3"
+      }
+    },
+    "NatInstanceAddressAZ1": {
+      "Value": {
+        "Ref": "NatInstanceEipAZ1"
+      }
+    },
+    "NatInstanceAddressAZ2": {
+      "Value": {
+        "Ref": "NatInstanceEipAZ2"
+      }
+    },
+    "NatInstanceAddressAZ3": {
+      "Value": {
+        "Ref": "NatInstanceEipAZ3"
       }
     }
   }

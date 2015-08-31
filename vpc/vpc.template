@@ -153,6 +153,14 @@
           ]
         }
       ]
+    },
+    "UsEast1SearchDomainHack": {
+      "Fn::Equals": [
+        {
+          "Ref": "AWS::Region"
+        },
+        "us-east-1"
+      ]
     }
   },
   "Resources": {
@@ -222,14 +230,20 @@
             " ",
             [
               {
-                "Fn::Join": [
-                  ".",
-                  [
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "compute.internal"
-                  ]
+                "Fn::If": [
+                  "UsEast1SearchDomainHack",
+                  "ec2.internal",
+                  {
+                    "Fn::Join": [
+                      ".",
+                      [
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        "compute.internal"
+                      ]
+                    ]
+                  }
                 ]
               },
               {
@@ -238,6 +252,12 @@
                   [
                     {
                       "Ref": "Environment"
+                    },
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    {
+                      "Ref": "ServiceName"
                     },
                     {
                       "Ref": "NubisDomain"

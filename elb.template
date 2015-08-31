@@ -17,6 +17,7 @@
       "Default": "sandbox",
       "Type": "String",
       "AllowedValues": [
+        "sandbox",
         "prod",
         "stage",
         "sandbox"

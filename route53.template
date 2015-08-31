@@ -19,8 +19,8 @@
       "Type": "String"
     },
     "BaseZone": {
-      "Description": "Base zone to create route53 zone in",
-      "AllowedPattern": "^[0-9a-z\\-\\.]+$",
+      "Description": "Unused",
+      "Default": "deprecated",
       "Type": "String"
     },
     "ELBStack": {
@@ -29,7 +29,7 @@
     }
   },
   "Resources": {
-    "VpcInfo": {
+    "AccountInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
         "ServiceToken": {
@@ -45,7 +45,7 @@
                 "Ref": "AWS::AccountId"
               },
               ":function:",
-              "LookupNestedStackOutputs"
+              "LookupStackOutputs"
             ]
           ]
         },
@@ -59,54 +59,16 @@
               "vpc"
             ]
           ]
-        },
-        "SearchString": {
-          "Ref": "Environment"
-        }
-      }
-    },
-    "HostedZone": {
-      "Type": "AWS::Route53::HostedZone",
-      "Properties": {
-        "Name": {
-          "Fn::Join": [
-            ".",
-            [
-              {
-                "Ref": "DNSName"
-              },
-              {
-                "Ref": "Environment"
-              },
-              {
-                "Ref": "BaseZone"
-              }
-            ]
-          ]
         }
       }
     },
     "WWWRecord": {
       "Type": "AWS::Route53::RecordSet",
-      "DependsOn": "HostedZone",
       "Properties": {
-        "HostedZoneName": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Ref": "DNSName"
-              },
-              ".",
-              {
-                "Ref": "Environment"
-              },
-              ".",
-              {
-                "Ref": "BaseZone"
-              },
-              "."
-            ]
+        "HostedZoneId": {
+          "Fn::GetAtt": [
+            "AccountInfo",
+            "HostedZoneId"
           ]
         },
         "Name": {
@@ -120,11 +82,10 @@
               },
               ".",
               {
-                "Ref": "Environment"
-              },
-              ".",
-              {
-                "Ref": "BaseZone"
+                "Fn::GetAtt": [
+                  "AccountInfo",
+                  "HostedZoneName"
+                ]
               },
               "."
             ]
@@ -145,6 +106,14 @@
             ]
           }
         ]
+      }
+    }
+  },
+  "Outputs": {
+    "DNSEntry": {
+      "Description": "FQDN of the created DNS entry",
+      "Value": {
+        "Ref": "WWWRecord"
       }
     }
   }

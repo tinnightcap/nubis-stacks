@@ -642,6 +642,15 @@
         ]
       }
     },
+    "PrivateSubnetNatInstanceAddresssAZ1": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.NatInstanceAddressAZ1"
+        ]
+      }
+    },
     "PrivateSubnetAZ2": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
@@ -651,12 +660,30 @@
         ]
       }
     },
+    "PrivateSubnetNatInstanceAddresssAZ2": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.NatInstanceAddressAZ2"
+        ]
+      }
+    },
     "PrivateSubnetAZ3": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
           "Outputs.PrivateSubnetAZ3"
+        ]
+      }
+    },
+    "PrivateSubnetNatInstanceAddresssAZ3": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.NatInstanceAddressAZ3"
         ]
       }
     },

@@ -23,7 +23,7 @@ To enable creation of the vpn connection you must provide the IPSecTunnelTarget 
     "VPCStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubisproject-stacks", { "Ref": "StacksVersion" }, "vpc/vpc-private-subnet.template" ] ] },
+        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "vpc/vpc-private-subnet.template" ] ] },
         "TimeoutInMinutes": "60",
         "Parameters": {
           "ServiceName": {

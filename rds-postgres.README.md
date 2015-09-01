@@ -16,7 +16,7 @@ To use this stack you will need to set the required input parameters and include
     "RDSStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubisproject-stacks", { "Ref": "StacksVersion" }, "rds-postgres.template" ] ] },
+        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "rds-postgres.template" ] ] },
         "TimeoutInMinutes": "60",
         "Parameters": {
           "ServiceName": {

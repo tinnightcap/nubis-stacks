@@ -1,0 +1,145 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "DefaultServerCertificate": {
+      "Description": "Default SSL Certificate",
+      "Type": "String"
+    },
+    "ServiceName": {
+      "Description": "Name of this deployment",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
+      "Type": "String"
+    },
+    "TechnicalOwner": {
+      "Description": "A valid LDAP email",
+      "AllowedPattern": "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
+      "Type": "String"
+    }
+  },
+  "Outputs": {
+    "DefaultServerCertificate": {
+      "Value": {
+        "Ref": "DefaultServerCertificate"
+      }
+    },
+    "NubisMySQL56ParameterGroup": {
+      "Value": {
+        "Ref": "NubisMySQL56ParameterGroup"
+      }
+    },
+    "DatadogAccessKey": {
+      "Description": "Access key for this user",
+      "Value": {
+        "Ref": "DatadogUserAccessKey"
+      }
+    },
+    "DatadogSecretKey": {
+      "Description": "Secret key for this user",
+      "Value": {
+        "Fn::GetAtt": [
+          "DatadogUserAccessKey",
+          "SecretAccessKey"
+        ]
+      }
+    }
+  },
+  "Resources": {
+    "NubisMySQL56ParameterGroup": {
+      "Type": "AWS::RDS::DBParameterGroup",
+      "Properties": {
+        "Description": "Nubis DB Parameter group for MySql 5.6",
+        "Family": "MySQL5.6",
+        "Parameters": {
+          "binlog_cache_size": "32768",
+          "binlog_format": "MIXED",
+          "character_set_server": "utf8",
+          "explicit_defaults_for_timestamp": "1",
+          "innodb_buffer_pool_size": "{DBInstanceClassMemory*3/4}",
+          "innodb_file_per_table": "1",
+          "innodb_flush_method": "O_DIRECT",
+          "innodb_log_buffer_size": "8388608",
+          "innodb_log_file_size": "134217728",
+          "key_buffer_size": "16777216",
+          "local_infile": "1",
+          "log_output": "TABLE",
+          "master-info-repository": "TABLE",
+          "max_allowed_packet": "25165824",
+          "max_connections": "{DBInstanceClassMemory/12582880}",
+          "performance_schema": "0",
+          "read_buffer_size": "262144",
+          "read_only": "{TrueIfReplica}",
+          "read_rnd_buffer_size": "524288",
+          "relay_log_info_repository": "TABLE",
+          "sync_binlog": "1",
+          "table_open_cache_instances": "16",
+          "thread_stack": "262144"
+        },
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": { "Ref": "ServiceName" }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": { "Ref" : "TechnicalOwner" }
+          }
+        ]
+      }
+    },
+    "Datadog": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "datadogReadOnly",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "autoscaling:Describe*",
+                    "cloudtrail:DescribeTrails",
+                    "cloudtrail:GetTrailStatus",
+                    "cloudwatch:Describe*",
+                    "cloudwatch:Get*",
+                    "cloudwatch:List*",
+                    "ec2:Describe*",
+                    "ec2:Get*",
+                    "elasticache:Describe*",
+                    "elasticache:List*",
+                    "elasticloadbalancing:Describe*",
+                    "iam:Get*",
+                    "iam:List*",
+                    "kinesis:Get*",
+                    "kinesis:List*",
+                    "kinesis:Describe*",
+                    "rds:Describe*",
+                    "rds:List*",
+                    "ses:Get*",
+                    "ses:List*",
+                    "sns:List*",
+                    "sns:Publish",
+                    "sqs:GetQueueAttributes",
+                    "sqs:ListQueues",
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "DatadogUserAccessKey": {
+      "Type": "AWS::IAM::AccessKey",
+      "Properties": {
+        "UserName": {
+          "Ref": "Datadog"
+        }
+      }
+    }
+  }
+}

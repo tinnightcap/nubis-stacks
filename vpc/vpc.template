@@ -447,7 +447,7 @@
           "Fn::Join": [
             "/",
             [
-              "https://s3.amazonaws.com/nubisproject-stacks",
+              "https://s3.amazonaws.com/nubis-stacks",
               {
                 "Ref": "StacksVersion"
               },
@@ -490,7 +490,7 @@
           "Fn::Join": [
             "/",
             [
-              "https://s3.amazonaws.com/nubisproject-stacks",
+              "https://s3.amazonaws.com/nubis-stacks",
               {
                 "Ref": "StacksVersion"
               },
@@ -557,7 +557,7 @@
           "Fn::Join": [
             "/",
             [
-              "https://s3.amazonaws.com/nubisproject-stacks",
+              "https://s3.amazonaws.com/nubis-stacks",
               {
                 "Ref": "StacksVersion"
               },

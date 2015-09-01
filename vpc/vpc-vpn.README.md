@@ -16,7 +16,7 @@ To use this stack you will need to set the required input parameters and include
     "VPNStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubisproject-stacks", { "Ref": "StacksVersion" }, "vpc/vpc-vpn.template" ] ] },
+        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "vpc/vpc-vpn.template" ] ] },
         "TimeoutInMinutes": "60",
         "Parameters": {
           "VpcId": {

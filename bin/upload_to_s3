@@ -119,9 +119,9 @@ while [ "$1" != "" ]; do
             echo -en "Options:\n"
             echo -en "  --help      -h    Print this help information and exit\n"
             echo -en "  --bucket    -b    Specify the s3 bucket to upload to\n"
-            echo -en "                      Defaults to 'nubisproject-stacks'\n"
+            echo -en "                      Defaults to '$S3_BUCKET'\n"
             echo -en "  --path      -p    Specify a path to place the files in the s3 bucket\n"
-            echo -en "                      Defaults to 'master'\n"
+            echo -en "                      Defaults to '$S3_PATH'\n"
             echo -en "  --verbose   -v    Turn on verbosity, this should be set as the first argument\n"
             echo -en "                      Basically set -x\n\n"
             exit 0

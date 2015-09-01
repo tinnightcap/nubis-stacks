@@ -15,7 +15,7 @@ To use this stack you will need to set the required input parameters and include
     "EIPStack": {
         "Type": "AWS::CloudFormation::Stack",
         "Properties": {
-            "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubisproject-stacks", { "Ref": "StacksVersion" }, "eip.template" ] ] },
+            "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "eip.template" ] ] },
             "TimeoutInMinutes": "60",
             "Parameters": {
                 "StackName": {

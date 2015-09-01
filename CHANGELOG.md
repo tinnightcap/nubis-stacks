@@ -1,210 +1,212 @@
 # Change Log
 
-## [v1.0.0](https://github.com/nubisproject/nubis-builder/tree/v1.0.0) (2015-09-01)
+## [v1.0.0](https://github.com/nubisproject/nubis-stacks/tree/v1.0.0) (2015-08-31)
 
-[Full Changelog](https://github.com/nubisproject/nubis-builder/compare/v1.0.1...v1.0.0)
-
-**Merged pull requests:**
-
-- Release v1.0.1 [\#92](https://github.com/Nubisproject/nubis-builder/pull/92) ([gozer](https://github.com/gozer))
-
-## [v1.0.1](https://github.com/nubisproject/nubis-builder/tree/v1.0.1) (2015-08-31)
-
-[Full Changelog](https://github.com/nubisproject/nubis-builder/compare/v1.0.0...v1.0.1)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v0.9.0...v1.0.0)
 
 **Implemented enhancements:**
 
-- \[nubis-consul\] Support reaching Consul via https:// [\#90](https://github.com/Nubisproject/nubis-builder/issues/90)
+- \[route53\] Need to publish DNS entries in the account's zone [\#124](https://github.com/Nubisproject/nubis-stacks/issues/124)
 
-**Merged pull requests:**
+- \[ec2\] Need to be able to configure incoming security group [\#90](https://github.com/Nubisproject/nubis-stacks/issues/90)
 
-- Use https:// to talk to Consul [\#91](https://github.com/Nubisproject/nubis-builder/pull/91) ([gozer](https://github.com/gozer))
+- \[ec2\] Make ELB optional [\#50](https://github.com/Nubisproject/nubis-stacks/issues/50)
 
-- start dev cycle [\#89](https://github.com/Nubisproject/nubis-builder/pull/89) ([gozer](https://github.com/gozer))
+- Support S3 + IAM Instance Role + EC2 [\#43](https://github.com/Nubisproject/nubis-stacks/issues/43)
 
-## [v1.0.0](https://github.com/nubisproject/nubis-builder/tree/v1.0.0) (2015-08-30)
-
-[Full Changelog](https://github.com/nubisproject/nubis-builder/compare/v0.9.0...v1.0.0)
-
-**Closed issues:**
-
-- nubis-builder assumes base images are in our own account [\#82](https://github.com/Nubisproject/nubis-builder/issues/82)
-
-- Amazon Linux applies security updates on boot. [\#77](https://github.com/Nubisproject/nubis-builder/issues/77)
-
-- Tag v1.0.0 release [\#76](https://github.com/Nubisproject/nubis-builder/issues/76)
-
-**Merged pull requests:**
-
-- CHANGELOG for v1.0.0 [\#88](https://github.com/Nubisproject/nubis-builder/pull/88) ([gozer](https://github.com/gozer))
-
-- Fix bug, incorrect handling of jq's null [\#87](https://github.com/Nubisproject/nubis-builder/pull/87) ([gozer](https://github.com/gozer))
-
-- Added acl token support [\#86](https://github.com/Nubisproject/nubis-builder/pull/86) ([limed](https://github.com/limed))
-
-- Add a new variable, nubis\_account\_id, to allow nubis-builder to search for public AMIs \(nubis-base\) to derive builds from. [\#83](https://github.com/Nubisproject/nubis-builder/pull/83) ([gozer](https://github.com/gozer))
-
-- Disable security updates on boot, fixes issue \#77 [\#78](https://github.com/Nubisproject/nubis-builder/pull/78) ([gozer](https://github.com/gozer))
-
-## [v0.9.0](https://github.com/nubisproject/nubis-builder/tree/v0.9.0) (2015-07-22)
-
-[Full Changelog](https://github.com/nubisproject/nubis-builder/compare/1.1...v0.9.0)
+- Move publishing bucket to the admin account [\#38](https://github.com/Nubisproject/nubis-stacks/issues/38)
 
 **Fixed bugs:**
 
-- Packer 0.8.1 seems to break nubis-builder [\#69](https://github.com/Nubisproject/nubis-builder/issues/69)
+- \[vpc\] Search Domain incorrect in us-east-1 [\#126](https://github.com/Nubisproject/nubis-stacks/issues/126)
 
-- Fix instance-store images [\#59](https://github.com/Nubisproject/nubis-builder/issues/59)
+- \[vpc\] PrivateSubnet outputs all report the first subnet [\#112](https://github.com/Nubisproject/nubis-stacks/issues/112)
 
-**Closed issues:**
-
-- sudo errors causing packer builds to fail [\#71](https://github.com/Nubisproject/nubis-builder/issues/71)
-
-- Move the creation of /etc/puppet/nubis/{files,templates} to the base image [\#63](https://github.com/Nubisproject/nubis-builder/issues/63)
-
-- Intermittently, packer fails with Error launching source instance: The security group 'sg-xxxxxx' does not exist in VPC 'vpc-yyyyyy' [\#42](https://github.com/Nubisproject/nubis-builder/issues/42)
-
-- Version bump sometimes picks an in-use version [\#41](https://github.com/Nubisproject/nubis-builder/issues/41)
-
-- Builder errors out when running consul post-processor [\#39](https://github.com/Nubisproject/nubis-builder/issues/39)
-
-- When ec2-bundle-volume is running under an IAM Role, it needs special care to work [\#28](https://github.com/Nubisproject/nubis-builder/issues/28)
-
-**Merged pull requests:**
-
-- Updating changelog for v0.9.0 release [\#73](https://github.com/Nubisproject/nubis-builder/pull/73) ([gozer](https://github.com/gozer))
-
-- Fixes packer build issue after 0.8.1 upgrade [\#72](https://github.com/Nubisproject/nubis-builder/pull/72) ([limed](https://github.com/limed))
-
-- Add volume\_size option, fixes \#69 [\#70](https://github.com/Nubisproject/nubis-builder/pull/70) ([gozer](https://github.com/gozer))
-
-- Cosmetic fixes to nubis-consul output [\#67](https://github.com/Nubisproject/nubis-builder/pull/67) ([limed](https://github.com/limed))
-
-- Make sure we copy the puppet files \*before\* we invoke puppet [\#65](https://github.com/Nubisproject/nubis-builder/pull/65) ([gozer](https://github.com/gozer))
-
-- Move puppet files/templates directory creation to base image. Fixes \#63 [\#64](https://github.com/Nubisproject/nubis-builder/pull/64) ([gozer](https://github.com/gozer))
-
-- Improve documentation for the aws\_region variable. [\#62](https://github.com/Nubisproject/nubis-builder/pull/62) ([gozer](https://github.com/gozer))
-
-- jq for linux [\#61](https://github.com/Nubisproject/nubis-builder/pull/61) ([glogiotatidis](https://github.com/glogiotatidis))
-
-- Fix instance-store images builds. Fixes \#59 [\#60](https://github.com/Nubisproject/nubis-builder/pull/60) ([gozer](https://github.com/gozer))
-
-- verbose-- [\#57](https://github.com/Nubisproject/nubis-builder/pull/57) ([gozer](https://github.com/gozer))
-
-- New Feature: if there is nubis/puppet/{files,templates} directory in the [\#56](https://github.com/Nubisproject/nubis-builder/pull/56) ([gozer](https://github.com/gozer))
-
-- no need to copy Hiera stuff anymore [\#55](https://github.com/Nubisproject/nubis-builder/pull/55) ([gozer](https://github.com/gozer))
-
-- Dont use Hiera anymore [\#54](https://github.com/Nubisproject/nubis-builder/pull/54) ([gozer](https://github.com/gozer))
-
-- Taking out the last trailing comma in variables [\#53](https://github.com/Nubisproject/nubis-builder/pull/53) ([cshields](https://github.com/cshields))
-
-- add homebrew instructions for OS X users [\#52](https://github.com/Nubisproject/nubis-builder/pull/52) ([floatingatoll](https://github.com/floatingatoll))
-
-- changing 'Clone' to 'Fork' [\#51](https://github.com/Nubisproject/nubis-builder/pull/51) ([Sheeri](https://github.com/Sheeri))
-
-- Updates for renaming nubis-blank to nubis-skel [\#50](https://github.com/Nubisproject/nubis-builder/pull/50) ([tinnightcap](https://github.com/tinnightcap))
-
-- Documentation and multi stack updates [\#49](https://github.com/Nubisproject/nubis-builder/pull/49) ([tinnightcap](https://github.com/tinnightcap))
-
-- Adding consul script as it is now being used by multiple projects [\#48](https://github.com/Nubisproject/nubis-builder/pull/48) ([tinnightcap](https://github.com/tinnightcap))
-
-- Default to gp2 \(SSD\) drives for instances, but don't assume that when [\#46](https://github.com/Nubisproject/nubis-builder/pull/46) ([gozer](https://github.com/gozer))
-
-- Add launch\_block\_device\_mappings as a work around to ensure packer created volumes get deleted once AMIs are built. [\#45](https://github.com/Nubisproject/nubis-builder/pull/45) ([gozer](https://github.com/gozer))
-
-## [1.1](https://github.com/nubisproject/nubis-builder/tree/1.1) (2015-03-31)
-
-[Full Changelog](https://github.com/nubisproject/nubis-builder/compare/1.0...1.1)
+- \[lambda\] We assume everything in a stack's resources are ARNs, but they aren't [\#110](https://github.com/Nubisproject/nubis-stacks/issues/110)
 
 **Closed issues:**
 
-- Tag releases [\#30](https://github.com/Nubisproject/nubis-builder/issues/30)
+- In one-account-per-app, we don't need to create a zone anymore. [\#121](https://github.com/Nubisproject/nubis-stacks/issues/121)
 
-- Documentation [\#16](https://github.com/Nubisproject/nubis-builder/issues/16)
+- \[vpc\] Give NAT instance EIPs so they have stable, predictable public IP addresses [\#119](https://github.com/Nubisproject/nubis-stacks/issues/119)
+
+- Add 'admin' as an allowed Environment where it makes sense. [\#116](https://github.com/Nubisproject/nubis-stacks/issues/116)
+
+- \[route53\] use IPv6 by default for ELBs [\#87](https://github.com/Nubisproject/nubis-stacks/issues/87)
 
 **Merged pull requests:**
 
-- Code clean up and fixing instance-store builds  [\#43](https://github.com/Nubisproject/nubis-builder/pull/43) ([bhourigan](https://github.com/bhourigan))
+- \[route53\] Create the DNS record into the Account's main zone. [\#125](https://github.com/Nubisproject/nubis-stacks/pull/125) ([gozer](https://github.com/gozer))
 
-- Adding documentation [\#40](https://github.com/Nubisproject/nubis-builder/pull/40) ([bhourigan](https://github.com/bhourigan))
+- Upgrade to nubis-storage v1.0.0 [\#123](https://github.com/Nubisproject/nubis-stacks/pull/123) ([gozer](https://github.com/gozer))
 
-- Missing coma [\#38](https://github.com/Nubisproject/nubis-builder/pull/38) ([tinnightcap](https://github.com/tinnightcap))
+- Associate one EIP per NAT instance [\#120](https://github.com/Nubisproject/nubis-stacks/pull/120) ([gozer](https://github.com/gozer))
 
-- Following the advice from https://www.packer.io/intro/getting-started/provision.html [\#37](https://github.com/Nubisproject/nubis-builder/pull/37) ([gozer](https://github.com/gozer))
+- \[storage\] Template fixups from upstream [\#130](https://github.com/Nubisproject/nubis-stacks/pull/130) ([gozer](https://github.com/gozer))
 
-## [1.0](https://github.com/nubisproject/nubis-builder/tree/1.0) (2015-03-24)
+- Add 'admin' as a valid value for environment. [\#129](https://github.com/Nubisproject/nubis-stacks/pull/129) ([gozer](https://github.com/gozer))
+
+- Support diferent search domain in us-east-1 [\#128](https://github.com/Nubisproject/nubis-stacks/pull/128) ([tinnightcap](https://github.com/tinnightcap))
+
+- Remove AvailabilityZones for us-east-1 deployments [\#117](https://github.com/Nubisproject/nubis-stacks/pull/117) ([tinnightcap](https://github.com/tinnightcap))
+
+- fix missing = tyop [\#115](https://github.com/Nubisproject/nubis-stacks/pull/115) ([gozer](https://github.com/gozer))
+
+- Fix a simple cut-n-paste error, missed in my review. [\#113](https://github.com/Nubisproject/nubis-stacks/pull/113) ([gozer](https://github.com/gozer))
+
+- \[lambda\] Stacks's Resources aren't always ARNs [\#111](https://github.com/Nubisproject/nubis-stacks/pull/111) ([gozer](https://github.com/gozer))
+
+- Add the new user-data input NUBIS\_ACCOUNT from VpcInfo.ServiceName [\#109](https://github.com/Nubisproject/nubis-stacks/pull/109) ([gozer](https://github.com/gozer))
+
+- Documentation updates for Lambda functions [\#108](https://github.com/Nubisproject/nubis-stacks/pull/108) ([tinnightcap](https://github.com/tinnightcap))
+
+- Call a spade a spade [\#107](https://github.com/Nubisproject/nubis-stacks/pull/107) ([tinnightcap](https://github.com/tinnightcap))
+
+- Remove AvailabilityZones from ec2.template [\#106](https://github.com/Nubisproject/nubis-stacks/pull/106) ([tinnightcap](https://github.com/tinnightcap))
+
+- Adjust for multiple VPCs in one account [\#103](https://github.com/Nubisproject/nubis-stacks/pull/103) ([tinnightcap](https://github.com/tinnightcap))
+
+- README updates for doing local lambda dev [\#102](https://github.com/Nubisproject/nubis-stacks/pull/102) ([limed](https://github.com/limed))
+
+- Add iam roles into ec2 stack [\#100](https://github.com/Nubisproject/nubis-stacks/pull/100) ([limed](https://github.com/limed))
+
+- Rewrite VPC templates for multiple accounts [\#99](https://github.com/Nubisproject/nubis-stacks/pull/99) ([tinnightcap](https://github.com/tinnightcap))
+
+- Add optional argument SecurityGroup, if present, uses it as the security group for EC2 instances instead of the default. [\#94](https://github.com/Nubisproject/nubis-stacks/pull/94) ([gozer](https://github.com/gozer))
+
+- Updated eip README [\#93](https://github.com/Nubisproject/nubis-stacks/pull/93) ([limed](https://github.com/limed))
+
+- get rid of canonical user id [\#92](https://github.com/Nubisproject/nubis-stacks/pull/92) ([gozer](https://github.com/gozer))
+
+- Add support for an optional ConsulToken to ec2 to enable Consul ACL tokens [\#91](https://github.com/Nubisproject/nubis-stacks/pull/91) ([gozer](https://github.com/gozer))
+
+- Say what branch/tag we upload to [\#89](https://github.com/Nubisproject/nubis-stacks/pull/89) ([gozer](https://github.com/gozer))
+
+- Prefix ELB CNAME with dualstack. [\#88](https://github.com/Nubisproject/nubis-stacks/pull/88) ([gozer](https://github.com/gozer))
+
+- S3 backup bucket with IAM roles [\#85](https://github.com/Nubisproject/nubis-stacks/pull/85) ([limed](https://github.com/limed))
+
+- \[ec2\] Make the ELB Paramater optional. [\#82](https://github.com/Nubisproject/nubis-stacks/pull/82) ([gozer](https://github.com/gozer))
+
+- Create EIP stack [\#81](https://github.com/Nubisproject/nubis-stacks/pull/81) ([limed](https://github.com/limed))
+
+## [v0.9.0](https://github.com/nubisproject/nubis-stacks/tree/v0.9.0) (2015-07-23)
+
+**Implemented enhancements:**
+
+- \[EC2\] No ability to launch instances in the Public Subnets [\#53](https://github.com/Nubisproject/nubis-stacks/issues/53)
+
+- ELB support for port 443 [\#42](https://github.com/Nubisproject/nubis-stacks/issues/42)
+
+- Versionning from within projects CF templates [\#41](https://github.com/Nubisproject/nubis-stacks/issues/41)
+
+- Determine versionned release mechanics [\#40](https://github.com/Nubisproject/nubis-stacks/issues/40)
+
+- Complete validation for all input parameters [\#37](https://github.com/Nubisproject/nubis-stacks/issues/37)
+
+**Fixed bugs:**
+
+- Storage template still has 'master' hardcoded in the stack url [\#58](https://github.com/Nubisproject/nubis-stacks/issues/58)
 
 **Closed issues:**
 
-- Pin Amazon Linux to 2014.09.2 and/or modify upstream AMI sourcing to exclude release candidates [\#34](https://github.com/Nubisproject/nubis-builder/issues/34)
-
-- Cleanup log files before making the AMIs [\#32](https://github.com/Nubisproject/nubis-builder/issues/32)
-
-- Intermittent build failure : Package ec2-ami-tools is not available [\#29](https://github.com/Nubisproject/nubis-builder/issues/29)
-
-- Allow nubis-builder build to function without aws credentials \(using STS\) if the machine running nubis-build itself has access to an IAM role [\#24](https://github.com/Nubisproject/nubis-builder/issues/24)
-
-- Create a /etc/nubis-$project-release file [\#23](https://github.com/Nubisproject/nubis-builder/issues/23)
-
-- Make builder make AMIs public by default [\#22](https://github.com/Nubisproject/nubis-builder/issues/22)
-
-- Add --dry-run [\#19](https://github.com/Nubisproject/nubis-builder/issues/19)
-
-- nubis-builder always increments version when automatic\_version\_bump is set [\#13](https://github.com/Nubisproject/nubis-builder/issues/13)
-
-- Re-enable instance-store builds [\#10](https://github.com/Nubisproject/nubis-builder/issues/10)
-
-- Make project\_version automatically update if there is a version colision [\#9](https://github.com/Nubisproject/nubis-builder/issues/9)
-
-- Make builder selection more robust [\#8](https://github.com/Nubisproject/nubis-builder/issues/8)
-
-- aws cli tool should use same credentials as packer [\#7](https://github.com/Nubisproject/nubis-builder/issues/7)
-
-- Add puppet provisioner that will be used for projects [\#6](https://github.com/Nubisproject/nubis-builder/issues/6)
-
-- When using --verbose, pass this along to packer [\#5](https://github.com/Nubisproject/nubis-builder/issues/5)
-
-- Add flag to preserve json file in the event of an error [\#4](https://github.com/Nubisproject/nubis-builder/issues/4)
-
-- Not all projects need to build for 4 platforms [\#2](https://github.com/Nubisproject/nubis-builder/issues/2)
-
-- Add MPL2 license. [\#1](https://github.com/Nubisproject/nubis-builder/issues/1)
+- CloudFormation doesn't support comments [\#4](https://github.com/Nubisproject/nubis-stacks/issues/4)
 
 **Merged pull requests:**
 
-- Baking in version [\#36](https://github.com/Nubisproject/nubis-builder/pull/36) ([bhourigan](https://github.com/bhourigan))
+- Updating changelog for v0.9.0 release [\#69](https://github.com/Nubisproject/nubis-stacks/pull/69) ([tinnightcap](https://github.com/tinnightcap))
 
-- Excluding AMIs who has a .Name which contains '.rc-', jq supports regex ... [\#35](https://github.com/Nubisproject/nubis-builder/pull/35) ([bhourigan](https://github.com/bhourigan))
+- Update the storage stack to use nubis-stacks 0.9.0 [\#68](https://github.com/Nubisproject/nubis-stacks/pull/68) ([tinnightcap](https://github.com/tinnightcap))
 
-- AWS IAM bugfix and addressing Issue 32 [\#33](https://github.com/Nubisproject/nubis-builder/pull/33) ([bhourigan](https://github.com/bhourigan))
+- Removing ProjectName parameter from README files [\#67](https://github.com/Nubisproject/nubis-stacks/pull/67) ([limed](https://github.com/limed))
 
-- Adding --version [\#31](https://github.com/Nubisproject/nubis-builder/pull/31) ([bhourigan](https://github.com/bhourigan))
+- Return AutoScalingGroupPrivate -\> AutoScalingGroup [\#66](https://github.com/Nubisproject/nubis-stacks/pull/66) ([limed](https://github.com/limed))
 
-- Conditional bundle\_upload\_command appending [\#27](https://github.com/Nubisproject/nubis-builder/pull/27) ([bhourigan](https://github.com/bhourigan))
+- Public private subnet option [\#64](https://github.com/Nubisproject/nubis-stacks/pull/64) ([limed](https://github.com/limed))
 
-- Forgot that these inline scripts run as an unprivileged user [\#26](https://github.com/Nubisproject/nubis-builder/pull/26) ([bhourigan](https://github.com/bhourigan))
+- Add Name tag for autoscaling group [\#57](https://github.com/Nubisproject/nubis-stacks/pull/57) ([limed](https://github.com/limed))
 
-- Addressing https://github.com/Nubisproject/nubis-builder/issues/24 [\#25](https://github.com/Nubisproject/nubis-builder/pull/25) ([bhourigan](https://github.com/bhourigan))
+- update stack examples with StacksVersion [\#52](https://github.com/Nubisproject/nubis-stacks/pull/52) ([gozer](https://github.com/gozer))
 
-- Adding create option [\#21](https://github.com/Nubisproject/nubis-builder/pull/21) ([bhourigan](https://github.com/bhourigan))
+- Add input validation to all stacks, fixes issue \#37 [\#51](https://github.com/Nubisproject/nubis-stacks/pull/51) ([gozer](https://github.com/gozer))
 
-- Module improvements [\#20](https://github.com/Nubisproject/nubis-builder/pull/20) ([bhourigan](https://github.com/bhourigan))
+- Add a new SSLCertificate argument to the ELB Stack, if specified, its the ARN of the SSL certificate to use, otherwise, defaults to a shared cert. [\#49](https://github.com/Nubisproject/nubis-stacks/pull/49) ([gozer](https://github.com/gozer))
 
-- disable eu-west-1 for now, it just slows things down [\#18](https://github.com/Nubisproject/nubis-builder/pull/18) ([gozer](https://github.com/gozer))
+- Fixing keyname as needed by EC2 [\#48](https://github.com/Nubisproject/nubis-stacks/pull/48) ([tinnightcap](https://github.com/tinnightcap))
 
-- A few small fixes & restoring instance-store builders [\#17](https://github.com/Nubisproject/nubis-builder/pull/17) ([bhourigan](https://github.com/bhourigan))
+- Rename KeyName to SSHKeyName, for nubisproject/nubis-docs\#35 [\#47](https://github.com/Nubisproject/nubis-stacks/pull/47) ([gozer](https://github.com/gozer))
 
-- Refactoring AMI generation & adding builder verbosity [\#15](https://github.com/Nubisproject/nubis-builder/pull/15) ([bhourigan](https://github.com/bhourigan))
+- update AMIs to v0.51 [\#46](https://github.com/Nubisproject/nubis-stacks/pull/46) ([gozer](https://github.com/gozer))
 
-- Adding --sort-keys to jq when bumping version [\#14](https://github.com/Nubisproject/nubis-builder/pull/14) ([bhourigan](https://github.com/bhourigan))
+- Update Storage Stack to v0.50 \(S3 Backups\) [\#45](https://github.com/Nubisproject/nubis-stacks/pull/45) ([gozer](https://github.com/gozer))
 
-- Automatic project\_path discovery [\#12](https://github.com/Nubisproject/nubis-builder/pull/12) ([bhourigan](https://github.com/bhourigan))
+- Add a new option to enable/disable bucket versionning: VersioningConfiguration [\#44](https://github.com/Nubisproject/nubis-stacks/pull/44) ([gozer](https://github.com/gozer))
 
-- Instead of requiring a --builder-prefix, why not just find ourselves? [\#11](https://github.com/Nubisproject/nubis-builder/pull/11) ([gozer](https://github.com/gozer))
+- Added a readme file for upload\_to\_s3 variable script [\#36](https://github.com/Nubisproject/nubis-stacks/pull/36) ([limed](https://github.com/limed))
 
-- Fix script errors [\#3](https://github.com/Nubisproject/nubis-builder/pull/3) ([tinnightcap](https://github.com/tinnightcap))
+- Fixed typo [\#35](https://github.com/Nubisproject/nubis-stacks/pull/35) ([limed](https://github.com/limed))
+
+- Added rds-postgres.template readme file [\#34](https://github.com/Nubisproject/nubis-stacks/pull/34) ([limed](https://github.com/limed))
+
+- reindent and fix little tyop [\#33](https://github.com/Nubisproject/nubis-stacks/pull/33) ([gozer](https://github.com/gozer))
+
+- Template to support postgres in RDS [\#31](https://github.com/Nubisproject/nubis-stacks/pull/31) ([limed](https://github.com/limed))
+
+- Add optionnal IamInstanceProfile option [\#30](https://github.com/Nubisproject/nubis-stacks/pull/30) ([gozer](https://github.com/gozer))
+
+- Updating variables-dist file [\#29](https://github.com/Nubisproject/nubis-stacks/pull/29) ([tinnightcap](https://github.com/tinnightcap))
+
+- o\# Please enter the commit message for your changes. Lines starting [\#28](https://github.com/Nubisproject/nubis-stacks/pull/28) ([tinnightcap](https://github.com/tinnightcap))
+
+- Set default cluster size to 3 again [\#27](https://github.com/Nubisproject/nubis-stacks/pull/27) ([gozer](https://github.com/gozer))
+
+- release nubis-storage 0.41 [\#26](https://github.com/Nubisproject/nubis-stacks/pull/26) ([gozer](https://github.com/gozer))
+
+- Adding snapshot on delete [\#25](https://github.com/Nubisproject/nubis-stacks/pull/25) ([tinnightcap](https://github.com/tinnightcap))
+
+- Update dev to stage [\#24](https://github.com/Nubisproject/nubis-stacks/pull/24) ([tinnightcap](https://github.com/tinnightcap))
+
+- Upgrade Storage [\#23](https://github.com/Nubisproject/nubis-stacks/pull/23) ([gozer](https://github.com/gozer))
+
+- Adding StackName to ec2 UserData [\#22](https://github.com/Nubisproject/nubis-stacks/pull/22) ([tinnightcap](https://github.com/tinnightcap))
+
+- Rename route53 stack parameter & set default healthcheck for elb stack [\#21](https://github.com/Nubisproject/nubis-stacks/pull/21) ([tinnightcap](https://github.com/tinnightcap))
+
+- Parameterizing autoscaling trigger points [\#20](https://github.com/Nubisproject/nubis-stacks/pull/20) ([tinnightcap](https://github.com/tinnightcap))
+
+- Adding support for an autoscaling policy stack [\#19](https://github.com/Nubisproject/nubis-stacks/pull/19) ([tinnightcap](https://github.com/tinnightcap))
+
+- Set more reasonable defaults [\#18](https://github.com/Nubisproject/nubis-stacks/pull/18) ([tinnightcap](https://github.com/tinnightcap))
+
+- Expose health check target [\#17](https://github.com/Nubisproject/nubis-stacks/pull/17) ([tinnightcap](https://github.com/tinnightcap))
+
+- release storage 0.32 [\#16](https://github.com/Nubisproject/nubis-stacks/pull/16) ([gozer](https://github.com/gozer))
+
+- Fix security group to limit ports [\#15](https://github.com/Nubisproject/nubis-stacks/pull/15) ([tinnightcap](https://github.com/tinnightcap))
+
+- Add https support and remove conditional logic [\#14](https://github.com/Nubisproject/nubis-stacks/pull/14) ([tinnightcap](https://github.com/tinnightcap))
+
+- Release nubis-storage 0.31 [\#13](https://github.com/Nubisproject/nubis-stacks/pull/13) ([gozer](https://github.com/gozer))
+
+- Change ProjectName to ServiceName [\#12](https://github.com/Nubisproject/nubis-stacks/pull/12) ([tinnightcap](https://github.com/tinnightcap))
+
+- Adjust rds template to use custom parameter group [\#11](https://github.com/Nubisproject/nubis-stacks/pull/11) ([tinnightcap](https://github.com/tinnightcap))
+
+- add initial dump of storage stack [\#10](https://github.com/Nubisproject/nubis-stacks/pull/10) ([gozer](https://github.com/gozer))
+
+- Reworking remaining templates to use Lambda function [\#9](https://github.com/Nubisproject/nubis-stacks/pull/9) ([tinnightcap](https://github.com/tinnightcap))
+
+- Converting ec2 & elb templates to parameter lookup [\#8](https://github.com/Nubisproject/nubis-stacks/pull/8) ([tinnightcap](https://github.com/tinnightcap))
+
+- Consul bootstraping, Lambda function and minor fixes [\#7](https://github.com/Nubisproject/nubis-stacks/pull/7) ([tinnightcap](https://github.com/tinnightcap))
+
+- Rename and rework rds template [\#6](https://github.com/Nubisproject/nubis-stacks/pull/6) ([tinnightcap](https://github.com/tinnightcap))
+
+- Deploy with cloudformation [\#3](https://github.com/Nubisproject/nubis-stacks/pull/3) ([tinnightcap](https://github.com/tinnightcap))
+
+- Add push script and moved mappings [\#2](https://github.com/Nubisproject/nubis-stacks/pull/2) ([tinnightcap](https://github.com/tinnightcap))
+
+- Substacks and Readmes [\#1](https://github.com/Nubisproject/nubis-stacks/pull/1) ([tinnightcap](https://github.com/tinnightcap))
 
 
 

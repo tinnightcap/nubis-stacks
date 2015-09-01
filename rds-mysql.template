@@ -107,8 +107,8 @@
         }
       }
     },
-    "MetaInfo": {
-      "Type": "Custom::VpcInfo",
+        "MetaInfo": {
+      "Type": "Custom::MetaInfo",
       "Properties": {
         "ServiceToken": {
           "Fn::Join": [
@@ -123,11 +123,22 @@
                 "Ref": "AWS::AccountId"
               },
               ":function:",
-              "LookupStackOutputs"
+              "LookupNestedStackOutputs"
             ]
           ]
         },
-        "StackName": "nubis-meta"
+        "StackName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::Region"
+              },
+              "vpc"
+            ]
+          ]
+        },
+        "SearchString": "nubis-meta"
       }
     },
     "RDSInstance": {

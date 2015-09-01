@@ -9,6 +9,7 @@
 #+ Options given from the command line always get precidence
 S3_BUCKET='nubis-stacks'
 S3_PATH='master'
+PROFILE='default'
 
 # Source the variables file if it exists
 #+ Options given from the command line always get precidence
@@ -72,7 +73,7 @@ push-files () {
         MD5=`openssl md5 -binary < $FILE | base64`
 
         # Upload the file
-        OUT=$(aws s3api put-object --bucket $S3_BUCKET --acl public-read --content-md5 $MD5 --content-type $CONTENT_TYPE --key ${S3_PATH}/${FILE} --body $FILE 2>&1) 2> /dev/null
+        OUT=$(aws s3api put-object --bucket $S3_BUCKET --acl public-read --profile $PROFILE --content-md5 $MD5 --content-type $CONTENT_TYPE --key ${S3_PATH}/${FILE} --body $FILE 2>&1) 2> /dev/null
         RV=$?
         if [ $RV != 0 ]; then
             echo "ERROR: $OUT"
@@ -103,10 +104,9 @@ while [ "$1" != "" ]; do
             S3_PATH=$2
             shift
         ;;
-        -c | --canonical-user-id )
-            # The canonical user id to use in granting r/w priveleges
-            #+ to the assets in the s3 bucket
-            CANONICAL_USER_ID=$2
+        -P | --profile )
+            # The profile to use to upload the files
+            PROFILE=$2
             shift
         ;;
          -h | -H | --help )
@@ -122,6 +122,8 @@ while [ "$1" != "" ]; do
             echo -en "                      Defaults to '$S3_BUCKET'\n"
             echo -en "  --path      -p    Specify a path to place the files in the s3 bucket\n"
             echo -en "                      Defaults to '$S3_PATH'\n"
+            echo -en "  --profile   -P    Specify a profile to use when uploading the files\n"
+            echo -en "                      Defaults to '$PROFILE'\n"
             echo -en "  --verbose   -v    Turn on verbosity, this should be set as the first argument\n"
             echo -en "                      Basically set -x\n\n"
             exit 0

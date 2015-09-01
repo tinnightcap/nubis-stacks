@@ -30,8 +30,8 @@
     }
   },
   "Resources": {
-    "AccountInfo": {
-      "Type": "Custom::VpcInfo",
+    "MetaInfo": {
+      "Type": "Custom::MetaInfo",
       "Properties": {
         "ServiceToken": {
           "Fn::Join": [
@@ -46,7 +46,7 @@
                 "Ref": "AWS::AccountId"
               },
               ":function:",
-              "LookupStackOutputs"
+              "LookupNestedStackOutputs"
             ]
           ]
         },
@@ -60,7 +60,8 @@
               "vpc"
             ]
           ]
-        }
+        },
+        "SearchString": "VPCMeta"
       }
     },
     "WWWRecord": {
@@ -68,7 +69,7 @@
       "Properties": {
         "HostedZoneId": {
           "Fn::GetAtt": [
-            "AccountInfo",
+            "MetaInfo",
             "HostedZoneId"
           ]
         },
@@ -84,7 +85,7 @@
               ".",
               {
                 "Fn::GetAtt": [
-                  "AccountInfo",
+                  "MetaInfo",
                   "HostedZoneName"
                 ]
               },

@@ -1,5 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Meta resources like DBParameterGroups, HostedZones, etc...",
   "Parameters": {
     "ServiceName": {
       "Description": "Name of this deployment",

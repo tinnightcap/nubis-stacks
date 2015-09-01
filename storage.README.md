@@ -16,7 +16,7 @@ To use this stack you will need to set the required input parameters and include
     "StorageStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubisproject-stacks", { "Ref": "StacksVersion" }, "storage.template" ] ] },
+        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "storage.template" ] ] },
         "TimeoutInMinutes": "60",
         "Parameters": {
           "ServiceName": {

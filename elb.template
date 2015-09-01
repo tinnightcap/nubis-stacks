@@ -17,7 +17,7 @@
       "Default": "sandbox",
       "Type": "String",
       "AllowedValues": [
-        "sandbox",
+        "admin",
         "prod",
         "stage",
         "sandbox"

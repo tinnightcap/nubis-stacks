@@ -1,8 +1,37 @@
 ﻿## Lambda Functions
 This directory contains the [Lambda](https://aws.amazon.com/lambda/) applications that we deploy and use with our nested stacks.
 
-#### Local development
-To local development on your lambda function you need to install a few things. The examples here will assume we are workign on the LookupStackOutputs function.
+### Create IAM Role
+You need to set up an IAM roll in order to use any of these Lambda functions. You need to create one roll per region. (NOTE: This is automatically created in the vpc-meta nested stack)
+
+We will create the roll as a stack.
+
+#### Set up
+Start by setting the profile and region, NOTE: If you have not set up any profiles set this to '*default*'. These commands assume that you have set up your profile names the same as the account names:
+```bash
+PROFILE='nubis-lab'; REGION='us-west-2'; STACK_NAME="$REGION-nubis-lambda-roll"
+```
+
+#### Create Stack
+To create the Lambda Roll stack simply (NOTE: This is only necessary once per account):
+```bash
+aws cloudformation create-stack --template-body file://lambda/lambda-roll.template --capabilities CAPABILITY_IAM --region $REGION --profile $PROFILE --stack-name $STACK_NAME
+```
+
+#### Update Stack
+To update the Lambda Roll stack:
+```bash
+aws cloudformation update-stack --template-body file://lambda/lambda-roll.template --capabilities CAPABILITY_IAM --region $REGION --profile $PROFILE --stack-name $STACK_NAME
+```
+
+#### Delete Stack
+Finally, if you wish to delete the stack you would:
+```bash
+aws cloudformation delete-stack --region $REGION --profile $PROFILE --stack-name $STACK_NAME
+```
+
+### Local development
+To local development on your lambda function you need to install a few things. The examples here will assume we are working on the LookupStackOutputs function.
 
 * Make sure you have `npm` installed, mac users can install it using [homebrew](http://brew.sh/) and there is a nice doc for linux users [here](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager)
 

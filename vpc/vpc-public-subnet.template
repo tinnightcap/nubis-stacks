@@ -53,20 +53,6 @@
       "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
     }
   },
-  "Mappings": {
-    "Region2AZ": {
-      "us-east-1": {
-        "AZ1": "us-east-1b",
-        "AZ2": "us-east-1c",
-        "AZ3": "us-east-1d"
-      },
-      "us-west-2": {
-        "AZ1": "us-west-2a",
-        "AZ2": "us-west-2b",
-        "AZ3": "us-west-2c"
-      }
-    }
-  },
   "Resources": {
     "InternetGateway": {
       "Type": "AWS::EC2::InternetGateway",
@@ -161,12 +147,13 @@
           "Ref": "VpcId"
         },
         "AvailabilityZone": {
-          "Fn::FindInMap": [
-            "Region2AZ",
+          "Fn::Select": [
+            "0",
             {
-              "Ref": "AWS::Region"
-            },
-            "AZ1"
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
           ]
         },
         "CidrBlock": {
@@ -205,12 +192,13 @@
           "Ref": "VpcId"
         },
         "AvailabilityZone": {
-          "Fn::FindInMap": [
-            "Region2AZ",
+          "Fn::Select": [
+            "1",
             {
-              "Ref": "AWS::Region"
-            },
-            "AZ2"
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
           ]
         },
         "CidrBlock": {
@@ -249,12 +237,13 @@
           "Ref": "VpcId"
         },
         "AvailabilityZone": {
-          "Fn::FindInMap": [
-            "Region2AZ",
+          "Fn::Select": [
+            "2",
             {
-              "Ref": "AWS::Region"
-            },
-            "AZ3"
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
           ]
         },
         "CidrBlock": {

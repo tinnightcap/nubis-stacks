@@ -9,6 +9,7 @@
 #+ Options given from the command line always get precidence
 S3_BUCKET='nubis-stacks'
 S3_PATH='master'
+PROFILE='default'
 
 # Source the variables file if it exists
 #+ Options given from the command line always get precidence
@@ -20,10 +21,10 @@ declare -a FILES_LIST
 
 validate-file () {
     echo -n "Validating $1: "
-    aws cloudformation validate-template --template-body file://$1 > /dev/null
+    aws cloudformation validate-template --template-body file://"$1" > /dev/null
     if [ "$?" = "0" ]; then
         echo "Passed"
-        FILES_LIST=(${FILES_LIST[@]} $1)
+        FILES_LIST=("${FILES_LIST[@]}" $1)
     else
         echo "Failed! Excluding from upload."
     fi
@@ -31,7 +32,7 @@ validate-file () {
 
 get_files_list () {
     # Find all files that are not part of automation or configuration
-    FILES=`find . \
+    FILES=$(find . \
                 -name . -a -type d -o \
                 -name .git -a -type d -prune -o \
                 -name bin -a -type d -prune -o \
@@ -45,19 +46,19 @@ get_files_list () {
                 -name parameters.json-dist -a -type f -o \
                 -name template-dist -a -type f -o \
                 -name .gitignore -a -type f -o \
-                -print | sed 's|^./||'`
+                -print | sed 's|^./||')
 
     # Include all markdown (README.md) files
     for FILE in $FILES; do
         if [[ $FILE == *\.README.md ]]; then
-            FILES_LIST=(${FILES_LIST[@]} $FILE)
+            FILES_LIST=("${FILES_LIST[@]}" $FILE)
         fi
     done
 
     # Include all template files that pass validation
     for FILE in $FILES; do
         if [[ $FILE == *\.template ]]; then
-            validate-file $FILE
+            validate-file "$FILE"
         fi
     done
 }
@@ -66,13 +67,13 @@ push-files () {
     FILE=/path/to/file/to/upload.tar.gz
     echo "Uploading ${#FILES_LIST[@]} files to $S3_PATH"
     COUNT=1
-    for FILE in ${FILES_LIST[@]}; do
+    for FILE in "${FILES_LIST[@]}"; do
         echo "Uploading: $FILE ($COUNT of ${#FILES_LIST[@]})"
-        CONTENT_TYPE=`file --brief --mime-type $FILE`
-        MD5=`openssl md5 -binary < $FILE | base64`
+        CONTENT_TYPE=$(file --brief --mime-type $FILE)
+        MD5=$(openssl md5 -binary < $FILE | base64)
 
         # Upload the file
-        OUT=$(aws s3api put-object --bucket $S3_BUCKET --acl public-read --content-md5 $MD5 --content-type $CONTENT_TYPE --key ${S3_PATH}/${FILE} --body $FILE 2>&1) 2> /dev/null
+        OUT=$(aws s3api put-object --bucket "$S3_BUCKET" --acl public-read --profile "$PROFILE" --content-md5 "$MD5" --content-type "$CONTENT_TYPE" --key ${S3_PATH}/${FILE} --body "$FILE" 2>&1) 2> /dev/null
         RV=$?
         if [ $RV != 0 ]; then
             echo "ERROR: $OUT"
@@ -103,10 +104,9 @@ while [ "$1" != "" ]; do
             S3_PATH=$2
             shift
         ;;
-        -c | --canonical-user-id )
-            # The canonical user id to use in granting r/w priveleges
-            #+ to the assets in the s3 bucket
-            CANONICAL_USER_ID=$2
+        -P | --profile )
+            # The profile to use to upload the files
+            PROFILE=$2
             shift
         ;;
          -h | -H | --help )
@@ -122,16 +122,18 @@ while [ "$1" != "" ]; do
             echo -en "                      Defaults to '$S3_BUCKET'\n"
             echo -en "  --path      -p    Specify a path to place the files in the s3 bucket\n"
             echo -en "                      Defaults to '$S3_PATH'\n"
+            echo -en "  --profile   -P    Specify a profile to use when uploading the files\n"
+            echo -en "                      Defaults to '$PROFILE'\n"
             echo -en "  --verbose   -v    Turn on verbosity, this should be set as the first argument\n"
             echo -en "                      Basically set -x\n\n"
             exit 0
         ;;
         push-files | push )
             # Push file if named otherwise push everything
-            if [ -z $2 ]; then
+            if [ -z "$2" ]; then
                 get_files_list
             else
-                validate-file $2
+                validate-file "$2"
             fi
             push-files
             GOT_COMMAND=1

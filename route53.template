@@ -83,6 +83,8 @@
                 "Ref": "DNSName"
               },
               ".",
+              { "Ref": "Environment" },
+              ".",
               {
                 "Fn::GetAtt": [
                   "MetaInfo",

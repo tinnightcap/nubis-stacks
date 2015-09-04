@@ -1,0 +1,14 @@
+{
+  "name": "UUID",
+  "version": "0.0.1",
+  "description": "Generate UUIds",
+  "main": "index.js",
+  "author": "nubis",
+  "private": "true",
+  "license": "MPL",
+  "dependencies": {
+    "node-lambda": "0.1.5",
+    "aws-sdk": "*",
+    "uuid": "*"
+  }
+}

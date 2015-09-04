@@ -320,7 +320,6 @@
                 },
                 "storage",
                 "backup",
-                "bucket",
                 {
                   "Fn::GetAtt": [
                     "VpcInfo",

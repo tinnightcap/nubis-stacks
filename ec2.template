@@ -96,19 +96,19 @@
       "Default": ""
     },
     "AutoScalingGroupMinSize": {
-      "Description": "ELB Endpoint",
+      "Description": "Minimum size of autoscaling group",
       "AllowedPattern": "^[0-9]+$",
       "Type": "String",
       "Default": "1"
     },
     "AutoScalingGroupDesiredCapacity": {
-      "Description": "ELB Endpoint",
+      "Description": "Desired capacity autoscaling group",
       "AllowedPattern": "^[0-9]+$",
       "Type": "String",
       "Default": "1"
     },
     "AutoScalingGroupMaxSize": {
-      "Description": "ELB Endpoint",
+      "Description": "Max size of autoscaling group",
       "Type": "String",
       "AllowedPattern": "^[0-9]+$",
       "Default": "2"

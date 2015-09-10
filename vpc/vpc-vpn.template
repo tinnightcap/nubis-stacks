@@ -92,7 +92,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "CustomerGateway"
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "CustomerGateway"
+                ]
+              ]
+            }
           },
           {
             "Key": "ServiceName",
@@ -122,7 +132,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "VpnGateway"
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "VpnGateway"
+                ]
+              ]
+            }
           },
           {
             "Key": "ServiceName",
@@ -168,7 +188,41 @@
         "StaticRoutesOnly": "False",
         "VpnGatewayId": {
           "Ref": "VpnGateway"
-        }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "VpnConnection"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
       }
     },
     "PublicRouteTableRouteToDataCenter": {

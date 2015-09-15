@@ -59,6 +59,15 @@
         "true",
         "false"
       ]
+    },
+    "Encrypt": {
+      "Description": "Enable encryption using server side encryption",
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": [
+        "true",
+        "false"
+      ]
     }
   },
   "Conditions": {
@@ -76,6 +85,14 @@
           "Ref": "WithRole"
         },
         "false"
+      ]
+    },
+    "EncryptEnable": {
+      "Fn::Equals": [
+        {
+          "Ref": "Encrypt"
+        },
+        "true"
       ]
     }
   },
@@ -126,6 +143,46 @@
             "Value": "Never"
           }
         ]
+      }
+    },
+    "S3Encryption": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Condition": "EncryptEnable",
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3Bucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Id": "PutObjPolicy",
+          "Statement": [
+            {
+              "Sid": "DenyUnEncryptedObjectUploads",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn::aws::s3:::",
+                    {
+                      "Ref": "S3Bucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Condition": {
+                "StringNotEquals": {
+                  "s3:x-amz-server-side-encryption": "AES256"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "S3BackupIAMRole": {

@@ -154,10 +154,8 @@
         },
         "PolicyDocument": {
           "Version": "2012-10-17",
-          "Id": "PutObjPolicy",
           "Statement": [
             {
-              "Sid": "DenyUnEncryptedObjectUploads",
               "Effect": "Deny",
               "Principal": "*",
               "Action": [
@@ -167,7 +165,7 @@
                 "Fn::Join": [
                   "",
                   [
-                    "arn::aws::s3:::",
+                    "arn:aws:s3:::",
                     {
                       "Ref": "S3Bucket"
                     },

@@ -342,48 +342,6 @@
         }
       }
     },
-    "SssgAllowAnyTcpOut": {
-      "Type": "AWS::EC2::SecurityGroupEgress",
-      "Properties": {
-        "GroupId": {
-          "Ref": "SharedServicesSecurityGroup"
-        },
-        "IpProtocol": "tcp",
-        "FromPort": "0",
-        "ToPort": "65535",
-        "SourceSecurityGroupId": {
-          "Ref": "SharedServicesSecurityGroup"
-        }
-      }
-    },
-    "SssgAllowAnyUdpOut": {
-      "Type": "AWS::EC2::SecurityGroupEgress",
-      "Properties": {
-        "GroupId": {
-          "Ref": "SharedServicesSecurityGroup"
-        },
-        "IpProtocol": "udp",
-        "FromPort": "0",
-        "ToPort": "65535",
-        "SourceSecurityGroupId": {
-          "Ref": "SharedServicesSecurityGroup"
-        }
-      }
-    },
-    "SssgAllowAnyIcmpOut": {
-      "Type": "AWS::EC2::SecurityGroupEgress",
-      "Properties": {
-        "GroupId": {
-          "Ref": "SharedServicesSecurityGroup"
-        },
-        "IpProtocol": "icmp",
-        "FromPort": "-1",
-        "ToPort": "-1",
-        "SourceSecurityGroupId": {
-          "Ref": "SharedServicesSecurityGroup"
-        }
-      }
-    },
     "InternetAccessSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {

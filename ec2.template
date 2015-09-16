@@ -134,7 +134,8 @@
     "ConsulToken": {
       "Description": "Optionnal ACL Token for Consul",
       "Type": "String",
-      "Default": "anonymous"
+      "Default": "anonymous",
+      "NoEcho": "true"
     },
     "SecurityGroup": {
       "Description": "Optionnal Security Group for instances",

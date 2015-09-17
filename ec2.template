@@ -637,7 +637,19 @@
           {
             "Key": "Name",
             "Value": {
-              "Ref": "ServiceName"
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ServiceName"
+                  },
+                  "(",
+                  {
+                    "Ref": "Environment"
+                  },
+                  ")"
+                ]
+              ]
             },
             "PropagateAtLaunch": "true"
           },

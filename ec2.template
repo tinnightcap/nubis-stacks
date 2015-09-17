@@ -144,7 +144,7 @@
     },
     "IamRole": {
       "Description": "Optional Iam roles for instances",
-      "Type": "String",
+      "Type": "CommaDelimitedList",
       "Default": ""
     }
   },
@@ -154,7 +154,12 @@
         {
           "Fn::Equals": [
             {
-              "Ref": "IamRole"
+              "Fn::Select": [
+                0,
+                {
+                  "Ref": "IamRole"
+                }
+              ]
             },
             ""
           ]
@@ -680,11 +685,9 @@
       "Condition": "IsSet_IamRole",
       "Properties": {
         "Path": "/",
-        "Roles": [
-          {
-            "Ref": "IamRole"
-          }
-        ]
+        "Roles": {
+          "Ref": "IamRole"
+        }
       }
     }
   },

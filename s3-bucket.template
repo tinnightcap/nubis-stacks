@@ -52,13 +52,18 @@
       ]
     },
     "WithRole": {
-      "Description": "Create s3 bucket for ec2 instance with associated IAM roles",
+      "Description": "Return an IAM Role that grants access to the bucket",
       "Type": "String",
       "Default": "false",
       "AllowedValues": [
         "true",
         "false"
       ]
+    },
+    "IamRole": {
+      "Description": "Add policies to access the bucket to the provided IAM Role",
+      "Type": "String",
+      "Default": ""
     },
     "Encrypt": {
       "Description": "Enable encryption using server side encryption",
@@ -85,6 +90,18 @@
           "Ref": "WithRole"
         },
         "false"
+      ]
+    },
+    "IamRole_Set": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "IamRole"
+            },
+            ""
+          ]
+        }
       ]
     },
     "EncryptEnable": {
@@ -266,7 +283,15 @@
         },
         "Roles": [
           {
-            "Ref": "S3BackupIAMRole"
+            "Fn::If": [
+              "IamRole_Set",
+              {
+                "Ref": "IamRole"
+              },
+              {
+                "Ref": "S3BackupIAMRole"
+              }
+            ]
           }
         ]
       }

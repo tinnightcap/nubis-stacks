@@ -104,6 +104,16 @@
         }
       ]
     },
+    "CreateIAMPolicy": {
+      "Fn::Or": [
+        {
+          "Condition": "WithRoleEnable"
+        },
+        {
+          "Condition": "IamRole_Set"
+        }
+      ]
+    },
     "EncryptEnable": {
       "Fn::Equals": [
         {
@@ -225,7 +235,7 @@
     },
     "S3BackupIAMPolicy": {
       "Type": "AWS::IAM::Policy",
-      "Condition": "WithRoleEnable",
+      "Condition": "CreateIAMPolicy",
       "Properties": {
         "PolicyName": {
           "Fn::Join": [

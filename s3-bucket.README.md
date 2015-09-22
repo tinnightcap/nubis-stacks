@@ -36,3 +36,16 @@ To use this stack you will need to set the required input parameters and include
       }
     }
 ```
+
+#### Notes
+If you enable encryption on the bucket `"Encryption": "true"` you will need to upload files to your S3 bucket by passing the `awscli` a special flag
+
+```bash
+aws s3api put-object --server-side-encryption AES256 --bucket <bucket name> --key <File name on S3> --body <Local path to file>
+```
+
+Alternatively
+
+```bash
+aws s3 cp --sse <local file path> s3://<bucket name>
+```

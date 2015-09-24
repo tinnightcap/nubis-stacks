@@ -451,7 +451,7 @@
         ]
       },
       "Metadata": {
-        "Comment": "This security group must be applied to any instances that need inbound ssh access."
+        "Comment": "This security group must be applied to any instances that need to initiate ssh connections to other hosts within the VPC. Additionally it should be referenced in the ingress policy for hosts on which the ssh connections are terminating."
       }
     },
     "PublicSubnetStack": {

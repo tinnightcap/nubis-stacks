@@ -398,6 +398,62 @@
         "Comment": "This security group must be applied to any instances that need to get out to the Internet."
       }
     },
+    "SshSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "GroupDescription": {
+          "Fn::Join": [
+            " ",
+            [
+              {
+                "Ref": "Environment"
+              },
+              "SSH Security Group"
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "SshSecurityGroup"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "Comment": "This security group must be applied to any instances that need inbound ssh access."
+      }
+    },
     "PublicSubnetStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
@@ -673,6 +729,11 @@
     "InternetAccessSecurityGroupId": {
       "Value": {
         "Ref": "InternetAccessSecurityGroup"
+      }
+    },
+    "SshSecurityGroupId": {
+      "Value": {
+        "Ref": "SshSecurityGroup"
       }
     }
   }

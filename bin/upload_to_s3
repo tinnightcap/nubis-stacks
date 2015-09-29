@@ -63,6 +63,10 @@ get_files_list () {
     done
 }
 
+get_lambda_list () {
+    LAMBDA=$(find lambda/ -mindepth 1 -maxdepth 1 -type d | cut -d/ -f2-)
+}
+
 push-files () {
     FILE=/path/to/file/to/upload.tar.gz
     echo "Uploading ${#FILES_LIST[@]} files to $S3_PATH"
@@ -84,6 +88,26 @@ push-files () {
     done
 }
 
+push-lambda () {
+    FILES_LIST=()
+    for FUNCTION in $LAMBDA; do
+        echo "Pushing lambda:$FUNCTION"
+        update-lambda-dependencies $FUNCTION
+        zip-lambda $FUNCTION
+        FILES_LIST=("${FILES_LIST[@]}" lambda/$FUNCTION.zip)
+    done
+
+    push-files
+}
+
+zip-lambda () {
+    echo "Packaging lambda:$1"
+    ( cd lambda/$1 && zip -qr ../$1.zip * )
+}
+update-lambda-dependencies () {
+    echo "Updating dependencies for lambda:$1"
+    ( cd lambda/$1 && npm update 2>/dev/null )
+}
 
 # Grab and setup called options
 while [ "$1" != "" ]; do
@@ -113,9 +137,12 @@ while [ "$1" != "" ]; do
             echo -en "$0\n\n"
             echo -en "Usage: $0 [options] command [file]\n\n"
             echo -en "Commands:\n"
-            echo -en "  push [file]       Push files from the local directory to s3\n"
+            echo -en "  push [file]        Push files from the local directory to s3\n"
             echo -en "                      If file is given push only that file\n"
             echo -en "                      If no file is given push everything in the directory\n"
+            echo -en "  push-lambda [func] Push lambda functions from the local directory to s3\n"
+            echo -en "                      If function is given push only that function\n"
+            echo -en "                      If no function is given push everything in the directory\n"
             echo -en "Options:\n"
             echo -en "  --help      -h    Print this help information and exit\n"
             echo -en "  --bucket    -b    Specify the s3 bucket to upload to\n"
@@ -136,6 +163,21 @@ while [ "$1" != "" ]; do
                 validate-file "$2"
             fi
             push-files
+            GOT_COMMAND=1
+        ;;
+        push-lambda )
+            # Push function if named otherwise push everything
+            shift
+            if [ -z "$*" ]; then
+                get_lambda_list
+            else
+                for POSSIBLE in $*; do
+                  if [ -d "lambda/$POSSIBLE" ]; then
+                    LAMBDA="$LAMBDA $POSSIBLE"
+                  fi
+                done
+            fi
+            push-lambda
             GOT_COMMAND=1
         ;;
     esac

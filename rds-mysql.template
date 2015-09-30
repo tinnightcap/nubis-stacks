@@ -74,6 +74,7 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": { "Ref": "StacksVersion" },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -110,6 +111,7 @@
         "MetaInfo": {
       "Type": "Custom::MetaInfo",
       "Properties": {
+        "StacksVersion": { "Ref": "StacksVersion" },
         "ServiceToken": {
           "Fn::Join": [
             "",

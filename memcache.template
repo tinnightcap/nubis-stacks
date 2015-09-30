@@ -34,6 +34,7 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": { "Ref": "StacksVersion" },
         "ServiceToken": {
           "Fn::Join": [
             "",

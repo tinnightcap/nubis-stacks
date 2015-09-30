@@ -33,6 +33,7 @@
     "MetaInfo": {
       "Type": "Custom::MetaInfo",
       "Properties": {
+        "StacksVersion": { "Ref": "StacksVersion" },
         "ServiceToken": {
           "Fn::Join": [
             "",

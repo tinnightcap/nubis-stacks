@@ -15,6 +15,11 @@
     "NubisDomain": {
       "Description": "The domain used for DHCP search and Route53 HostedZone",
       "Type": "String"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Outputs": {
@@ -94,6 +99,33 @@
         "Fn::GetAtt": [
           "DatadogUserAccessKey",
           "SecretAccessKey"
+        ]
+      }
+    },
+    "LambdaUUID": {
+      "Description": "UUID Lambda Function",
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaUUID",
+          "Arn"
+        ]
+      }
+    },
+    "LambdaLookupStackOutputs": {
+      "Description": "LookupStackOutputs Lambda Function",
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaLookupStackOutputs",
+          "Arn"
+        ]
+      }
+    },
+    "LambdaLookupNestedStackOutputs": {
+      "Description": "LookupNestedStackOutputs Lambda Function",
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaLookupNestedStackOutputs",
+          "Arn"
         ]
       }
     }
@@ -227,11 +259,15 @@
         "Tags": [
           {
             "Key": "ServiceName",
-            "Value": { "Ref": "ServiceName" }
+            "Value": {
+              "Ref": "ServiceName"
+            }
           },
           {
             "Key": "TechnicalOwner",
-            "Value": { "Ref" : "TechnicalOwner" }
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
           }
         ]
       }
@@ -289,6 +325,93 @@
         "UserName": {
           "Ref": "Datadog"
         }
+      }
+    },
+    "LambdaUUID": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaIamRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "nubis-stacks",
+          "S3Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Ref": "StacksVersion"
+                },
+                "lambda",
+                "UUID.zip"
+              ]
+            ]
+          }
+        },
+        "Runtime": "nodejs",
+        "Timeout": "25"
+      }
+    },
+    "LambdaLookupStackOutputs": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaIamRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "nubis-stacks",
+          "S3Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Ref": "StacksVersion"
+                },
+                "lambda",
+                "LookupStackOutputs.zip"
+              ]
+            ]
+          }
+        },
+        "Runtime": "nodejs",
+        "Timeout": "25"
+      }
+    },
+    "LambdaLookupNestedStackOutputs": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaIamRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": "nubis-stacks",
+          "S3Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Ref": "StacksVersion"
+                },
+                "lambda",
+                "LookupNestedStackOutputs.zip"
+              ]
+            ]
+          }
+        },
+        "Runtime": "nodejs",
+        "Timeout": "25"
       }
     }
   }

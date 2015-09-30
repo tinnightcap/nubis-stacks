@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs and a VPN connection",
+  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs, a VPN connection and a S3 bucket for ELB Logs",
   "Parameters": {
     "ServiceName": {
       "Description": "Name of this deployment",

@@ -69,50 +69,13 @@
       ]
     }
   },
-  "Mappings": {
-    "ELBAccountIdMap": {
-      "Comment": {
-        "Comment": "This maps to the accounts running ELBs"
-      },
-      "us-east-1": {
-        "AccountId": "127311923021"
-      },
-      "us-west-1": {
-        "AccountId": "027434742980"
-      },
-      "us-west-2": {
-        "AccountId": "797873946194"
-      },
-      "eu-west-1": {
-        "AccountId": "156460612806"
-      },
-      "eu-central-1": {
-        "AccountId": "054676820928"
-      },
-      "ap-northeast-1": {
-        "AccountId": "582318560864"
-      },
-      "ap-southeast-1": {
-        "AccountId": "114774131450"
-      },
-      "ap-southeast-2": {
-        "AccountId": "783225319266"
-      },
-      "sa-east-1": {
-        "AccountId": "507241528517"
-      },
-      "us-gov-west-1": {
-        "AccountId": "048591011584"
-      },
-      "cn-north-1": {
-        "AccountId": "638102146993"
-      }
-    }
-  },
   "Resources": {
     "MetaInfo": {
       "Type": "Custom::MetaInfo",
       "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -147,6 +110,9 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -177,29 +143,6 @@
         },
         "SearchString": {
           "Ref": "Environment"
-        }
-      }
-    },
-    "AccessLoggingBucketUUID": {
-      "Type": "Custom::UUID",
-      "Condition": "AccessLogging",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:aws:lambda:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":function:",
-              "UUID"
-            ]
-          ]
         }
       }
     },
@@ -347,8 +290,8 @@
               "Enabled": true,
               "S3BucketName": {
                 "Fn::GetAtt": [
-                  "AccessLoggingBucket",
-                  "Outputs.S3Bucket"
+                  "VpcInfo",
+                  "AccessLoggingBucket"
                 ]
               }
             },
@@ -389,95 +332,6 @@
             "Value": "Never"
           }
         ]
-      }
-    },
-    "AccessLoggingBucket": {
-      "Type": "AWS::CloudFormation::Stack",
-      "Condition": "AccessLogging",
-      "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "s3-bucket.template" ] ] },
-        "Parameters": {
-          "ServiceName": {
-            "Ref": "ServiceName"
-          },
-          "TechnicalOwner": {
-            "Ref": "TechnicalOwner"
-          },
-          "Environment": {
-            "Ref": "Environment"
-          },
-          "AccessControl": "Private",
-          "BucketName": {
-            "Fn::Join": [
-              "-",
-              [
-                {
-                  "Ref": "ServiceName"
-                },
-                {
-                  "Ref": "Environment"
-                },
-                "elb",
-                {
-                  "Fn::GetAtt": [
-                    "AccessLoggingBucketUUID",
-                    "uuid"
-                  ]
-                }
-              ]
-            ]
-          }
-        }
-      }
-    },
-    "AccessLoggingBucketPolicy": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Condition": "AccessLogging",
-      "Properties": {
-        "Bucket": {
-          "Fn::GetAtt": [
-            "AccessLoggingBucket",
-            "Outputs.S3Bucket"
-          ]
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:PutObject"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Fn::GetAtt": [
-                        "AccessLoggingBucket",
-                        "Outputs.S3Bucket"
-                      ]
-                    },
-                    "/*"
-                  ]
-                ]
-              },
-              "Principal": {
-                "AWS": [
-                  {
-                    "Fn::FindInMap": [
-                      "ELBAccountIdMap",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      "AccountId"
-                    ]
-                  }
-                ]
-              }
-            }
-          ]
-        }
       }
     }
   },

@@ -34,9 +34,32 @@
       "Type": "String",
       "AllowedPattern": "^arn:aws:iam::[0-9]+:server-certificate/.*$",
       "Default": "arn:aws:iam::0000:server-certificate/not-set"
+    },
+    "AccessLogging": {
+      "Description": "Flag to enable Access Logging to an S3 bucket",
+      "Type": "String",
+      "AllowedValues": [
+        "true",
+        "false"
+      ],
+      "ConstraintDescription": "Must be true or false",
+      "Default": "false"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Conditions": {
+    "AccessLogging": {
+      "Fn::Equals": [
+        {
+          "Ref": "AccessLogging"
+        },
+        "true"
+      ]
+    },
     "NotSet_SSLCertificate": {
       "Fn::Equals": [
         {
@@ -50,6 +73,9 @@
     "MetaInfo": {
       "Type": "Custom::MetaInfo",
       "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -84,6 +110,9 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -252,6 +281,24 @@
             "Ref": "ElbHealthTarget"
           },
           "Interval": "30"
+        },
+        "AccessLoggingPolicy": {
+          "Fn::If": [
+            "AccessLogging",
+            {
+              "EmitInterval": 5,
+              "Enabled": true,
+              "S3BucketName": {
+                "Fn::GetAtt": [
+                  "VpcInfo",
+                  "AccessLoggingBucket"
+                ]
+              }
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
         },
         "Tags": [
           {

@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs and a VPN connection",
+  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs, a VPN connection and a S3 bucket for ELB Logs",
   "Parameters": {
     "ServiceName": {
       "Description": "Name of this deployment",
@@ -107,6 +107,10 @@
       "Default": "0.0.0.0",
       "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))",
       "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x"
+    },
+    "LambdaUUIDArn": {
+      "Description": "The ARN of a UUID generating Lambda function (from vpc-meta)",
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -163,7 +167,142 @@
       ]
     }
   },
+  "Mappings": {
+    "ELBAccountIdMap": {
+      "Comment": {
+        "Comment": "This maps to the accounts running ELBs"
+      },
+      "us-east-1": {
+        "AccountId": "127311923021"
+      },
+      "us-west-1": {
+        "AccountId": "027434742980"
+      },
+      "us-west-2": {
+        "AccountId": "797873946194"
+      },
+      "eu-west-1": {
+        "AccountId": "156460612806"
+      },
+      "eu-central-1": {
+        "AccountId": "054676820928"
+      },
+      "ap-northeast-1": {
+        "AccountId": "582318560864"
+      },
+      "ap-southeast-1": {
+        "AccountId": "114774131450"
+      },
+      "ap-southeast-2": {
+        "AccountId": "783225319266"
+      },
+      "sa-east-1": {
+        "AccountId": "507241528517"
+      },
+      "us-gov-west-1": {
+        "AccountId": "048591011584"
+      },
+      "cn-north-1": {
+        "AccountId": "638102146993"
+      }
+    }
+  },
   "Resources": {
+    "AccessLoggingBucketUUID": {
+      "Type": "Custom::UUID",
+      "Properties": {
+        "ServiceToken": {
+          "Ref": "LambdaUUIDArn"
+        }
+      }
+    },
+    "AccessLoggingBucket": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "s3-bucket.template" ] ] },
+        "Parameters": {
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "AccessControl": "Private",
+          "BucketName": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Ref": "ServiceName"
+                },
+                {
+                  "Ref": "Environment"
+                },
+                "elb",
+                {
+                  "Fn::GetAtt": [
+                    "AccessLoggingBucketUUID",
+                    "uuid"
+                  ]
+                }
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "AccessLoggingBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Fn::GetAtt": [
+            "AccessLoggingBucket",
+            "Outputs.S3Bucket"
+          ]
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLoggingBucket",
+                        "Outputs.S3Bucket"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Principal": {
+                "AWS": [
+                  {
+                    "Fn::FindInMap": [
+                      "ELBAccountIdMap",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "AccountId"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
     "NubisVpc": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
@@ -734,6 +873,14 @@
     "SshSecurityGroupId": {
       "Value": {
         "Ref": "SshSecurityGroup"
+      }
+    },
+    "AccessLoggingBucket": {
+      "Value": {
+        "Fn::GetAtt": [
+          "AccessLoggingBucket",
+          "Outputs.S3Bucket"
+        ]
       }
     }
   }

@@ -68,6 +68,11 @@
       "Description": "EC2SecurityGroup id",
       "AllowedPattern": "^sg-[0-9a-f]{8}$",
       "Type": "String"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Resources": {

@@ -146,6 +146,11 @@
       "Description": "Optional IAM role for instances",
       "Type": "String",
       "Default": ""
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Conditions": {
@@ -202,6 +207,7 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": { "Ref": "StacksVersion" },
         "ServiceToken": {
           "Fn::Join": [
             "",

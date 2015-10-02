@@ -27,12 +27,18 @@
     "ELBStack": {
       "Description": "ELB Stack endpoint",
       "Type": "String"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Resources": {
     "MetaInfo": {
       "Type": "Custom::MetaInfo",
       "Properties": {
+        "StacksVersion": { "Ref": "StacksVersion" },
         "ServiceToken": {
           "Fn::Join": [
             "",

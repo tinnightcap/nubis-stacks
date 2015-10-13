@@ -43,7 +43,7 @@
         "false"
       ],
       "ConstraintDescription": "Must be true or false",
-      "Default": "false"
+      "Default": "true"
     },
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",

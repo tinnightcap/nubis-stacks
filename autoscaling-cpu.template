@@ -15,6 +15,11 @@
       "Description": "Overall cluster CPU usage by percentage where we trigger a scale down action.",
       "Type": "String",
       "Default": "40"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Resources": {

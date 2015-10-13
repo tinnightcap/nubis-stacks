@@ -7,6 +7,11 @@
       "AllowedPattern": "^[a-zA-Z][a-zA-Z0-9-]{0,254}$",
       "ConstraintDescription": "A stack name can contain only alphanumeric characters (case sensitive) and hyphens. It must start with an alphabetic character and cannot be longer than 255 characters.",
       "Type": "String"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.0"
     }
   },
   "Resources": {

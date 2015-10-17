@@ -69,6 +69,13 @@
       "AllowedPattern": "^sg-[0-9a-f]{8}$",
       "Type": "String"
     },
+    "MasterUsername": {
+      "Description": "Database Master Username",
+      "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]{0,62}",
+      "Type": "String",
+      "Default": "provisioner",
+      "ConstraintDescription": "Must contain 1 to 63 alphanumeric characters. First character must be a letter."
+    },
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
@@ -135,7 +142,7 @@
           }
         ],
         "MasterUsername": {
-          "Ref": "DBName"
+          "Ref": "MasterUsername"
         },
         "MasterUserPassword": "provisioner_password",
         "DBName": {

@@ -354,7 +354,7 @@
     "RDSUser": {
       "Description": "Database user",
       "Value": {
-        "Ref": "DBName"
+        "Ref": "MasterUsername"
       }
     }
   }

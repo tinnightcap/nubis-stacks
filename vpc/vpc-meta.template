@@ -226,6 +226,34 @@
         ]
       }
     },
+    "NACLAdminGroup": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "NACLAdminPolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+        {
+            "Sid": "Stmt1445360254279",
+            "Action": [
+                "ec2:CreateNetworkAcl",
+                "ec2:CreateNetworkAclEntry",
+                "ec2:DeleteNetworkAcl",
+                "ec2:DeleteNetworkAclEntry",
+                "ec2:DescribeNetworkAcls",
+                "ec2:ReplaceNetworkAclAssociation",
+                "ec2:ReplaceNetworkAclEntry",
+                "ec2:DescribeVpcAttribute",
+                "ec2:DescribeVpcs"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "NubisMySQL56ParameterGroup": {
       "Type": "AWS::RDS::DBParameterGroup",
       "Properties": {

@@ -62,6 +62,7 @@
             {
               "Effect": "Allow",
               "Action": [
+                "cloudformation:DescribeStacks",
                 "ec2:AssociateAddress",
                 "ec2:DisassociateAddress"
               ],

@@ -76,10 +76,29 @@
       "Default": "provisioner",
       "ConstraintDescription": "Must contain 1 to 16 alphanumeric characters. First character must be a letter."
     },
+    "ReadOnlySlave": {
+      "Description": "Create a read-only slave database",
+      "AllowedValues": [
+        "true",
+        "false"
+      ],
+      "Type": "String",
+      "Default": "false"
+    },
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
       "Default": "v1.0.0"
+    }
+  },
+  "Conditions" : {
+    "WithReadOnlySlave": {
+      "Fn::Equals": [
+        {
+          "Ref": "ReadOnlySlave"
+        },
+        "true"
+      ]
     }
   },
   "Resources": {
@@ -153,6 +172,50 @@
           ]
         },
         "SearchString": "VPCMeta"
+      }
+    },
+    "RDSInstanceSlave" : {
+      "Type" : "AWS::RDS::DBInstance",
+      "Condition": "WithReadOnlySlave",
+      "Properties" : {
+        "SourceDBInstanceIdentifier" : { "Ref" : "RDSInstance" },
+        "DBInstanceClass" : { "Ref" : "DBInstanceClass" },
+        "Tags": [
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": "Database Instance"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never"
+          },
+          {
+            "Key": "RDS",
+            "Value": "Slave"
+          }
+        ]
       }
     },
     "RDSInstance": {
@@ -355,6 +418,16 @@
       "Description": "Database user",
       "Value": {
         "Ref": "MasterUsername"
+      }
+    },
+    "SlaveRDSEndpoint": {
+      "Condition" : "WithReadOnlySlave",
+      "Description": "Database endpoint",
+      "Value": {
+        "Fn::GetAtt": [
+          "RDSInstanceSlave",
+          "Endpoint.Address"
+        ]
       }
     }
   }

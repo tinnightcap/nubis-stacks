@@ -85,6 +85,15 @@
       "Type": "String",
       "Default": "false"
     },
+    "DBStorageType": {
+      "Description": "Storage Type for the database, one of standard (magnetic) or gp2 (SSD)",
+      "Type": "String",
+      "Default": "standard",
+      "AllowedValues": [
+        "standard",
+        "gp2"
+      ]
+    },
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
@@ -188,6 +197,9 @@
       "Properties": {
         "AllocatedStorage": {
           "Ref": "AllocatedStorage"
+        },
+        "StorageType": {
+          "Ref": "DBStorageType"
         },
         "DBInstanceClass": {
           "Ref": "DBInstanceClass"

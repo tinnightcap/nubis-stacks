@@ -477,7 +477,7 @@
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
           "WaitOnResourceSignals": "false",
-          "PauseTime": "PT1M"
+          "PauseTime": "PT2M"
         }
       },
       "Properties": {
@@ -596,7 +596,7 @@
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
           "WaitOnResourceSignals": "false",
-          "PauseTime": "PT1M"
+          "PauseTime": "PT2M"
         }
       },
       "Properties": {

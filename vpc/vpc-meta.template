@@ -232,22 +232,20 @@
         "NACLAdminPolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
-        {
-            "Action": [
+            {
+              "Action": [
                 "ec2:CreateNetworkAclEntry",
                 "ec2:DeleteNetworkAclEntry",
                 "ec2:DescribeNetworkAcls",
                 "ec2:ReplaceNetworkAclEntry",
                 "ec2:DescribeVpcAttribute",
                 "ec2:DescribeVpcs"
-            ],
-            "Effect": "Allow",
-            "Resource": "*"
-                }
-              ]
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
             }
-          }
-        ]
+          ]
+        }
       }
     },
     "NubisMySQL56ParameterGroup": {

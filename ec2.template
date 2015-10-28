@@ -151,6 +151,11 @@
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
       "Default": "v1.0.0"
+    },
+    "RollingUpgradePauseTime": {
+      "Description": "Rolling upgrade pause time beween instances ( ISO8601 duration format : PT#H#M#S )",
+      "Type": "String",
+      "Default": "PT2M"
     }
   },
   "Conditions": {
@@ -477,7 +482,9 @@
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
           "WaitOnResourceSignals": "false",
-          "PauseTime": "PT2M"
+          "PauseTime": {
+            "Ref": "RollingUpgradePauseTime"
+          }
         }
       },
       "Properties": {
@@ -596,7 +603,9 @@
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
           "WaitOnResourceSignals": "false",
-          "PauseTime": "PT2M"
+          "PauseTime": {
+            "Ref": "RollingUpgradePauseTime"
+          }
         }
       },
       "Properties": {

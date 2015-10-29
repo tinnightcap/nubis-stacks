@@ -154,6 +154,11 @@
       "Properties" : {
         "SourceDBInstanceIdentifier" : { "Ref" : "RDSInstance" },
         "DBInstanceClass" : { "Ref" : "DBInstanceClass" },
+        "VPCSecurityGroups": [
+          {
+            "Ref": "RDSSecurityGroup"
+          }
+        ],
         "Tags": [
           {
             "Key": "ServiceName",

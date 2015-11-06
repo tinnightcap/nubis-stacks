@@ -253,6 +253,12 @@
         ]
       }
     },
+    "ReadOnlyUsers": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "ManagedPolicyArns": [ "arn:aws:iam::aws:policy/ReadOnlyAccess" ]
+      }
+    },
     "NubisMySQL56ParameterGroup": {
       "Type": "AWS::RDS::DBParameterGroup",
       "Properties": {

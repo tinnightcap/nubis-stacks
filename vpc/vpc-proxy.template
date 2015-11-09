@@ -159,10 +159,10 @@
   "Mappings": {
     "AMIs": {
       "us-east-1": {
-        "AMI": "ami-a74c3ccd"
+        "AMI": "ami-4e067924"
       },
       "us-west-2": {
-        "AMI": "ami-31061250"
+        "AMI": "ami-58adba39"
       }
     }
   },

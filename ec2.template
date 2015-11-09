@@ -155,6 +155,11 @@
       "Description": "Rolling upgrade pause time beween instances ( ISO8601 duration format : PT#H#M#S )",
       "Type": "String",
       "Default": "PT2M"
+    },
+    "VPCZoneIdentifier": {
+      "Description": "Coma seperated string of subnet ids to deploy the autoscaling group nodes into",
+      "Type": "String",
+      "Default": ""
     }
   },
   "Conditions": {
@@ -202,6 +207,18 @@
               "Ref": "SubnetLocation"
             },
             "public"
+          ]
+        }
+      ]
+    },
+    "IsSet_VPCZoneIdentifier": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "VPCZoneIdentifier"
+            },
+            ""
           ]
         }
       ]
@@ -489,21 +506,36 @@
       "Properties": {
         "VPCZoneIdentifier": [
           {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PublicSubnetAZ1"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PublicSubnetAZ2"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PublicSubnetAZ3"
+            "Fn::If": [
+              "IsSet_VPCZoneIdentifier",
+              {
+                "Ref": "VPCZoneIdentifier"
+              },
+              {
+                "Fn::Join": [
+                  ",",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ1"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ2"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ3"
+                      ]
+                    }
+                  ]
+                ]
+              }
             ]
           }
         ],
@@ -610,21 +642,36 @@
       "Properties": {
         "VPCZoneIdentifier": [
           {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PrivateSubnetAZ1"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PrivateSubnetAZ2"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PrivateSubnetAZ3"
+            "Fn::If": [
+              "IsSet_VPCZoneIdentifier",
+              {
+                "Ref": "VPCZoneIdentifier"
+              },
+              {
+                "Fn::Join": [
+                  ",",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ1"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ2"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ3"
+                      ]
+                    }
+                  ]
+                ]
+              }
             ]
           }
         ],

@@ -226,26 +226,37 @@
         ]
       }
     },
-    "NACLAdminGroup": {
+    "NACLAdministrators": {
       "Type": "AWS::IAM::Group",
       "Properties": {
-        "NACLAdminPolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Action": [
-                "ec2:CreateNetworkAclEntry",
-                "ec2:DeleteNetworkAclEntry",
-                "ec2:DescribeNetworkAcls",
-                "ec2:ReplaceNetworkAclEntry",
-                "ec2:DescribeVpcAttribute",
-                "ec2:DescribeVpcs"
-              ],
-              "Effect": "Allow",
-              "Resource": "*"
+        "Policies": [
+          {
+            "PolicyName": "NACLAdministration",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "ec2:CreateNetworkAclEntry",
+                    "ec2:DeleteNetworkAclEntry",
+                    "ec2:DescribeNetworkAcls",
+                    "ec2:ReplaceNetworkAclEntry",
+                    "ec2:DescribeVpcAttribute",
+                    "ec2:DescribeVpcs"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                }
+              ]
             }
-          ]
-        }
+          }
+        ]
+      }
+    },
+    "ReadOnlyUsers": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "ManagedPolicyArns": [ "arn:aws:iam::aws:policy/ReadOnlyAccess" ]
       }
     },
     "NubisMySQL56ParameterGroup": {

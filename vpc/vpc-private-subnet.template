@@ -87,6 +87,7 @@
   "Resources": {
     "PrivateSubnetAZ1": {
       "Type": "AWS::EC2::Subnet",
+      "Metadata" : { "update_key" : "0001" },
       "Properties": {
         "VpcId": {
           "Ref": "VpcId"
@@ -664,6 +665,30 @@
     "PrivateSubnetAZ3": {
       "Value": {
         "Ref": "PrivateSubnetAZ3"
+      }
+    },
+    "PrivateAvailabilityZone1": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetAZ1",
+          "AvailabilityZone"
+        ]
+      }
+    },
+    "PrivateAvailabilityZone2": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetAZ2",
+          "AvailabilityZone"
+        ]
+      }
+    },
+    "PrivateAvailabilityZone3": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetAZ3",
+          "AvailabilityZone"
+        ]
       }
     },
     "NatInstanceAddressAZ1": {

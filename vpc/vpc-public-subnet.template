@@ -142,6 +142,7 @@
     },
     "PublicSubnetAZ1": {
       "Type": "AWS::EC2::Subnet",
+      "Metadata" : { "update_key" : "0001" },
       "Properties": {
         "VpcId": {
           "Ref": "VpcId"
@@ -328,6 +329,30 @@
     "PublicSubnetAZ3": {
       "Value": {
         "Ref": "PublicSubnetAZ3"
+      }
+    },
+    "PublicAvailabilityZone1": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetAZ1",
+          "AvailabilityZone"
+        ]
+      }
+    },
+    "PublicAvailabilityZone2": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetAZ2",
+          "AvailabilityZone"
+        ]
+      }
+    },
+    "PublicAvailabilityZone3": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetAZ3",
+          "AvailabilityZone"
+        ]
       }
     }
   }

@@ -879,11 +879,27 @@
         ]
       }
     },
+    "PublicAvailabilityZone1": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicAvailabilityZone1"
+        ]
+      }
+    },
     "PublicSubnetAZ2": {
       "Value": {
         "Fn::GetAtt": [
           "PublicSubnetStack",
           "Outputs.PublicSubnetAZ2"
+        ]
+      }
+    },
+    "PublicAvailabilityZone2": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicAvailabilityZone2"
         ]
       }
     },
@@ -895,12 +911,29 @@
         ]
       }
     },
+    "PublicAvailabilityZone3": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicAvailabilityZone3"
+        ]
+      }
+    },
     "PrivateSubnetAZ1": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
           "Outputs.PrivateSubnetAZ1"
+        ]
+      }
+    },
+    "PrivateAvailabilityZone1": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.PrivateAvailabilityZone1"
         ]
       }
     },
@@ -922,6 +955,15 @@
         ]
       }
     },
+    "PrivateAvailabilityZone2": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.PrivateAvailabilityZone2"
+        ]
+      }
+    },
     "PrivateSubnetNatInstanceAddresssAZ2": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
@@ -937,6 +979,15 @@
         "Fn::GetAtt": [
           "PrivateSubnetStack",
           "Outputs.PrivateSubnetAZ3"
+        ]
+      }
+    },
+    "PrivateAvailabilityZone3": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.PrivateAvailabilityZone3"
         ]
       }
     },

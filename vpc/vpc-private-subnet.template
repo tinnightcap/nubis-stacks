@@ -87,7 +87,7 @@
   "Resources": {
     "PrivateSubnetAZ1": {
       "Type": "AWS::EC2::Subnet",
-      "Metadata" : { "update_key" : "0001" },
+      "Metadata" : { "update_key" : "0002" },
       "Properties": {
         "VpcId": {
           "Ref": "VpcId"
@@ -689,6 +689,11 @@
           "PrivateSubnetAZ3",
           "AvailabilityZone"
         ]
+      }
+    },
+    "NatSecurityGroup": {
+      "Value": {
+        "Ref": "NatSecurityGroup"
       }
     },
     "NatInstanceAddressAZ1": {

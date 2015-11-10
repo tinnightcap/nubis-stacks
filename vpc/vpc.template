@@ -937,6 +937,15 @@
         ]
       }
     },
+    "PrivateSubnetNatSecurityGroup": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.NatSecurityGroup"
+        ]
+      }
+    },
     "PrivateSubnetNatInstanceAddresssAZ1": {
       "Condition": "CreatePrivateSubnets",
       "Value": {

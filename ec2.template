@@ -654,19 +654,19 @@
                     {
                       "Fn::GetAtt": [
                         "VpcInfo",
-                        "PublicSubnetAZ1"
+                        "PrivateSubnetAZ1"
                       ]
                     },
                     {
                       "Fn::GetAtt": [
                         "VpcInfo",
-                        "PublicSubnetAZ2"
+                        "PrivateSubnetAZ2"
                       ]
                     },
                     {
                       "Fn::GetAtt": [
                         "VpcInfo",
-                        "PublicSubnetAZ3"
+                        "PrivateSubnetAZ3"
                       ]
                     }
                   ]

@@ -72,6 +72,11 @@
     "InternetAccessSecurityGroup": {
       "Description": "Security group FROM which we allow traffic TO the NAT instances.",
       "Type": "AWS::EC2::SecurityGroup::Id"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.1"
     }
   },
   "Mappings": {
@@ -87,7 +92,9 @@
   "Resources": {
     "PrivateSubnetAZ1": {
       "Type": "AWS::EC2::Subnet",
-      "Metadata" : { "update_key" : "0002" },
+      "Metadata": {
+        "update_key": "0002"
+      },
       "Properties": {
         "VpcId": {
           "Ref": "VpcId"
@@ -447,7 +454,9 @@
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc",
-        "InstanceId": { "Ref": "NatInstanceAZ1" }
+        "InstanceId": {
+          "Ref": "NatInstanceAZ1"
+        }
       }
     },
     "NatInstanceAZ1": {
@@ -511,7 +520,9 @@
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc",
-        "InstanceId": { "Ref": "NatInstanceAZ2" }
+        "InstanceId": {
+          "Ref": "NatInstanceAZ2"
+        }
       }
     },
     "NatInstanceAZ2": {
@@ -575,7 +586,9 @@
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc",
-        "InstanceId": { "Ref": "NatInstanceAZ3" }
+        "InstanceId": {
+          "Ref": "NatInstanceAZ3"
+        }
       }
     },
     "NatInstanceAZ3": {

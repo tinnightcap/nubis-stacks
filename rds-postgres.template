@@ -97,10 +97,10 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.0.0"
+      "Default": "v1.0.1"
     }
   },
-  "Conditions" : {
+  "Conditions": {
     "WithReadOnlySlave": {
       "Fn::Equals": [
         {
@@ -114,7 +114,9 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
-        "StacksVersion": { "Ref": "StacksVersion" },
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -148,12 +150,16 @@
         }
       }
     },
-    "RDSInstanceSlave" : {
-      "Type" : "AWS::RDS::DBInstance",
+    "RDSInstanceSlave": {
+      "Type": "AWS::RDS::DBInstance",
       "Condition": "WithReadOnlySlave",
-      "Properties" : {
-        "SourceDBInstanceIdentifier" : { "Ref" : "RDSInstance" },
-        "DBInstanceClass" : { "Ref" : "DBInstanceClass" },
+      "Properties": {
+        "SourceDBInstanceIdentifier": {
+          "Ref": "RDSInstance"
+        },
+        "DBInstanceClass": {
+          "Ref": "DBInstanceClass"
+        },
         "VPCSecurityGroups": [
           {
             "Ref": "RDSSecurityGroup"
@@ -397,7 +403,7 @@
       }
     },
     "SlaveRDSEndpoint": {
-      "Condition" : "WithReadOnlySlave",
+      "Condition": "WithReadOnlySlave",
       "Description": "Database endpoint",
       "Value": {
         "Fn::GetAtt": [

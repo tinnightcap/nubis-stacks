@@ -19,7 +19,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.0.0"
+      "Default": "v1.0.1"
     }
   },
   "Outputs": {
@@ -256,7 +256,9 @@
     "ReadOnlyUsers": {
       "Type": "AWS::IAM::Group",
       "Properties": {
-        "ManagedPolicyArns": [ "arn:aws:iam::aws:policy/ReadOnlyAccess" ]
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/ReadOnlyAccess"
+        ]
       }
     },
     "NubisMySQL56ParameterGroup": {

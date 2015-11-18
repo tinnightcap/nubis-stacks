@@ -171,5 +171,12 @@
       },
       "Description": "The ARN of the OpSec Security Audit Role"
     }
+  },
+  "Parameters": {
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.0.1"
+    }
   }
 }

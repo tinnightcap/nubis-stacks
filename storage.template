@@ -37,7 +37,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.0.0"
+      "Default": "v1.0.1"
     },
     "InstanceType": {
       "Description": "EC2 Instance type",
@@ -320,7 +320,9 @@
                 },
                 "\n",
                 "NUBIS_STORAGE_STACK_NAME=",
-                { "Ref": "AWS::StackName" },
+                {
+                  "Ref": "AWS::StackName"
+                },
                 "\n"
               ]
             ]
@@ -331,7 +333,18 @@
     "BackupBucketStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "s3-bucket.template" ] ] },
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "s3-bucket.template"
+            ]
+          ]
+        },
         "Parameters": {
           "ServiceName": {
             "Ref": "ServiceName"

@@ -128,6 +128,15 @@
           "Arn"
         ]
       }
+    },
+    "AdminMFAGroupArn": {
+      "Description": "ARN of AdminMFA group",
+      "Value": {
+        "Fn::GetAtt": [
+          "AdminMFAGroup",
+          "Arn"
+        ]
+      }
     }
   },
   "Resources": {
@@ -447,6 +456,155 @@
         },
         "Runtime": "nodejs",
         "Timeout": "25"
+      }
+    },
+    "AdminMFAGroup": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "ManagedPolicyArns": [
+          {
+            "Ref": "ForceMFA"
+          },
+          {
+            "Ref": "NubisAdmin"
+          }
+        ]
+      }
+    },
+    "ForceMFA": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": "A policy to enforce MFA on admin accounts",
+        "Path": "/",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowAllUsersToListAccounts",
+              "Effect": "Allow",
+              "Action": [
+                "iam:ListUsers",
+                "iam:ListAccountAliases"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":user/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Sid": "AllowIndividualUserToSeeTheirAccountInformation",
+              "Effect": "Allow",
+              "Action": [
+                "iam:ChangePassword",
+                "iam:CreateLoginProfile",
+                "iam:DeleteLoginProfile",
+                "iam:GetAccountPasswordPolicy",
+                "iam:GetAccountSummary",
+                "iam:GetLoginProfile",
+                "iam:UpdateLoginProfile"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":user/${aws:username}"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Sid": "AllowIndividualUserToListTheirMFA",
+              "Effect": "Allow",
+              "Action": [
+                "iam:ListVirtualMFADevices",
+                "iam:ListMFADevices"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowIndividualUserToManageThierMFA",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateVirtualMFADevice",
+                "iam:DeactivateMFADevice",
+                "iam:DeleteVirtualMFADevice",
+                "iam:EnableMFADevice",
+                "iam:ResyncMFADevice"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":mfa/${aws:username}"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":user/${aws:username}"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Sid": "DoNotAllowAnythingOtherThanAboveUnlessMFAd",
+              "Effect": "Deny",
+              "NotAction": "iam:*",
+              "Resource": "*",
+              "Condition": {
+                "Null": {
+                  "aws:MultiFactorAuthAge": "true"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "NubisAdmin": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "DependsOn": "ForceMFA",
+      "Properties": {
+        "Description": "Nubis Admin",
+        "Path": "/",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "*",
+              "Resource": "*"
+            }
+          ]
+        }
       }
     }
   }

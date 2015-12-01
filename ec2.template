@@ -160,6 +160,12 @@
       "Description": "Coma seperated string of subnet ids to deploy the autoscaling group nodes into",
       "Type": "String",
       "Default": ""
+    },
+    "Purpose": {
+      "Description": "Purpose of this stack (Web Server, Job Runner, Database, etc)",
+      "Type": "String",
+      "AllowedPattern": "^[a-zA-Z0-9 ]+$",
+      "Default": "Web Server"
     }
   },
   "Conditions": {
@@ -315,7 +321,9 @@
           },
           {
             "Key": "Purpose",
-            "Value": "Web Server Security Group"
+            "Value": {
+              "Ref": "Purpose"
+            }
           },
           {
             "Key": "Backups",
@@ -482,6 +490,18 @@
                       "'"
                     ]
                   ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_PURPOSE='",
+                      {
+                        "Ref": "Purpose"
+                      },
+                      "'"
+                    ]
+                  ]
                 }
               ]
             ]
@@ -609,7 +629,9 @@
           },
           {
             "Key": "Purpose",
-            "Value": "Web Server",
+            "Value": {
+              "Ref": "Purpose"
+            },
             "PropagateAtLaunch": "true"
           },
           {
@@ -745,7 +767,9 @@
           },
           {
             "Key": "Purpose",
-            "Value": "Web Server",
+            "Value": {
+              "Ref": "Purpose"
+            },
             "PropagateAtLaunch": "true"
           },
           {

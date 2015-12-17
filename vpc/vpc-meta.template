@@ -134,6 +134,12 @@
       "Value": {
         "Ref": "CredstashKey"
       }
+    },
+    "CredstashPolicy": {
+      "Description": "ARN of the IAM Policy for reading secrets from Credstash",
+      "Value": {
+        "Ref": "CredstashDynamoPolicy"
+      }
     }
   },
   "Resources": {
@@ -474,6 +480,87 @@
             }
           ]
         }
+      }
+    },
+    "CredstashDynamoPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": "Policy for reading the Credstash DynamoDB",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:DescribeTable",
+                "dynamodb:GetItem",
+                "dynamodb:ListTables",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:DescribeReservedCapacity",
+                "dynamodb:DescribeReservedCapacityOfferings"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  ":",
+                  [
+                    "arn",
+                    "aws",
+                    "dynamodb",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    {
+                      "Fn::Join": [
+                        "/",
+                        [
+                          "table",
+                          {
+                            "Ref": "CredstashDynamoTable"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CredstashDynamoTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "credential-store",
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "1",
+          "WriteCapacityUnits": "1"
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "name",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "version",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "name",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "version",
+            "KeyType": "RANGE"
+          }
+        ]
       }
     }
   }

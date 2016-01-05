@@ -21,6 +21,7 @@ declare -a FILES_LIST
 
 validate-file () {
     echo -n "Validating $1: "
+    export AWS_DEFAULT_REGION=us-west-2
     aws cloudformation --profile "$PROFILE" validate-template --template-body file://"$1" > /dev/null
     if [ "$?" = "0" ]; then
         echo "Passed"

@@ -49,6 +49,7 @@
       "Description": "EC2 Instance type",
       "Type": "String",
       "AllowedValues": [
+        "t2.nano",
         "t2.micro",
         "t2.small",
         "t2.medium",

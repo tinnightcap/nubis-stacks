@@ -37,7 +37,7 @@
       "Description": "Existing ssh key to deploy to EC2 instances",
       "Type": "String"
     },
-    "NatSecurityGroupId": {
+    "NatSecurityGroup": {
       "Description": "Security group ID for NAT instance",
       "Type": "String"
     },

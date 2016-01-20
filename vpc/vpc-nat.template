@@ -350,6 +350,7 @@
               "Sid": "EipAttach",
               "Effect": "Allow",
               "Action": [
+                "cloudformation:DescribeStackResources",
                 "cloudformation:DescribeStacks",
                 "ec2:DescribeAvailabilityZones",
                 "ec2:AssociateAddress",

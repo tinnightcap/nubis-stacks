@@ -72,6 +72,9 @@
       },
       "sandbox": {
         "InstanceType": "t2.small"
+      },
+      "admin": {
+        "InstanceType": "t2.small"
       }
     }
   },
@@ -111,7 +114,7 @@
               {
                 "Ref": "AWS::Region"
               },
-              "AMI"
+              "AMIs"
             ]
           },
           "IamRole": {

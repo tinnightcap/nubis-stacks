@@ -597,7 +597,11 @@
                   {
                     "Ref": "ServiceName"
                   },
-                  " (",
+                  " [",
+                  {
+                    "Ref": "Purpose"
+                  },
+                  "] (",
                   {
                     "Ref": "Environment"
                   },

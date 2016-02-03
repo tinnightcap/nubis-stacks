@@ -374,6 +374,27 @@
               "Resource": [
                 "*"
               ]
+            },
+            {
+              "Resource": [
+                "arn:aws:s3:::nsm-data"
+              ],
+              "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+              ],
+              "Sid": "ListNSMFiles",
+              "Effect": "Allow"
+            },
+            {
+              "Resource": [
+                "arn:aws:s3:::nsm-data/*"
+              ],
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Sid": "GetNSMFiles",
+              "Effect": "Allow"
             }
           ]
         },

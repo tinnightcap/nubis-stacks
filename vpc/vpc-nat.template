@@ -40,18 +40,6 @@
     "NatSecurityGroup": {
       "Description": "Security group ID for NAT instance",
       "Type": "String"
-    },
-    "PrivateSubnetAZ1": {
-      "Description": "Subnet ID of first private availability zone",
-      "Type": "String"
-    },
-    "PrivateSubnetAZ2": {
-      "Description": "Subnet ID of second private availability zone",
-      "Type": "String"
-    },
-    "PrivateSubnetAZ3": {
-      "Description": "Subnet ID of third private availability zone",
-      "Type": "String"
     }
   },
   "Mappings": {
@@ -158,131 +146,6 @@
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc"
-      }
-    },
-    "EniAZ1": {
-      "Type": "AWS::EC2::NetworkInterface",
-      "Properties": {
-        "Description": "ENI for AZ1",
-        "SourceDestCheck": "false",
-        "GroupSet": [
-          {
-            "Ref": "NatSecurityGroup"
-          }
-        ],
-        "SubnetId": {
-          "Ref": "PrivateSubnetAZ1"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "ServiceName"
-                  },
-                  " (",
-                  {
-                    "Ref": "Environment"
-                  },
-                  ")"
-                ]
-              ]
-            }
-          },
-          {
-            "Key": "StackName",
-            "Value": {
-              "Ref": "AWS::StackName"
-            }
-          }
-        ]
-      }
-    },
-    "EniAZ2": {
-      "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": "EniAZ1",
-      "Properties": {
-        "Description": "ENI for AZ2",
-        "SourceDestCheck": "false",
-        "GroupSet": [
-          {
-            "Ref": "NatSecurityGroup"
-          }
-        ],
-        "SubnetId": {
-          "Ref": "PrivateSubnetAZ2"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "ServiceName"
-                  },
-                  " (",
-                  {
-                    "Ref": "Environment"
-                  },
-                  ")"
-                ]
-              ]
-            }
-          },
-          {
-            "Key": "StackName",
-            "Value": {
-              "Ref": "AWS::StackName"
-            }
-          }
-        ]
-      }
-    },
-    "EniAZ3": {
-      "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": "EniAZ2",
-      "Properties": {
-        "Description": "ENI for AZ3",
-        "SourceDestCheck": "false",
-        "GroupSet": [
-          {
-            "Ref": "NatSecurityGroup"
-          }
-        ],
-        "SubnetId": {
-          "Ref": "PrivateSubnetAZ3"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "ServiceName"
-                  },
-                  " (",
-                  {
-                    "Ref": "Environment"
-                  },
-                  ")"
-                ]
-              ]
-            }
-          },
-          {
-            "Key": "StackName",
-            "Value": {
-              "Ref": "AWS::StackName"
-            }
-          }
-        ]
       }
     },
     "IamRole": {
@@ -407,24 +270,6 @@
     }
   },
   "Outputs": {
-    "EniAz1": {
-      "Description": "ENI ID AZ1",
-      "Value": {
-        "Ref": "EniAZ1"
-      }
-    },
-    "EniAz2": {
-      "Description": "ENI ID AZ2",
-      "Value": {
-        "Ref": "EniAZ2"
-      }
-    },
-    "EniAz3": {
-      "Description": "ENI ID AZ3",
-      "Value": {
-        "Ref": "EniAZ3"
-      }
-    },
     "EipAz1": {
       "Description": "EIP ID AZ1",
       "Value": {

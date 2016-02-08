@@ -920,24 +920,6 @@
               "PrivateSubnetStack",
               "Outputs.NatSecurityGroup"
             ]
-          },
-          "PrivateSubnetAZ1": {
-            "Fn::GetAtt": [
-              "PrivateSubnetStack",
-              "Outputs.PrivateSubnetAZ1"
-            ]
-          },
-          "PrivateSubnetAZ2": {
-            "Fn::GetAtt": [
-              "PrivateSubnetStack",
-              "Outputs.PrivateSubnetAZ2"
-            ]
-          },
-          "PrivateSubnetAZ3": {
-            "Fn::GetAtt": [
-              "PrivateSubnetStack",
-              "Outputs.PrivateSubnetAZ3"
-            ]
           }
         }
       }

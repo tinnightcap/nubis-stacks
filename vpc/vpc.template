@@ -1023,7 +1023,7 @@
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
-          "PrivateSubnetStack",
+          "NATStack",
           "Outputs.NatInstanceAddressAZ1"
         ]
       }
@@ -1050,7 +1050,7 @@
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
-          "PrivateSubnetStack",
+          "NATStack",
           "Outputs.NatInstanceAddressAZ2"
         ]
       }
@@ -1077,7 +1077,7 @@
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
-          "PrivateSubnetStack",
+          "NATStack",
           "Outputs.NatInstanceAddressAZ3"
         ]
       }

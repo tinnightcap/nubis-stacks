@@ -398,7 +398,17 @@
           },
           {
             "Key": "Purpose",
-            "Value": "nubis-nat-eni"
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "nubis-nat-eni",
+                  {
+                    "Ref": "Environment"
+                  }
+                ]
+              ]
+            }
           }
         ]
       }
@@ -444,7 +454,17 @@
           },
           {
             "Key": "Purpose",
-            "Value": "nubis-nat-eni"
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "nubis-nat-eni",
+                  {
+                    "Ref": "Environment"
+                  }
+                ]
+              ]
+            }
           }
         ]
       }
@@ -490,7 +510,17 @@
           },
           {
             "Key": "Purpose",
-            "Value": "nubis-nat-eni"
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "nubis-nat-eni",
+                  {
+                    "Ref": "Environment"
+                  }
+                ]
+              ]
+            }
           }
         ]
       }

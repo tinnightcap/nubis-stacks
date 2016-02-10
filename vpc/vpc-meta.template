@@ -138,7 +138,7 @@
     "CredstashPolicy": {
       "Description": "ARN of the IAM Policy for reading secrets from Credstash",
       "Value": {
-        "Ref": "CredstashDynamoPolicy"
+        "Ref": "CredstashPolicy"
       }
     }
   },
@@ -482,7 +482,7 @@
         }
       }
     },
-    "CredstashDynamoPolicy": {
+    "CredstashPolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": "Policy for reading the Credstash DynamoDB",

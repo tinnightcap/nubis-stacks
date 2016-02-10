@@ -138,7 +138,7 @@
     "CredstashPolicy": {
       "Description": "ARN of the IAM Policy for reading secrets from Credstash",
       "Value": {
-        "Ref": "CredstashDynamoPolicy"
+        "Ref": "CredstashPolicy"
       }
     }
   },
@@ -482,13 +482,59 @@
         }
       }
     },
-    "CredstashDynamoPolicy": {
+    "CredstashPolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": "Policy for reading the Credstash DynamoDB",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  ":",
+                  [
+                    "arn",
+                    "aws",
+                    "kms",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    {
+                      "Fn::Join": [
+                        "/",
+                        [
+                          "key",
+                          {
+                            "Ref": "CredstashKey"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              },
+              "Condition": {
+                "StringEquals": {
+                  "kms:EncryptionContext:environment": [
+                    "admin",
+                    "stage",
+                    "prod"
+                  ],
+                  "kms:EncryptionContext:region": {
+                    "Ref": "AWS::Region"
+                  },
+                  "kms:EncryptionContext:service": "nubis"
+                }
+              }
+            },
             {
               "Effect": "Allow",
               "Action": [

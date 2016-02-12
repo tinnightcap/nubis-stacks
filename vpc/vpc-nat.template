@@ -40,6 +40,10 @@
     "NatSecurityGroup": {
       "Description": "Security group ID for NAT instance",
       "Type": "String"
+    },
+    "CredstashPolicyArn": {
+      "Description": "The ARN of the credstash IAM policy",
+      "Type": "String"
     }
   },
   "Mappings": {
@@ -151,6 +155,11 @@
     "IamRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
+        "ManagedPolicyArns": [
+          {
+            "Ref": "CredstashPolicyArn"
+          }
+        ],
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [

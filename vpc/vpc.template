@@ -111,6 +111,10 @@
     "LambdaUUIDArn": {
       "Description": "The ARN of a UUID generating Lambda function (from vpc-meta)",
       "Type": "String"
+    },
+    "CredstashPolicyArn": {
+      "Description": "Credstash policy ARN",
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -920,6 +924,9 @@
               "PrivateSubnetStack",
               "Outputs.NatSecurityGroup"
             ]
+          },
+          "CredstashPolicyArn": {
+            "Ref": "CredstashPolicyArn"
           }
         }
       }

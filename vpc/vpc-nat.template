@@ -67,6 +67,43 @@
     }
   },
   "Resources": {
+    "MetaInfo": {
+      "Type": "Custom::MetaInfo",
+      "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "LookupNestedStackOutputs"
+            ]
+          ]
+        },
+        "StackName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::Region"
+              },
+              "vpc"
+            ]
+          ]
+        },
+        "SearchString": "Meta"
+      }
+    },
     "EC2Stack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
@@ -151,6 +188,14 @@
     "IamRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
+        "ManagePolicyArns": [
+          {
+            "Fn::GetAtt": [
+              "MetaInfo",
+              "CredstashPolicy"
+            ]
+          }
+        ],
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [

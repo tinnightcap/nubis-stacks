@@ -94,6 +94,7 @@
           "ServiceName": {
             "Ref": "ServiceName"
           },
+          "Purpose": "NatInstance",
           "TechnicalOwner": {
             "Ref": "TechnicalOwner"
           },

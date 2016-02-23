@@ -493,6 +493,20 @@
         }
       }
     },
+    "SssgAllowMonitoringIn": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "9100",
+        "ToPort": "9110",
+        "SourceSecurityGroupId": {
+          "Ref": "MonitoringSecurityGroup"
+        }
+      }
+    },
     "InternetAccessSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
@@ -547,6 +561,79 @@
       },
       "Metadata": {
         "Comment": "This security group must be applied to any instances that need to get out to the Internet."
+      }
+    },
+    "MonitoringSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "SourceSecurityGroupId": {
+              "Ref": "SshSecurityGroup"
+            }
+
+          }
+        ],
+        "GroupDescription": {
+          "Fn::Join": [
+            " ",
+            [
+              {
+                "Ref": "Environment"
+              },
+              "Monitoring Security Group"
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "MonitoringSecurityGroup"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "Comment": "This security group must be applied to any instances that need to initiate monitoring connections to other hosts within the VPC. Additionally it should be referenced in the ingress policy for hosts on which the monitoring connections are terminating."
       }
     },
     "SshSecurityGroup": {
@@ -1102,6 +1189,11 @@
     "SshSecurityGroupId": {
       "Value": {
         "Ref": "SshSecurityGroup"
+      }
+    },
+    "MonitoringSecurityGroupId": {
+      "Value": {
+        "Ref": "MonitoringSecurityGroup"
       }
     },
     "AccessLoggingBucket": {

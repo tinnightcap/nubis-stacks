@@ -242,7 +242,11 @@
               "Action": [
                 "ec2:DescribeRouteTables",
                 "ec2:ReplaceRoute",
-                "ec2:DescribeSubnets"
+                "ec2:DescribeSubnets",
+                "ec2:DescribeNetworkAcls",
+                "ec2:CreateNetworkAclEntry",
+                "ec2:DeleteNetworkAclEntry",
+                "ec2:ReplaceNetworkAclEntry"
               ],
               "Resource": [
                 "*"

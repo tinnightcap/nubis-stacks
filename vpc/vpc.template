@@ -796,6 +796,9 @@
           },
           "InternetAccessSecurityGroup": {
             "Ref": "InternetAccessSecurityGroup"
+          },
+          "SharedServicesSecurityGroup": {
+            "Ref": "SharedServicesSecurityGroup"
           }
         }
       }

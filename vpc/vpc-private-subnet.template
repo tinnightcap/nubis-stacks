@@ -73,6 +73,10 @@
       "Description": "Security group FROM which we allow traffic TO the NAT instances.",
       "Type": "AWS::EC2::SecurityGroup::Id"
     },
+    "SharedServicesSecurityGroup": {
+      "Description": "Security group for all instances",
+      "Type": "AWS::EC2::SecurityGroup::Id"
+    },
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
@@ -366,6 +370,9 @@
         "GroupSet": [
           {
             "Ref": "NatSecurityGroup"
+          },
+          {
+            "Ref": "SharedServicesSecurityGroup"
           }
         ],
         "SubnetId": {
@@ -422,6 +429,9 @@
         "GroupSet": [
           {
             "Ref": "NatSecurityGroup"
+          },
+          {
+            "Ref": "SharedServicesSecurityGroup"
           }
         ],
         "SubnetId": {
@@ -478,6 +488,9 @@
         "GroupSet": [
           {
             "Ref": "NatSecurityGroup"
+          },
+          {
+            "Ref": "SharedServicesSecurityGroup"
           }
         ],
         "SubnetId": {

@@ -1014,6 +1014,36 @@
           },
           "CredstashPolicyArn": {
             "Ref": "CredstashPolicyArn"
+          },
+          "SshSecurityGroupId": {
+            "Ref": "SshSecurityGroup"
+          },
+          "InternetAccessSecurityGroupId": {
+            "Ref": "InternetAccessSecurityGroup"
+          },
+          "SharedServicesSecurityGroupId": {
+            "Ref": "SharedServicesSecurityGroup"
+          },
+          "NubisDomain": {
+            "Ref": "NubisDomain"
+          },
+          "PublicSubnetAZ1": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ1"
+            ]
+          },
+          "PublicSubnetAZ2": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ2"
+            ]
+          },
+          "PublicSubnetAZ3": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ3"
+            ]
           }
         }
       }

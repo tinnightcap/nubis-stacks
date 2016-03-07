@@ -16,6 +16,11 @@
       "Description": "A valid LDAP email",
       "Type": "String"
     },
+    "Purpose": {
+      "Description": "Purpose of the instances",
+      "Type": "String",
+      "Default": "NatInstance"
+    },
     "StacksVersion": {
       "Description": "Version of Nubis Stacks to use",
       "Type": "String",
@@ -44,6 +49,45 @@
     "CredstashPolicyArn": {
       "Description": "The ARN of the credstash IAM policy",
       "Type": "String"
+    },
+    "SshSecurityGroupId": {
+      "Description": "ID of the ssh security group",
+      "Type": "String"
+    },
+    "InternetAccessSecurityGroupId": {
+      "Description": "ID of the internet access security group",
+      "Type": "String"
+    },
+    "SharedServicesSecurityGroupId": {
+      "Description": "ID of the shared services security group",
+      "Type": "String"
+    },
+    "NubisDomain": {
+      "Description": "The domain used for DHCP Search.",
+      "Default": "nubis.allizom.org",
+      "AllowedPattern": "^[0-9a-z\\-\\.]+$",
+      "Type": "String"
+    },
+    "PublicSubnetAZ1": {
+      "Description": "The first availability zone we are deploying into",
+      "Type": "String"
+    },
+    "PublicSubnetAZ2": {
+      "Description": "The second availability zone we are deploying into",
+      "Type": "String"
+    },
+    "PublicSubnetAZ3": {
+      "Description": "The third availability zone we are deploying into",
+      "Type": "String"
+    },
+    "Migrate": {
+      "Description": "Set the migrate flag to 1 or 0",
+      "Type": "String",
+      "AllowedValues": [
+        0,
+        1
+      ],
+      "Default": "1"
     }
   },
   "Mappings": {
@@ -71,68 +115,247 @@
     }
   },
   "Resources": {
-    "EC2Stack": {
-      "Type": "AWS::CloudFormation::Stack",
+    "AutoScalingGroupPublic": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": {
+        "AutoScalingScheduledAction": {
+          "IgnoreUnmodifiedGroupSizeProperties": "true"
+        },
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1",
+          "WaitOnResourceSignals": "false"
+        }
+      },
       "Properties": {
-        "TemplateURL": {
-          "Fn::Join": [
-            "/",
-            [
-              "https://s3.amazonaws.com/nubis-stacks",
-              {
-                "Ref": "StacksVersion"
-              },
-              "ec2.template"
-            ]
+        "VPCZoneIdentifier": [
+          {
+            "Ref": "PublicSubnetAZ1"
+          },
+          {
+            "Ref": "PublicSubnetAZ2"
+          },
+          {
+            "Ref": "PublicSubnetAZ3"
+          }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfig"
+        },
+        "MinSize": "3",
+        "DesiredCapacity": "3",
+        "MaxSize": "3",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ServiceName"
+                  },
+                  " [",
+                  {
+                    "Ref": "Purpose"
+                  },
+                  "] (",
+                  {
+                    "Ref": "Environment"
+                  },
+                  ")"
+                ]
+              ]
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Purpose",
+            "Value": {
+              "Ref": "Purpose"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Backups",
+            "Value": "Nightly",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Shutdown",
+            "Value": "Never",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "LaunchConfig": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "AssociatePublicIpAddress": "true",
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AMIs",
+            {
+              "Ref": "AWS::Region"
+            },
+            "AMIs"
           ]
         },
-        "TimeoutInMinutes": "60",
-        "Parameters": {
-          "StackName": {
-            "Ref": "AWS::StackName"
-          },
-          "ServiceName": {
-            "Ref": "ServiceName"
-          },
-          "Purpose": "NatInstance",
-          "TechnicalOwner": {
-            "Ref": "TechnicalOwner"
-          },
-          "Environment": {
-            "Ref": "Environment"
-          },
-          "AmiId": {
-            "Fn::FindInMap": [
-              "AMIs",
-              {
-                "Ref": "AWS::Region"
-              },
-              "AMIs"
-            ]
-          },
-          "IamRole": {
-            "Ref": "IamRole"
-          },
-          "SSHKeyName": {
-            "Ref": "SSHKeyName"
-          },
-          "SecurityGroup": {
+        "SecurityGroups": [
+          {
             "Ref": "NatSecurityGroup"
           },
-          "SubnetLocation": "public",
-          "InstanceType": {
-            "Fn::FindInMap": [
-              "InstanceTypeMap",
-              {
-                "Ref": "Environment"
-              },
-              "InstanceType"
-            ]
+          {
+            "Ref": "InternetAccessSecurityGroupId"
           },
-          "AutoScalingGroupMinSize": "3",
-          "AutoScalingGroupDesiredCapacity": "3",
-          "AutoScalingGroupMaxSize": "3"
+          {
+            "Ref": "SharedServicesSecurityGroupId"
+          },
+          {
+            "Ref": "SshSecurityGroupId"
+          }
+        ],
+        "InstanceType": {
+          "Fn::FindInMap": [
+            "InstanceTypeMap",
+            {
+              "Ref": "Environment"
+            },
+            "InstanceType"
+          ]
+        },
+        "KeyName": {
+          "Ref": "SSHKeyName"
+        },
+        "IamInstanceProfile": {
+          "Ref": "Ec2IamInstanceProfile"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_STACK='",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_PROJECT='",
+                      {
+                        "Ref": "ServiceName"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_ENVIRONMENT='",
+                      {
+                        "Ref": "Environment"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_DOMAIN='",
+                      {
+                        "Ref": "NubisDomain"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_MIGRATE='",
+                      {
+                        "Ref": "Migrate"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_ACCOUNT='",
+                      {
+                        "Ref": "ServiceName"
+                      },
+                      "'"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_PURPOSE='",
+                      {
+                        "Ref": "Purpose"
+                      },
+                      "'"
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
         }
+      }
+    },
+    "Ec2IamInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "IamRole"
+          }
+        ]
       }
     },
     "EipAZ1": {

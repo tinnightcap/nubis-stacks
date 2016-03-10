@@ -997,6 +997,7 @@
               ]
             ]
           },
+          "VPCServiceName": { "Ref": "ServiceName" },
           "TechnicalOwner": {
             "Ref": "TechnicalOwner"
           },

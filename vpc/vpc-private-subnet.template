@@ -363,7 +363,6 @@
     },
     "NatEniAZ1": {
       "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": [ "PrivateSubnetAZ1" ],
       "Properties": {
         "Description": "Nat ENI for AZ1",
         "SourceDestCheck": "false",
@@ -376,7 +375,7 @@
           }
         ],
         "SubnetId": {
-          "Ref": "PrivateSubnetAZ1"
+          "Ref": "PublicSubnetAZ1"
         },
         "Tags": [
           {
@@ -422,7 +421,7 @@
     },
     "NatEniAZ2": {
       "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": [ "PrivateSubnetAZ2", "NatEniAZ1" ],
+      "DependsOn": "NatEniAZ1",
       "Properties": {
         "Description": "Nat ENI for AZ2",
         "SourceDestCheck": "false",
@@ -435,7 +434,7 @@
           }
         ],
         "SubnetId": {
-          "Ref": "PrivateSubnetAZ2"
+          "Ref": "PublicSubnetAZ2"
         },
         "Tags": [
           {
@@ -481,7 +480,7 @@
     },
     "NatEniAZ3": {
       "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": [ "PrivateSubnetAZ3", "NatEniAZ2" ],
+      "DependsOn": "NatEniAZ2",
       "Properties": {
         "Description": "Nat ENI for AZ3",
         "SourceDestCheck": "false",
@@ -494,7 +493,7 @@
           }
         ],
         "SubnetId": {
-          "Ref": "PrivateSubnetAZ3"
+          "Ref": "PublicSubnetAZ3"
         },
         "Tags": [
           {
@@ -540,6 +539,7 @@
     },
     "PrivateRouteAZ1": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "NatEniAZ1",
       "Properties": {
         "RouteTableId": {
           "Ref": "PrivateRouteTableAZ1"
@@ -552,6 +552,7 @@
     },
     "PrivateRouteAZ2": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "NatEniAZ2",
       "Properties": {
         "RouteTableId": {
           "Ref": "PrivateRouteTableAZ2"
@@ -564,6 +565,7 @@
     },
     "PrivateRouteAZ3": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "NatEniAZ3",
       "Properties": {
         "RouteTableId": {
           "Ref": "PrivateRouteTableAZ3"

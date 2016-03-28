@@ -363,6 +363,7 @@
     },
     "NatEniAZ1": {
       "Type": "AWS::EC2::NetworkInterface",
+      "DependsOn": [ "PrivateSubnetAZ1" ],
       "Properties": {
         "Description": "Nat ENI for AZ1",
         "SourceDestCheck": "false",
@@ -421,7 +422,7 @@
     },
     "NatEniAZ2": {
       "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": "NatEniAZ1",
+      "DependsOn": [ "PrivateSubnetAZ2", "NatEniAZ1" ],
       "Properties": {
         "Description": "Nat ENI for AZ2",
         "SourceDestCheck": "false",
@@ -480,7 +481,7 @@
     },
     "NatEniAZ3": {
       "Type": "AWS::EC2::NetworkInterface",
-      "DependsOn": "NatEniAZ2",
+      "DependsOn": [ "PrivateSubnetAZ3", "NatEniAZ2" ],
       "Properties": {
         "Description": "Nat ENI for AZ3",
         "SourceDestCheck": "false",

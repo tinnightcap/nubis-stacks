@@ -83,16 +83,6 @@
       "Default": "v1.0.1"
     }
   },
-  "Mappings": {
-    "AWSNATAMI": {
-      "us-east-1": {
-        "AMI": "ami-c6699baf"
-      },
-      "us-west-2": {
-        "AMI": "ami-52ff7262"
-      }
-    }
-  },
   "Resources": {
     "PrivateSubnetAZ1": {
       "Type": "AWS::EC2::Subnet",

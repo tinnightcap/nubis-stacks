@@ -1,0 +1,112 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Dummy VPC",
+  "Parameters": {
+    "ServiceName": {
+      "Type": "String"
+    },
+    "VpcId": {
+      "Type": "String"
+    },
+    "InternetAccessSecurityGroupId": {
+      "Type": "String"
+    },
+    "SharedServicesSecurityGroupId": {
+      "Type": "String"
+    },
+    "SshSecurityGroupId": {
+      "Type": "String"
+    },
+    "AccessLoggingBucket": {
+      "Type": "String"
+    },
+    "PrivateSubnetAZ1": {
+      "Type": "String"
+    },
+    "PrivateSubnetAZ2": {
+      "Type": "String"
+    },
+    "PrivateSubnetAZ3": {
+      "Type": "String"
+    },
+    "PublicSubnetAZ1": {
+      "Type": "String"
+    },
+    "PublicSubnetAZ2": {
+      "Type": "String"
+    },
+    "PublicSubnetAZ3": {
+      "Type": "String"
+    }
+  },
+  "Outputs": {
+    "VpcId": {
+      "Value": {
+        "Ref": "VpcId"
+      }
+    },
+    "ServiceName": {
+      "Value": {
+        "Ref": "ServiceName"
+      }
+    },
+    "InternetAccessSecurityGroupId": {
+      "Value": {
+        "Ref": "InternetAccessSecurityGroupId"
+      }
+    },
+    "SharedServicesSecurityGroupId": {
+      "Value": {
+        "Ref": "SharedServicesSecurityGroupId"
+      }
+    },
+    "SshSecurityGroupId": {
+      "Value": {
+        "Ref": "SshSecurityGroupId"
+      }
+    },
+    "AccessLoggingBucket": {
+      "Value": {
+        "Ref": "AccessLoggingBucket"
+      }
+    },
+    "PrivateSubnetAZ1": {
+      "Value": {
+        "Ref": "PrivateSubnetAZ1"
+      }
+    },
+    "PrivateSubnetAZ2": {
+      "Value": {
+        "Ref": "PrivateSubnetAZ2"
+      }
+    },
+    "PrivateSubnetAZ3": {
+      "Value": {
+        "Ref": "PrivateSubnetAZ3"
+      }
+    },
+    "PublicSubnetAZ1": {
+      "Value": {
+        "Ref": "PublicSubnetAZ1"
+      }
+    },
+    "PublicSubnetAZ2": {
+      "Value": {
+        "Ref": "PublicSubnetAZ2"
+      }
+    },
+    "PublicSubnetAZ3": {
+      "Value": {
+        "Ref": "PublicSubnetAZ3"
+      }
+    }
+  },
+  "Resources": {
+    "DummySecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Dummy"
+      }
+    }
+  }
+}

@@ -1,0 +1,249 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Dummy Stack",
+  "Parameters": {
+    "StacksVersion": {
+      "Description": "Version of Nubis Stacks to use for the nested stacks.",
+      "Type": "String",
+      "Default": "v1.0.0"
+    },
+    "ServiceName": {
+      "Type": "String"
+    },
+    "HostedZoneId": {
+      "Type": "String"
+    },
+    "HostedZoneName": {
+      "Type": "String"
+    },
+    "DefaultServerCertificate": {
+      "Type": "String"
+    },
+    "NubisMySQL56ParameterGroup": {
+      "Type": "String"
+    },
+    "VpcIdEnv1": {
+      "Type": "String",
+      "Default": "vpc-null"
+    },
+    "VpcIdEnv2": {
+      "Type": "String",
+      "Default": "vpc-null"
+    },
+    "VpcIdEnv3": {
+      "Type": "String",
+      "Default": "vpc-null"
+    },
+    "InternetAccessSecurityGroupIdEnv1": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "InternetAccessSecurityGroupIdEnv2": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "InternetAccessSecurityGroupIdEnv3": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "SharedServicesSecurityGroupIdEnv1": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "SharedServicesSecurityGroupIdEnv2": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "SharedServicesSecurityGroupIdEnv3": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "SshSecurityGroupIdEnv1": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "SshSecurityGroupIdEnv2": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "SshSecurityGroupIdEnv3": {
+      "Type": "String",
+      "Default": "sg-null"
+    },
+    "AccessLoggingBucketEnv1": {
+      "Type": "String",
+      "Default": "bucket-not-set"
+    },
+    "AccessLoggingBucketEnv2": {
+      "Type": "String",
+      "Default": "bucket-not-set"
+    },
+    "AccessLoggingBucketEnv3": {
+      "Type": "String",
+      "Default": "bucket-not-set"
+    },
+    "PublicSubnetAZ1Env1": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ2Env1": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ3Env1": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ1Env2": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ2Env2": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ3Env2": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ1Env3": {
+      "Type": "String",
+      "Default": "subnetsg-null"
+    },
+    "PublicSubnetAZ2Env3": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PublicSubnetAZ3Env3": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ1Env1": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ2Env1": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ3Env1": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ1Env2": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ2Env2": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ3Env2": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ1Env3": {
+      "Type": "String",
+      "Default": "subnetsg-null"
+    },
+    "PrivateSubnetAZ2Env3": {
+      "Type": "String",
+      "Default": "subnet-null"
+    },
+    "PrivateSubnetAZ3Env3": {
+      "Type": "String",
+      "Default": "subnet-null"
+    }
+  },
+  "Resources": {
+    "VPCMetaStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/dummy-meta.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "HostedZoneId": {
+            "Ref": "HostedZoneId"
+          },
+          "HostedZoneName": {
+            "Ref": "HostedZoneName"
+          },
+          "DefaultServerCertificate": {
+            "Ref": "DefaultServerCertificate"
+          },
+          "NubisMySQL56ParameterGroup": {
+            "Ref": "NubisMySQL56ParameterGroup"
+          }
+        }
+      }
+    },
+    "AdminVPCStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/dummy-vpc.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "VpcId": {
+            "Ref": "VpcIdEnv1"
+          },
+          "InternetAccessSecurityGroupId": {
+            "Ref": "InternetAccessSecurityGroupIdEnv1"
+          },
+          "SharedServicesSecurityGroupId": {
+            "Ref": "SharedServicesSecurityGroupIdEnv1"
+          },
+          "SshSecurityGroupId": {
+            "Ref": "SshSecurityGroupIdEnv1"
+          },
+          "AccessLoggingBucket": {
+            "Ref": "AccessLoggingBucketEnv1"
+          },
+          "PrivateSubnetAZ1": {
+            "Ref": "PrivateSubnetAZ1Env1"
+          },
+          "PrivateSubnetAZ2": {
+            "Ref": "PrivateSubnetAZ2Env1"
+          },
+          "PrivateSubnetAZ3": {
+            "Ref": "PrivateSubnetAZ3Env1"
+          },
+          "PublicSubnetAZ1": {
+            "Ref": "PublicSubnetAZ1Env1"
+          },
+          "PublicSubnetAZ2": {
+            "Ref": "PublicSubnetAZ2Env1"
+          },
+          "PublicSubnetAZ3": {
+            "Ref": "PublicSubnetAZ3Env1"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {}
+}

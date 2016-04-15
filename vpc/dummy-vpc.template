@@ -37,10 +37,6 @@
     },
     "PublicSubnetAZ3": {
       "Type": "String"
-    },
-    "StacksVersion": {
-      "Type": "String",
-      "Default": "v1.1.0"
     }
   },
   "Outputs": {

@@ -97,10 +97,10 @@
   "Mappings": {
     "AMIs": {
       "us-east-1": {
-        "AMIs": "Builder aws_amazon_linux_ebs is using nubis-base v1.1.0 ebs amazon-linux (ami-ed22d48d) nubis-nat"
+        "AMIs": "ami-a20d10c8"
       },
       "us-west-2": {
-        "AMIs": "Builder aws_amazon_linux_ebs is using nubis-base v1.1.0 ebs amazon-linux (ami-ed22d48d) nubis-nat"
+        "AMIs": "ami-9f52a5ff"
       }
     },
     "InstanceTypeMap": {

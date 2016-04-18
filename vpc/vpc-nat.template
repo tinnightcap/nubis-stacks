@@ -97,10 +97,10 @@
   "Mappings": {
     "AMIs": {
       "us-east-1": {
-        "AMIs": "ami-a20d10c8"
+        "AMIs": "ami-b8fee1d2"
       },
       "us-west-2": {
-        "AMIs": "ami-9f52a5ff"
+        "AMIs": "ami-012adc61"
       }
     },
     "InstanceTypeMap": {

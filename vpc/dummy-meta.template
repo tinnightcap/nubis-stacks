@@ -1,0 +1,48 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Dummy Meta",
+  "Parameters": {
+    "HostedZoneId": {
+      "Type": "String"
+    },
+    "HostedZoneName": {
+      "Type": "String"
+    },
+    "DefaultServerCertificate": {
+      "Type": "String"
+    },
+    "NubisMySQL56ParameterGroup": {
+      "Type": "String"
+    }
+  },
+  "Outputs": {
+    "HostedZoneId": {
+      "Value": {
+        "Ref": "HostedZoneId"
+      }
+    },
+    "HostedZoneName": {
+      "Value": {
+        "Ref": "HostedZoneName"
+      }
+    },
+    "DefaultServerCertificate": {
+      "Value": {
+        "Ref": "DefaultServerCertificate"
+      }
+    },
+    "NubisMySQL56ParameterGroup": {
+      "Value": {
+        "Ref": "NubisMySQL56ParameterGroup"
+      }
+    }
+  },
+  "Resources": {
+    "DummySecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Dummy"
+      }
+    }
+  }
+}

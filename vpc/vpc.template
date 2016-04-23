@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs and a VPN connection",
+  "Description": "A VPC containing 3 public subnets, optionally 3 private subnets with 3 NATs, a VPN connection and a S3 bucket for ELB Logs",
   "Parameters": {
     "ServiceName": {
       "Description": "Name of this deployment",
@@ -27,7 +27,7 @@
     "StacksVersion": {
       "Description": "Version of Nubis Stacks to use for the nested stacks.",
       "Type": "String",
-      "Default": "v1.0.0"
+      "Default": "v1.1.0"
     },
     "VpcCidr": {
       "Description": "The CIDR for the VPC Subnet.",
@@ -107,6 +107,14 @@
       "Default": "0.0.0.0",
       "AllowedPattern": "^([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5])).([0-9]|[1-9][0-9]|1[0-9]{2}|2([0-4][0-9]|5[0-5]))",
       "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x"
+    },
+    "LambdaUUIDArn": {
+      "Description": "The ARN of a UUID generating Lambda function (from vpc-meta)",
+      "Type": "String"
+    },
+    "CredstashPolicyArn": {
+      "Description": "Credstash policy ARN",
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -163,7 +171,150 @@
       ]
     }
   },
+  "Mappings": {
+    "ELBAccountIdMap": {
+      "Comment": {
+        "Comment": "This maps to the accounts running ELBs"
+      },
+      "us-east-1": {
+        "AccountId": "127311923021"
+      },
+      "us-west-1": {
+        "AccountId": "027434742980"
+      },
+      "us-west-2": {
+        "AccountId": "797873946194"
+      },
+      "eu-west-1": {
+        "AccountId": "156460612806"
+      },
+      "eu-central-1": {
+        "AccountId": "054676820928"
+      },
+      "ap-northeast-1": {
+        "AccountId": "582318560864"
+      },
+      "ap-southeast-1": {
+        "AccountId": "114774131450"
+      },
+      "ap-southeast-2": {
+        "AccountId": "783225319266"
+      },
+      "sa-east-1": {
+        "AccountId": "507241528517"
+      },
+      "us-gov-west-1": {
+        "AccountId": "048591011584"
+      },
+      "cn-north-1": {
+        "AccountId": "638102146993"
+      }
+    }
+  },
   "Resources": {
+    "AccessLoggingBucketUUID": {
+      "Type": "Custom::UUID",
+      "Properties": {
+        "ServiceToken": {
+          "Ref": "LambdaUUIDArn"
+        }
+      }
+    },
+    "AccessLoggingBucket": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "s3-bucket.template"
+            ]
+          ]
+        },
+        "Parameters": {
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "AccessControl": "Private",
+          "BucketName": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Ref": "Environment"
+                },
+                "elb",
+                {
+                  "Fn::GetAtt": [
+                    "AccessLoggingBucketUUID",
+                    "uuid"
+                  ]
+                }
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "AccessLoggingBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Fn::GetAtt": [
+            "AccessLoggingBucket",
+            "Outputs.S3Bucket"
+          ]
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLoggingBucket",
+                        "Outputs.S3Bucket"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Principal": {
+                "AWS": [
+                  {
+                    "Fn::FindInMap": [
+                      "ELBAccountIdMap",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "AccountId"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
     "NubisVpc": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
@@ -342,6 +493,20 @@
         }
       }
     },
+    "SssgAllowMonitoringIn": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "SharedServicesSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "9100",
+        "ToPort": "9110",
+        "SourceSecurityGroupId": {
+          "Ref": "MonitoringSecurityGroup"
+        }
+      }
+    },
     "InternetAccessSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
@@ -396,6 +561,134 @@
       },
       "Metadata": {
         "Comment": "This security group must be applied to any instances that need to get out to the Internet."
+      }
+    },
+    "MonitoringSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "SourceSecurityGroupId": {
+              "Ref": "SshSecurityGroup"
+            }
+          }
+        ],
+        "GroupDescription": {
+          "Fn::Join": [
+            " ",
+            [
+              {
+                "Ref": "Environment"
+              },
+              "Monitoring Security Group"
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "MonitoringSecurityGroup"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "Comment": "This security group must be applied to any instances that need to initiate monitoring connections to other hosts within the VPC. Additionally it should be referenced in the ingress policy for hosts on which the monitoring connections are terminating."
+      }
+    },
+    "SshSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "NubisVpc"
+        },
+        "GroupDescription": {
+          "Fn::Join": [
+            " ",
+            [
+              {
+                "Ref": "Environment"
+              },
+              "SSH Security Group"
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "Environment"
+                  },
+                  "SshSecurityGroup"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "ServiceName",
+            "Value": {
+              "Ref": "ServiceName"
+            }
+          },
+          {
+            "Key": "TechnicalOwner",
+            "Value": {
+              "Ref": "TechnicalOwner"
+            }
+          },
+          {
+            "Key": "Environment",
+            "Value": {
+              "Ref": "Environment"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "Comment": "This security group must be applied to any instances that need to initiate ssh connections to other hosts within the VPC. Additionally it should be referenced in the ingress policy for hosts on which the ssh connections are terminating."
       }
     },
     "PublicSubnetStack": {
@@ -502,6 +795,9 @@
           },
           "InternetAccessSecurityGroup": {
             "Ref": "InternetAccessSecurityGroup"
+          },
+          "SharedServicesSecurityGroup": {
+            "Ref": "SharedServicesSecurityGroup"
           }
         }
       }
@@ -566,6 +862,104 @@
           }
         }
       }
+    },
+    "NATStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Condition": "CreatePrivateSubnets",
+      "DependsOn": "PrivateSubnetStack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/vpc-nat.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "StackName": {
+            "Fn::Join": [
+              "-",
+              [
+                "nubis-nat",
+                {
+                  "Ref": "Environment"
+                }
+              ]
+            ]
+          },
+          "ServiceName": {
+            "Fn::Join": [
+              "-",
+              [
+                "nubis-nat",
+                {
+                  "Ref": "Environment"
+                }
+              ]
+            ]
+          },
+          "VPCServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "StacksVersion": {
+            "Ref": "StacksVersion"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "SSHKeyName": {
+            "Ref": "SSHKeyName"
+          },
+          "NatSecurityGroup": {
+            "Fn::GetAtt": [
+              "PrivateSubnetStack",
+              "Outputs.NatSecurityGroup"
+            ]
+          },
+          "CredstashPolicyArn": {
+            "Ref": "CredstashPolicyArn"
+          },
+          "SshSecurityGroupId": {
+            "Ref": "SshSecurityGroup"
+          },
+          "InternetAccessSecurityGroupId": {
+            "Ref": "InternetAccessSecurityGroup"
+          },
+          "SharedServicesSecurityGroupId": {
+            "Ref": "SharedServicesSecurityGroup"
+          },
+          "NubisDomain": {
+            "Ref": "NubisDomain"
+          },
+          "PublicSubnetAZ1": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ1"
+            ]
+          },
+          "PublicSubnetAZ2": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ2"
+            ]
+          },
+          "PublicSubnetAZ3": {
+            "Fn::GetAtt": [
+              "PublicSubnetStack",
+              "Outputs.PublicSubnetAZ3"
+            ]
+          }
+        }
+      }
     }
   },
   "Outputs": {
@@ -595,6 +989,14 @@
         ]
       }
     },
+    "PublicAvailabilityZone1": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicAvailabilityZone1"
+        ]
+      }
+    },
     "PublicSubnetAZ2": {
       "Value": {
         "Fn::GetAtt": [
@@ -603,11 +1005,27 @@
         ]
       }
     },
+    "PublicAvailabilityZone2": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicAvailabilityZone2"
+        ]
+      }
+    },
     "PublicSubnetAZ3": {
       "Value": {
         "Fn::GetAtt": [
           "PublicSubnetStack",
           "Outputs.PublicSubnetAZ3"
+        ]
+      }
+    },
+    "PublicAvailabilityZone3": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PublicSubnetStack",
+          "Outputs.PublicAvailabilityZone3"
         ]
       }
     },
@@ -620,11 +1038,29 @@
         ]
       }
     },
-    "PrivateSubnetNatInstanceAddresssAZ1": {
+    "PrivateAvailabilityZone1": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
+          "Outputs.PrivateAvailabilityZone1"
+        ]
+      }
+    },
+    "PrivateSubnetNatSecurityGroup": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateSubnetStack",
+          "Outputs.NatSecurityGroup"
+        ]
+      }
+    },
+    "PrivateSubnetNatInstanceAddresssAZ1": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "NATStack",
           "Outputs.NatInstanceAddressAZ1"
         ]
       }
@@ -638,11 +1074,20 @@
         ]
       }
     },
-    "PrivateSubnetNatInstanceAddresssAZ2": {
+    "PrivateAvailabilityZone2": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
+          "Outputs.PrivateAvailabilityZone2"
+        ]
+      }
+    },
+    "PrivateSubnetNatInstanceAddresssAZ2": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "NATStack",
           "Outputs.NatInstanceAddressAZ2"
         ]
       }
@@ -656,11 +1101,20 @@
         ]
       }
     },
-    "PrivateSubnetNatInstanceAddresssAZ3": {
+    "PrivateAvailabilityZone3": {
       "Condition": "CreatePrivateSubnets",
       "Value": {
         "Fn::GetAtt": [
           "PrivateSubnetStack",
+          "Outputs.PrivateAvailabilityZone3"
+        ]
+      }
+    },
+    "PrivateSubnetNatInstanceAddresssAZ3": {
+      "Condition": "CreatePrivateSubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "NATStack",
           "Outputs.NatInstanceAddressAZ3"
         ]
       }
@@ -673,6 +1127,51 @@
     "InternetAccessSecurityGroupId": {
       "Value": {
         "Ref": "InternetAccessSecurityGroup"
+      }
+    },
+    "SshSecurityGroupId": {
+      "Value": {
+        "Ref": "SshSecurityGroup"
+      }
+    },
+    "MonitoringSecurityGroupId": {
+      "Value": {
+        "Ref": "MonitoringSecurityGroup"
+      }
+    },
+    "AccessLoggingBucket": {
+      "Value": {
+        "Fn::GetAtt": [
+          "AccessLoggingBucket",
+          "Outputs.S3Bucket"
+        ]
+      }
+    },
+    "EipAz1": {
+      "Description": "Eip ID for AZ 1",
+      "Value": {
+        "Fn::GetAtt": [
+          "NATStack",
+          "Outputs.EipAz1"
+        ]
+      }
+    },
+    "EipAz2": {
+      "Description": "Eip ID for AZ 2",
+      "Value": {
+        "Fn::GetAtt": [
+          "NATStack",
+          "Outputs.EipAz2"
+        ]
+      }
+    },
+    "EipAz3": {
+      "Description": "Eip ID for AZ 3",
+      "Value": {
+        "Fn::GetAtt": [
+          "NATStack",
+          "Outputs.EipAz3"
+        ]
       }
     }
   }

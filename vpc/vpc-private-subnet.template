@@ -72,21 +72,23 @@
     "InternetAccessSecurityGroup": {
       "Description": "Security group FROM which we allow traffic TO the NAT instances.",
       "Type": "AWS::EC2::SecurityGroup::Id"
-    }
-  },
-  "Mappings": {
-    "AWSNATAMI": {
-      "us-east-1": {
-        "AMI": "ami-c6699baf"
-      },
-      "us-west-2": {
-        "AMI": "ami-52ff7262"
-      }
+    },
+    "SharedServicesSecurityGroup": {
+      "Description": "Security group for all instances",
+      "Type": "AWS::EC2::SecurityGroup::Id"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.1.0"
     }
   },
   "Resources": {
     "PrivateSubnetAZ1": {
       "Type": "AWS::EC2::Subnet",
+      "Metadata": {
+        "update_key": "0002"
+      },
       "Properties": {
         "VpcId": {
           "Ref": "VpcId"
@@ -349,39 +351,227 @@
         }
       }
     },
+    "NatEniAZ1": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "DependsOn": [
+        "PrivateSubnetAZ1"
+      ],
+      "Properties": {
+        "Description": "Nat ENI for AZ1",
+        "SourceDestCheck": "false",
+        "GroupSet": [
+          {
+            "Ref": "NatSecurityGroup"
+          },
+          {
+            "Ref": "SharedServicesSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Ref": "PublicSubnetAZ1"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ServiceName"
+                  },
+                  " (",
+                  {
+                    "Ref": "Environment"
+                  },
+                  ")"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "StackName",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "nubis-nat-eni",
+                  {
+                    "Ref": "Environment"
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "NatEniAZ2": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "DependsOn": [
+        "PrivateSubnetAZ2",
+        "NatEniAZ1"
+      ],
+      "Properties": {
+        "Description": "Nat ENI for AZ2",
+        "SourceDestCheck": "false",
+        "GroupSet": [
+          {
+            "Ref": "NatSecurityGroup"
+          },
+          {
+            "Ref": "SharedServicesSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Ref": "PublicSubnetAZ2"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ServiceName"
+                  },
+                  " (",
+                  {
+                    "Ref": "Environment"
+                  },
+                  ")"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "StackName",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "nubis-nat-eni",
+                  {
+                    "Ref": "Environment"
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "NatEniAZ3": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "DependsOn": [
+        "PrivateSubnetAZ3",
+        "NatEniAZ2"
+      ],
+      "Properties": {
+        "Description": "Nat ENI for AZ3",
+        "SourceDestCheck": "false",
+        "GroupSet": [
+          {
+            "Ref": "NatSecurityGroup"
+          },
+          {
+            "Ref": "SharedServicesSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Ref": "PublicSubnetAZ3"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ServiceName"
+                  },
+                  " (",
+                  {
+                    "Ref": "Environment"
+                  },
+                  ")"
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "StackName",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Purpose",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "nubis-nat-eni",
+                  {
+                    "Ref": "Environment"
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
     "PrivateRouteAZ1": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "NatEniAZ1",
       "Properties": {
         "RouteTableId": {
           "Ref": "PrivateRouteTableAZ1"
         },
         "DestinationCidrBlock": "0.0.0.0/0",
-        "InstanceId": {
-          "Ref": "NatInstanceAZ1"
+        "NetworkInterfaceId": {
+          "Ref": "NatEniAZ1"
         }
       }
     },
     "PrivateRouteAZ2": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "NatEniAZ2",
       "Properties": {
         "RouteTableId": {
           "Ref": "PrivateRouteTableAZ2"
         },
         "DestinationCidrBlock": "0.0.0.0/0",
-        "InstanceId": {
-          "Ref": "NatInstanceAZ2"
+        "NetworkInterfaceId": {
+          "Ref": "NatEniAZ2"
         }
       }
     },
     "PrivateRouteAZ3": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "NatEniAZ3",
       "Properties": {
         "RouteTableId": {
           "Ref": "PrivateRouteTableAZ3"
         },
         "DestinationCidrBlock": "0.0.0.0/0",
-        "InstanceId": {
-          "Ref": "NatInstanceAZ3"
+        "NetworkInterfaceId": {
+          "Ref": "NatEniAZ3"
         }
       }
     },
@@ -441,198 +631,6 @@
           }
         ]
       }
-    },
-    "NatInstanceEipAZ1": {
-      "Type": "AWS::EC2::EIP",
-      "Properties": {
-        "Domain": "vpc",
-        "InstanceId": { "Ref": "NatInstanceAZ1" }
-      }
-    },
-    "NatInstanceAZ1": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "KeyName": {
-          "Ref": "SSHKeyName"
-        },
-        "SourceDestCheck": "false",
-        "ImageId": {
-          "Fn::FindInMap": [
-            "AWSNATAMI",
-            {
-              "Ref": "AWS::Region"
-            },
-            "AMI"
-          ]
-        },
-        "NetworkInterfaces": [
-          {
-            "GroupSet": [
-              {
-                "Ref": "NatSecurityGroup"
-              }
-            ],
-            "AssociatePublicIpAddress": "true",
-            "DeviceIndex": "0",
-            "DeleteOnTermination": "true",
-            "SubnetId": {
-              "Ref": "PublicSubnetAZ1"
-            }
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "NatInstanceAZ1"
-          },
-          {
-            "Key": "ServiceName",
-            "Value": {
-              "Ref": "ServiceName"
-            }
-          },
-          {
-            "Key": "TechnicalOwner",
-            "Value": {
-              "Ref": "TechnicalOwner"
-            }
-          },
-          {
-            "Key": "Environment",
-            "Value": {
-              "Ref": "Environment"
-            }
-          }
-        ]
-      }
-    },
-    "NatInstanceEipAZ2": {
-      "Type": "AWS::EC2::EIP",
-      "Properties": {
-        "Domain": "vpc",
-        "InstanceId": { "Ref": "NatInstanceAZ2" }
-      }
-    },
-    "NatInstanceAZ2": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "KeyName": {
-          "Ref": "SSHKeyName"
-        },
-        "SourceDestCheck": "false",
-        "ImageId": {
-          "Fn::FindInMap": [
-            "AWSNATAMI",
-            {
-              "Ref": "AWS::Region"
-            },
-            "AMI"
-          ]
-        },
-        "NetworkInterfaces": [
-          {
-            "GroupSet": [
-              {
-                "Ref": "NatSecurityGroup"
-              }
-            ],
-            "AssociatePublicIpAddress": "true",
-            "DeviceIndex": "0",
-            "DeleteOnTermination": "true",
-            "SubnetId": {
-              "Ref": "PublicSubnetAZ2"
-            }
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "NatInstanceAZ2"
-          },
-          {
-            "Key": "ServiceName",
-            "Value": {
-              "Ref": "ServiceName"
-            }
-          },
-          {
-            "Key": "TechnicalOwner",
-            "Value": {
-              "Ref": "TechnicalOwner"
-            }
-          },
-          {
-            "Key": "Environment",
-            "Value": {
-              "Ref": "Environment"
-            }
-          }
-        ]
-      }
-    },
-    "NatInstanceEipAZ3": {
-      "Type": "AWS::EC2::EIP",
-      "Properties": {
-        "Domain": "vpc",
-        "InstanceId": { "Ref": "NatInstanceAZ3" }
-      }
-    },
-    "NatInstanceAZ3": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "KeyName": {
-          "Ref": "SSHKeyName"
-        },
-        "SourceDestCheck": "false",
-        "ImageId": {
-          "Fn::FindInMap": [
-            "AWSNATAMI",
-            {
-              "Ref": "AWS::Region"
-            },
-            "AMI"
-          ]
-        },
-        "NetworkInterfaces": [
-          {
-            "GroupSet": [
-              {
-                "Ref": "NatSecurityGroup"
-              }
-            ],
-            "AssociatePublicIpAddress": "true",
-            "DeviceIndex": "0",
-            "DeleteOnTermination": "true",
-            "SubnetId": {
-              "Ref": "PublicSubnetAZ3"
-            }
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "NatInstanceAZ3"
-          },
-          {
-            "Key": "ServiceName",
-            "Value": {
-              "Ref": "ServiceName"
-            }
-          },
-          {
-            "Key": "TechnicalOwner",
-            "Value": {
-              "Ref": "TechnicalOwner"
-            }
-          },
-          {
-            "Key": "Environment",
-            "Value": {
-              "Ref": "Environment"
-            }
-          }
-        ]
-      }
     }
   },
   "Outputs": {
@@ -666,19 +664,51 @@
         "Ref": "PrivateSubnetAZ3"
       }
     },
-    "NatInstanceAddressAZ1": {
+    "PrivateAvailabilityZone1": {
       "Value": {
-        "Ref": "NatInstanceEipAZ1"
+        "Fn::GetAtt": [
+          "PrivateSubnetAZ1",
+          "AvailabilityZone"
+        ]
       }
     },
-    "NatInstanceAddressAZ2": {
+    "PrivateAvailabilityZone2": {
       "Value": {
-        "Ref": "NatInstanceEipAZ2"
+        "Fn::GetAtt": [
+          "PrivateSubnetAZ2",
+          "AvailabilityZone"
+        ]
       }
     },
-    "NatInstanceAddressAZ3": {
+    "PrivateAvailabilityZone3": {
       "Value": {
-        "Ref": "NatInstanceEipAZ3"
+        "Fn::GetAtt": [
+          "PrivateSubnetAZ3",
+          "AvailabilityZone"
+        ]
+      }
+    },
+    "NatSecurityGroup": {
+      "Value": {
+        "Ref": "NatSecurityGroup"
+      }
+    },
+    "NatEniAZ1": {
+      "Description": "NAT ENI for AZ1",
+      "Value": {
+        "Ref": "NatEniAZ1"
+      }
+    },
+    "NatEniAZ2": {
+      "Description": "NAT ENI for AZ2",
+      "Value": {
+        "Ref": "NatEniAZ2"
+      }
+    },
+    "NatEniAZ3": {
+      "Description": "NAT ENI for AZ3",
+      "Value": {
+        "Ref": "NatEniAZ3"
       }
     }
   }

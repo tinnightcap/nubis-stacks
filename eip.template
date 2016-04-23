@@ -7,6 +7,38 @@
       "AllowedPattern": "^[a-zA-Z][a-zA-Z0-9-]{0,254}$",
       "ConstraintDescription": "A stack name can contain only alphanumeric characters (case sensitive) and hyphens. It must start with an alphabetic character and cannot be longer than 255 characters.",
       "Type": "String"
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.1.0"
+    },
+    "IamRole": {
+      "Description": "Add policies to associate the EIP with the provided  IAM role",
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "IamRole_Set": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "IamRole"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "IamRole_NotSet": {
+      "Fn::Equals": [
+        {
+          "Ref": "IamRole"
+        },
+        ""
+      ]
     }
   },
   "Resources": {
@@ -15,6 +47,7 @@
     },
     "EIPRole": {
       "Type": "AWS::IAM::Role",
+      "Condition": "IamRole_NotSet",
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
@@ -57,6 +90,7 @@
             {
               "Effect": "Allow",
               "Action": [
+                "cloudformation:DescribeStacks",
                 "ec2:AssociateAddress",
                 "ec2:DisassociateAddress"
               ],
@@ -66,7 +100,15 @@
         },
         "Roles": [
           {
-            "Ref": "EIPRole"
+            "Fn::If": [
+              "IamRole_Set",
+              {
+                "Ref": "IamRole"
+              },
+              {
+                "Ref": "EIPRole"
+              }
+            ]
           }
         ]
       }
@@ -90,6 +132,7 @@
     },
     "IAMRole": {
       "Description": "Name of IAM role",
+      "Condition": "IamRole_NotSet",
       "Value": {
         "Ref": "EIPRole"
       }

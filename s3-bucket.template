@@ -52,13 +52,18 @@
       ]
     },
     "WithRole": {
-      "Description": "Create s3 bucket for ec2 instance with associated IAM roles",
+      "Description": "Return an IAM Role that grants access to the bucket",
       "Type": "String",
       "Default": "false",
       "AllowedValues": [
         "true",
         "false"
       ]
+    },
+    "IamRole": {
+      "Description": "Add policies to access the bucket to the provided IAM Role",
+      "Type": "String",
+      "Default": ""
     },
     "Encrypt": {
       "Description": "Enable encryption using server side encryption",
@@ -68,6 +73,11 @@
         "true",
         "false"
       ]
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.1.0"
     }
   },
   "Conditions": {
@@ -85,6 +95,28 @@
           "Ref": "WithRole"
         },
         "false"
+      ]
+    },
+    "IamRole_Set": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "IamRole"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "CreateIAMPolicy": {
+      "Fn::Or": [
+        {
+          "Condition": "WithRoleEnable"
+        },
+        {
+          "Condition": "IamRole_Set"
+        }
       ]
     },
     "EncryptEnable": {
@@ -208,7 +240,7 @@
     },
     "S3BackupIAMPolicy": {
       "Type": "AWS::IAM::Policy",
-      "Condition": "WithRoleEnable",
+      "Condition": "CreateIAMPolicy",
       "Properties": {
         "PolicyName": {
           "Fn::Join": [
@@ -225,6 +257,11 @@
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:ListAllMyBuckets",
+              "Resource": "arn:aws:s3:::*"
+            },
             {
               "Effect": "Allow",
               "Action": [
@@ -266,7 +303,15 @@
         },
         "Roles": [
           {
-            "Ref": "S3BackupIAMRole"
+            "Fn::If": [
+              "IamRole_Set",
+              {
+                "Ref": "IamRole"
+              },
+              {
+                "Ref": "S3BackupIAMRole"
+              }
+            ]
           }
         ]
       }

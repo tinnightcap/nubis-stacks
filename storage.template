@@ -37,7 +37,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.0.0"
+      "Default": "v1.1.0"
     },
     "InstanceType": {
       "Description": "EC2 Instance type",
@@ -82,8 +82,7 @@
         "d2.8xlarge",
         "g2.2xlarge",
         "g2.8xlarge"
-      ],
-      "NoEcho": "true"
+      ]
     },
     "VolumeSize": {
       "Description": "Size in GB of the volume",
@@ -105,10 +104,10 @@
   "Mappings": {
     "AMIs": {
       "us-west-2": {
-        "AMI": "ami-91dbcba1"
+        "AMI": "ami-9c2cdafc"
       },
       "us-east-1": {
-        "AMI": "ami-eb54d080"
+        "AMI": "ami-0ffae565"
       }
     }
   },
@@ -116,6 +115,9 @@
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -146,6 +148,28 @@
         },
         "SearchString": {
           "Ref": "Environment"
+        }
+      }
+    },
+    "BackupBucketUUID": {
+      "Type": "Custom::UUID",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:lambda:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":function:",
+              "UUID"
+            ]
+          ]
         }
       }
     },
@@ -218,6 +242,12 @@
               "VpcInfo",
               "SharedServicesSecurityGroupId"
             ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "SshSecurityGroupId"
+            ]
           }
         ],
         "InstanceType": {
@@ -288,6 +318,11 @@
                     "ServiceName"
                   ]
                 },
+                "\n",
+                "NUBIS_STORAGE_STACK_NAME=",
+                {
+                  "Ref": "AWS::StackName"
+                },
                 "\n"
               ]
             ]
@@ -298,7 +333,18 @@
     "BackupBucketStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "s3-bucket.template" ] ] },
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "s3-bucket.template"
+            ]
+          ]
+        },
         "Parameters": {
           "ServiceName": {
             "Ref": "ServiceName"
@@ -311,26 +357,19 @@
           },
           "AccessControl": "Private",
           "VersioningConfiguration": "Enabled",
+          "IamRole": {
+            "Ref": "BackupRole"
+          },
           "BucketName": {
             "Fn::Join": [
               "-",
               [
-                {
-                  "Ref": "StackName"
-                },
-                "storage",
-                "backup",
+                "nubis-storage-backup",
                 {
                   "Fn::GetAtt": [
-                    "VpcInfo",
-                    "ServiceName"
+                    "BackupBucketUUID",
+                    "uuid"
                   ]
-                },
-                {
-                  "Ref": "Environment"
-                },
-                {
-                "Ref": "AWS::Region"
                 }
               ]
             ]
@@ -360,74 +399,6 @@
         "Path": "/"
       }
     },
-    "BackupRolePolicies": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Ref": "StackName"
-              },
-              "storage",
-              "backup"
-            ]
-          ]
-        },
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:*"
-              ],
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Fn::GetAtt": [
-                        "BackupBucketStack",
-                        "Outputs.S3Bucket"
-                      ]
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:*"
-              ],
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Fn::GetAtt": [
-                        "BackupBucketStack",
-                        "Outputs.S3Bucket"
-                      ]
-                    },
-                    "/*"
-                  ]
-                ]
-              }
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "BackupRole"
-          }
-        ]
-      }
-    },
     "BackupInstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
@@ -448,8 +419,8 @@
         "AutoScalingRollingUpdate": {
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
-          "WaitOnResourceSignals": "false",
-          "PauseTime": "PT15M"
+          "WaitOnResourceSignals": "true",
+          "PauseTime": "PT60M"
         }
       },
       "Properties": {
@@ -496,6 +467,10 @@
                   "Nubis Storage Node (",
                   {
                     "Ref": "ServiceName"
+                  },
+                  ") (",
+                  {
+                    "Ref": "Environment"
                   },
                   ")"
                 ]

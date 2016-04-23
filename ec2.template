@@ -49,6 +49,7 @@
       "Description": "EC2 Instance type",
       "Type": "String",
       "AllowedValues": [
+        "t2.nano",
         "t2.micro",
         "t2.small",
         "t2.medium",
@@ -87,8 +88,7 @@
         "d2.8xlarge",
         "g2.2xlarge",
         "g2.8xlarge"
-      ],
-      "NoEcho": "true"
+      ]
     },
     "ELB": {
       "Description": "ELB Endpoint",
@@ -143,9 +143,30 @@
       "Default": ""
     },
     "IamRole": {
-      "Description": "Optional Iam roles for instances",
+      "Description": "Optional IAM role for instances",
       "Type": "String",
       "Default": ""
+    },
+    "StacksVersion": {
+      "Description": "Version of the Nubis Stacks",
+      "Type": "String",
+      "Default": "v1.1.0"
+    },
+    "RollingUpgradePauseTime": {
+      "Description": "Rolling upgrade pause time beween instances ( ISO8601 duration format : PT#H#M#S )",
+      "Type": "String",
+      "Default": "PT2M"
+    },
+    "VPCZoneIdentifier": {
+      "Description": "Coma seperated string of subnet ids to deploy the autoscaling group nodes into",
+      "Type": "String",
+      "Default": ""
+    },
+    "Purpose": {
+      "Description": "Purpose of this stack (Web Server, Job Runner, Database, etc)",
+      "Type": "String",
+      "AllowedPattern": "^[a-zA-Z]([a-zA-Z0-9-]{0,62}[a-zA-Z0-9])?$",
+      "Default": "WebServer"
     }
   },
   "Conditions": {
@@ -196,12 +217,27 @@
           ]
         }
       ]
+    },
+    "IsSet_VPCZoneIdentifier": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "VPCZoneIdentifier"
+            },
+            ""
+          ]
+        }
+      ]
     }
   },
   "Resources": {
     "VpcInfo": {
       "Type": "Custom::VpcInfo",
       "Properties": {
+        "StacksVersion": {
+          "Ref": "StacksVersion"
+        },
         "ServiceToken": {
           "Fn::Join": [
             "",
@@ -251,7 +287,12 @@
             "IpProtocol": "tcp",
             "FromPort": "22",
             "ToPort": "22",
-            "CidrIp": "0.0.0.0/0"
+            "SourceSecurityGroupId": {
+              "Fn::GetAtt": [
+                "VpcInfo",
+                "SshSecurityGroupId"
+              ]
+            }
           },
           {
             "IpProtocol": "tcp",
@@ -281,7 +322,9 @@
           },
           {
             "Key": "Purpose",
-            "Value": "Web Server Security Group"
+            "Value": {
+              "Ref": "Purpose"
+            }
           },
           {
             "Key": "Backups",
@@ -331,6 +374,12 @@
             "Fn::GetAtt": [
               "VpcInfo",
               "SharedServicesSecurityGroupId"
+            ]
+          },
+          {
+            "Fn::GetAtt": [
+              "VpcInfo",
+              "SshSecurityGroupId"
             ]
           }
         ],
@@ -442,6 +491,18 @@
                       "'"
                     ]
                   ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "NUBIS_PURPOSE='",
+                      {
+                        "Ref": "Purpose"
+                      },
+                      "'"
+                    ]
+                  ]
                 }
               ]
             ]
@@ -460,27 +521,44 @@
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
           "WaitOnResourceSignals": "false",
-          "PauseTime": "PT1M"
+          "PauseTime": {
+            "Ref": "RollingUpgradePauseTime"
+          }
         }
       },
       "Properties": {
         "VPCZoneIdentifier": [
           {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PublicSubnetAZ1"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PublicSubnetAZ2"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PublicSubnetAZ3"
+            "Fn::If": [
+              "IsSet_VPCZoneIdentifier",
+              {
+                "Ref": "VPCZoneIdentifier"
+              },
+              {
+                "Fn::Join": [
+                  ",",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ1"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ2"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PublicSubnetAZ3"
+                      ]
+                    }
+                  ]
+                ]
+              }
             ]
           }
         ],
@@ -519,7 +597,11 @@
                   {
                     "Ref": "ServiceName"
                   },
-                  " (",
+                  " [",
+                  {
+                    "Ref": "Purpose"
+                  },
+                  "] (",
                   {
                     "Ref": "Environment"
                   },
@@ -552,7 +634,9 @@
           },
           {
             "Key": "Purpose",
-            "Value": "Web Server",
+            "Value": {
+              "Ref": "Purpose"
+            },
             "PropagateAtLaunch": "true"
           },
           {
@@ -579,27 +663,44 @@
           "MinInstancesInService": "1",
           "MaxBatchSize": "1",
           "WaitOnResourceSignals": "false",
-          "PauseTime": "PT1M"
+          "PauseTime": {
+            "Ref": "RollingUpgradePauseTime"
+          }
         }
       },
       "Properties": {
         "VPCZoneIdentifier": [
           {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PrivateSubnetAZ1"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PrivateSubnetAZ2"
-            ]
-          },
-          {
-            "Fn::GetAtt": [
-              "VpcInfo",
-              "PrivateSubnetAZ3"
+            "Fn::If": [
+              "IsSet_VPCZoneIdentifier",
+              {
+                "Ref": "VPCZoneIdentifier"
+              },
+              {
+                "Fn::Join": [
+                  ",",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PrivateSubnetAZ1"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PrivateSubnetAZ2"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "VpcInfo",
+                        "PrivateSubnetAZ3"
+                      ]
+                    }
+                  ]
+                ]
+              }
             ]
           }
         ],
@@ -638,7 +739,11 @@
                   {
                     "Ref": "ServiceName"
                   },
-                  "(",
+                  " [",
+                  {
+                    "Ref": "Purpose"
+                  },
+                  "] (",
                   {
                     "Ref": "Environment"
                   },
@@ -671,7 +776,9 @@
           },
           {
             "Key": "Purpose",
-            "Value": "Web Server",
+            "Value": {
+              "Ref": "Purpose"
+            },
             "PropagateAtLaunch": "true"
           },
           {

@@ -243,6 +243,118 @@
           }
         }
       }
+    },
+    "ProdVPCStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/dummy-vpc.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "VpcId": {
+            "Ref": "VpcIdEnv2"
+          },
+          "InternetAccessSecurityGroupId": {
+            "Ref": "InternetAccessSecurityGroupIdEnv2"
+          },
+          "SharedServicesSecurityGroupId": {
+            "Ref": "SharedServicesSecurityGroupIdEnv2"
+          },
+          "SshSecurityGroupId": {
+            "Ref": "SshSecurityGroupIdEnv2"
+          },
+          "AccessLoggingBucket": {
+            "Ref": "AccessLoggingBucketEnv2"
+          },
+          "PrivateSubnetAZ1": {
+            "Ref": "PrivateSubnetAZ1Env2"
+          },
+          "PrivateSubnetAZ2": {
+            "Ref": "PrivateSubnetAZ2Env2"
+          },
+          "PrivateSubnetAZ3": {
+            "Ref": "PrivateSubnetAZ3Env2"
+          },
+          "PublicSubnetAZ1": {
+            "Ref": "PublicSubnetAZ1Env2"
+          },
+          "PublicSubnetAZ2": {
+            "Ref": "PublicSubnetAZ2Env2"
+          },
+          "PublicSubnetAZ3": {
+            "Ref": "PublicSubnetAZ3Env2"
+          }
+        }
+      }
+    },
+    "StageVPCStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "vpc/dummy-vpc.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "VpcId": {
+            "Ref": "VpcIdEnv3"
+          },
+          "InternetAccessSecurityGroupId": {
+            "Ref": "InternetAccessSecurityGroupIdEnv3"
+          },
+          "SharedServicesSecurityGroupId": {
+            "Ref": "SharedServicesSecurityGroupIdEnv3"
+          },
+          "SshSecurityGroupId": {
+            "Ref": "SshSecurityGroupIdEnv3"
+          },
+          "AccessLoggingBucket": {
+            "Ref": "AccessLoggingBucketEnv3"
+          },
+          "PrivateSubnetAZ1": {
+            "Ref": "PrivateSubnetAZ1Env3"
+          },
+          "PrivateSubnetAZ2": {
+            "Ref": "PrivateSubnetAZ2Env3"
+          },
+          "PrivateSubnetAZ3": {
+            "Ref": "PrivateSubnetAZ3Env3"
+          },
+          "PublicSubnetAZ1": {
+            "Ref": "PublicSubnetAZ1Env3"
+          },
+          "PublicSubnetAZ2": {
+            "Ref": "PublicSubnetAZ2Env3"
+          },
+          "PublicSubnetAZ3": {
+            "Ref": "PublicSubnetAZ3Env3"
+          }
+        }
+      }
     }
   },
   "Outputs": {}

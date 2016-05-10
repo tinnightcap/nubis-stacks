@@ -37,6 +37,15 @@
     },
     "PublicSubnetAZ3": {
       "Type": "String"
+    },
+    "PrivateAvailabilityZone1": {
+      "Type": "String"
+    },
+    "PrivateAvailabilityZone2": {
+      "Type": "String"
+    },
+    "PrivateAvailabilityZone3": {
+      "Type": "String"
     }
   },
   "Outputs": {
@@ -98,6 +107,21 @@
     "PublicSubnetAZ3": {
       "Value": {
         "Ref": "PublicSubnetAZ3"
+      }
+    },
+    "PrivateAvailabilityZone1": {
+      "Value": {
+        "Ref": "PrivateAvailabilityZone1"
+      }
+    },
+    "PrivateAvailabilityZone2": {
+      "Value": {
+        "Ref": "PrivateAvailabilityZone2"
+      }
+    },
+    "PrivateAvailabilityZone3": {
+      "Value": {
+        "Ref": "PrivateAvailabilityZone3"
       }
     }
   },

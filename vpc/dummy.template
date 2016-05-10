@@ -153,6 +153,18 @@
     "PrivateSubnetAZ3Env3": {
       "Type": "String",
       "Default": "subnet-null"
+    },
+    "PrivateAvailabilityZone1": {
+      "Type": "String",
+      "Default": "az-null"
+    },
+    "PrivateAvailabilityZone2": {
+      "Type": "String",
+      "Default": "az-null"
+    },
+    "PrivateAvailabilityZone3": {
+      "Type": "String",
+      "Default": "az-null"
     }
   },
   "Resources": {
@@ -240,6 +252,15 @@
           },
           "PublicSubnetAZ3": {
             "Ref": "PublicSubnetAZ3Env1"
+          },
+          "PrivateAvailabilityZone1": {
+            "Ref": "PrivateAvailabilityZone1"
+          },
+          "PrivateAvailabilityZone2": {
+            "Ref": "PrivateAvailabilityZone2"
+          },
+          "PrivateAvailabilityZone3": {
+            "Ref": "PrivateAvailabilityZone3"
           }
         }
       }
@@ -296,6 +317,15 @@
           },
           "PublicSubnetAZ3": {
             "Ref": "PublicSubnetAZ3Env2"
+          },
+          "PrivateAvailabilityZone1": {
+            "Ref": "PrivateAvailabilityZone1"
+          },
+          "PrivateAvailabilityZone2": {
+            "Ref": "PrivateAvailabilityZone2"
+          },
+          "PrivateAvailabilityZone3": {
+            "Ref": "PrivateAvailabilityZone3"
           }
         }
       }
@@ -352,6 +382,15 @@
           },
           "PublicSubnetAZ3": {
             "Ref": "PublicSubnetAZ3Env3"
+          },
+          "PrivateAvailabilityZone1": {
+            "Ref": "PrivateAvailabilityZone1"
+          },
+          "PrivateAvailabilityZone2": {
+            "Ref": "PrivateAvailabilityZone2"
+          },
+          "PrivateAvailabilityZone3": {
+            "Ref": "PrivateAvailabilityZone3"
           }
         }
       }

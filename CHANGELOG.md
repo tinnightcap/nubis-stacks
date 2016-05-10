@@ -5,17 +5,17 @@
 
 **Implemented enhancements:**
 
+- \[nat\] Fix purpose tag for nat instances [\#278](https://github.com/nubisproject/nubis-stacks/issues/278)
+- Create lambda function to create IAM policies [\#246](https://github.com/nubisproject/nubis-stacks/issues/246)
+- \[ec2\] Remove or cleanup some tags [\#167](https://github.com/nubisproject/nubis-stacks/issues/167)
 - Bump down number of nat instance to 1 [\#309](https://github.com/nubisproject/nubis-stacks/issues/309)
 - Cleanup old references to old NAT instance [\#303](https://github.com/nubisproject/nubis-stacks/issues/303)
 - Move vpc-nat ENI to public subnet [\#298](https://github.com/nubisproject/nubis-stacks/issues/298)
-- \[nat\] Fix purpose tag for nat instances [\#278](https://github.com/nubisproject/nubis-stacks/issues/278)
 - \[nat\] Remove proxy instances once we are done with merge [\#273](https://github.com/nubisproject/nubis-stacks/issues/273)
 - \[nat\] Bump AMI [\#272](https://github.com/nubisproject/nubis-stacks/issues/272)
 - \[vpc\] Bump AMI id for nat instance [\#258](https://github.com/nubisproject/nubis-stacks/issues/258)
 - \[VPC\] Create required resources for Credstash [\#249](https://github.com/nubisproject/nubis-stacks/issues/249)
-- Create lambda function to create IAM policies [\#246](https://github.com/nubisproject/nubis-stacks/issues/246)
 - \[ec2\] Expose the Purpose tag to clients [\#239](https://github.com/nubisproject/nubis-stacks/issues/239)
-- \[ec2\] Remove or cleanup some tags [\#167](https://github.com/nubisproject/nubis-stacks/issues/167)
 
 **Fixed bugs:**
 
@@ -27,6 +27,8 @@
 
 **Closed issues:**
 
+- \[dummy\] Include PrivateAvailabilityZone\[1-3\] in outputs [\#320](https://github.com/nubisproject/nubis-stacks/issues/320)
+- \[dummy\] Dummy VPC missing Stage/Prod substacks [\#318](https://github.com/nubisproject/nubis-stacks/issues/318)
 - Create Dummy stacks for MetaInfo/VPCInfo backwards-compatibility [\#306](https://github.com/nubisproject/nubis-stacks/issues/306)
 - \[nat\] stack has wrong NUBIS\_ACCOUNT value [\#294](https://github.com/nubisproject/nubis-stacks/issues/294)
 - \[nat\] Don't use the ec2 stack, it's a circular-dependency \(via vpcinfo\) [\#291](https://github.com/nubisproject/nubis-stacks/issues/291)
@@ -38,13 +40,17 @@
 - \[Meta\] CredstashDynamoPolicy =\> CredstashPolicy [\#269](https://github.com/nubisproject/nubis-stacks/issues/269)
 - Reflect the Purpose in the ec2 instance name, to differentiate them [\#265](https://github.com/nubisproject/nubis-stacks/issues/265)
 - Bubble up the Lambda IAM Role as top-level output. [\#263](https://github.com/nubisproject/nubis-stacks/issues/263)
-- \[vpc\] Remove old nat instance from templates [\#262](https://github.com/nubisproject/nubis-stacks/issues/262)
 - \[bug\] upload\_to\_s3 script fails to validate template [\#253](https://github.com/nubisproject/nubis-stacks/issues/253)
 - \[ec2\] Add t2.nano to the list of AllowedValues to the InstanceType parameter [\#251](https://github.com/nubisproject/nubis-stacks/issues/251)
 - \[EC2\] Rolling upgrades time interval should be configurable. [\#208](https://github.com/nubisproject/nubis-stacks/issues/208)
+- Tag v1.1.0 release [\#78](https://github.com/nubisproject/nubis-stacks/issues/78)
+- \[vpc\] Remove old nat instance from templates [\#262](https://github.com/nubisproject/nubis-stacks/issues/262)
+- Tag v1.1.0 release [\#247](https://github.com/nubisproject/nubis-stacks/issues/247)
 
 **Merged pull requests:**
 
+- Add PrivateAvailabilityZone\[1-3\] outputs [\#321](https://github.com/nubisproject/nubis-stacks/pull/321) ([gozer](https://github.com/gozer))
+- Add missed stage and prod substacks [\#319](https://github.com/nubisproject/nubis-stacks/pull/319) ([gozer](https://github.com/gozer))
 - Update storage AMI Ids for v1.1.0 release [\#316](https://github.com/nubisproject/nubis-stacks/pull/316) ([tinnightcap](https://github.com/tinnightcap))
 - Update AMI IDs for release v1.1.0 [\#315](https://github.com/nubisproject/nubis-stacks/pull/315) ([tinnightcap](https://github.com/tinnightcap))
 - Revert "Update nat AMI Ids for v1.1.0 release" [\#314](https://github.com/nubisproject/nubis-stacks/pull/314) ([gozer](https://github.com/gozer))

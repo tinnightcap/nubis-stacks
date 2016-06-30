@@ -11,7 +11,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.1.0"
+      "Default": "v1.2.0"
     },
     "IamRole": {
       "Description": "Add policies to associate the EIP with the provided  IAM role",

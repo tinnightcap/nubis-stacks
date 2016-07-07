@@ -1,6 +1,15 @@
 # Change Log
 
-## [v1.1.0](https://github.com/nubisproject/nubis-stacks/tree/v1.1.0) (2016-04-18)
+## [v1.2.0](https://github.com/nubisproject/nubis-stacks/tree/v1.2.0) (2016-07-07)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.1.0...v1.2.0)
+
+**Merged pull requests:**
+
+- Update storage AMI Ids for v1.2.0 release [\#324](https://github.com/nubisproject/nubis-stacks/pull/324) ([tinnightcap](https://github.com/tinnightcap))
+- Update nat AMI Ids for v1.2.0 release [\#323](https://github.com/nubisproject/nubis-stacks/pull/323) ([tinnightcap](https://github.com/tinnightcap))
+- Update StacksVersion for v1.2.0 release [\#322](https://github.com/nubisproject/nubis-stacks/pull/322) ([tinnightcap](https://github.com/tinnightcap))
+
+## [v1.1.0](https://github.com/nubisproject/nubis-stacks/tree/v1.1.0) (2016-05-10)
 [Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.0.1...v1.1.0)
 
 **Implemented enhancements:**
@@ -51,6 +60,7 @@
 
 - Add PrivateAvailabilityZone\[1-3\] outputs [\#321](https://github.com/nubisproject/nubis-stacks/pull/321) ([gozer](https://github.com/gozer))
 - Add missed stage and prod substacks [\#319](https://github.com/nubisproject/nubis-stacks/pull/319) ([gozer](https://github.com/gozer))
+- Update CHANGELOG for v1.1.0 release [\#317](https://github.com/nubisproject/nubis-stacks/pull/317) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.1.0 release [\#316](https://github.com/nubisproject/nubis-stacks/pull/316) ([tinnightcap](https://github.com/tinnightcap))
 - Update AMI IDs for release v1.1.0 [\#315](https://github.com/nubisproject/nubis-stacks/pull/315) ([tinnightcap](https://github.com/tinnightcap))
 - Revert "Update nat AMI Ids for v1.1.0 release" [\#314](https://github.com/nubisproject/nubis-stacks/pull/314) ([gozer](https://github.com/gozer))

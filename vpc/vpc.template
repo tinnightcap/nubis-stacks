@@ -27,7 +27,7 @@
     "StacksVersion": {
       "Description": "Version of Nubis Stacks to use for the nested stacks.",
       "Type": "String",
-      "Default": "v1.2.0"
+      "Default": "v1.3.0-dev"
     },
     "VpcCidr": {
       "Description": "The CIDR for the VPC Subnet.",

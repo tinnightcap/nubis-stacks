@@ -14,7 +14,7 @@
       "Default": "v1.3.0-dev"
     },
     "IamRole": {
-      "Description": "Add policies to associate the EIP with the provided  IAM role",
+      "Description": "Add policies to associate the EIP with the provided IAM role",
       "Type": "String",
       "Default": ""
     }

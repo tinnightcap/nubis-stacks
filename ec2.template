@@ -132,13 +132,13 @@
       "Default": "private"
     },
     "ConsulToken": {
-      "Description": "Optionnal ACL Token for Consul",
+      "Description": "Optional ACL Token for Consul",
       "Type": "String",
       "Default": "anonymous",
       "NoEcho": "true"
     },
     "SecurityGroup": {
-      "Description": "Optionnal Security Group for instances",
+      "Description": "Optional Security Group for instances",
       "Type": "String",
       "Default": ""
     },
@@ -158,7 +158,7 @@
       "Default": "PT2M"
     },
     "VPCZoneIdentifier": {
-      "Description": "Coma seperated string of subnet ids to deploy the autoscaling group nodes into",
+      "Description": "Comma separated string of subnet ids to deploy the autoscaling group nodes into",
       "Type": "String",
       "Default": ""
     },

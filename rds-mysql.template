@@ -211,6 +211,12 @@
         "SourceDBInstanceIdentifier": {
           "Ref": "RDSInstance"
         },
+        "AllocatedStorage": {
+          "Ref": "AllocatedStorage"
+        },
+        "StorageType": {
+          "Ref": "DBStorageType"
+        },
         "DBInstanceClass": {
           "Ref": "DBInstanceClass"
         },

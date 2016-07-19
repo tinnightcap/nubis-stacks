@@ -94,13 +94,30 @@
         "gp2"
       ]
     },
+    "DBParameterGroupName": {
+      "Description": "Name of the DB Parameter Group to use",
+      "Type": "String",
+      "Default": ""
+    },
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.1.0"
+      "Default": "v1.3.0-dev"
     }
   },
   "Conditions": {
+    "WithDBParameterGroupName": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "DBParameterGroupName"
+            },
+            ""
+          ]
+        }
+      ]
+    },
     "WithReadOnlySlave": {
       "Fn::Equals": [
         {
@@ -203,6 +220,20 @@
         "DBInstanceClass": {
           "Ref": "DBInstanceClass"
         },
+        "DBParameterGroupName": {
+          "Fn::If": [
+            "WithDBParameterGroupName",
+            {
+              "Ref": "DBParameterGroupName"
+            },
+            {
+              "Fn::GetAtt": [
+                "MetaInfo",
+                "NubisMySQL56ParameterGroup"
+              ]
+            }
+          ]
+        },
         "VPCSecurityGroups": [
           {
             "Ref": "RDSSecurityGroup"
@@ -259,9 +290,17 @@
           "Ref": "DBInstanceClass"
         },
         "DBParameterGroupName": {
-          "Fn::GetAtt": [
-            "MetaInfo",
-            "NubisMySQL56ParameterGroup"
+          "Fn::If": [
+            "WithDBParameterGroupName",
+            {
+              "Ref": "DBParameterGroupName"
+            },
+            {
+              "Fn::GetAtt": [
+                "MetaInfo",
+                "NubisMySQL56ParameterGroup"
+              ]
+            }
           ]
         },
         "DBSubnetGroupName": {

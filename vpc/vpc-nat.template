@@ -28,7 +28,7 @@
     "StacksVersion": {
       "Description": "Version of Nubis Stacks to use",
       "Type": "String",
-      "Default": "v1.1.0"
+      "Default": "v1.3.0-dev"
     },
     "Environment": {
       "Description": "Environment we are deploying into",
@@ -97,10 +97,10 @@
   "Mappings": {
     "AMIs": {
       "us-east-1": {
-        "AMIs": "ami-b8fee1d2"
+        "AMIs": "ami-d2b731c5"
       },
       "us-west-2": {
-        "AMIs": "ami-012adc61"
+        "AMIs": "ami-619c5f01"
       }
     },
     "InstanceTypeMap": {

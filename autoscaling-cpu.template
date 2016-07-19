@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "EC2 AutoScaling Policies with CloudWatch alarms. Scales up an dscales down.",
+  "Description": "EC2 AutoScaling Policies with CloudWatch alarms. Scales up and scales down.",
   "Parameters": {
     "AutoScalingGroup": {
       "Description": "The EC2 AutoScalingGroup name we wish to attach these scaling policies to.",
@@ -19,7 +19,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.1.0"
+      "Default": "v1.3.0-dev"
     }
   },
   "Resources": {

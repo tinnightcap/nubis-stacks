@@ -33,15 +33,15 @@
       "Type": "String"
     },
     "PrivateRouteTableAZ1": {
-      "Description": "The ID of the Private Route Table in Avalibility Zone 1.",
+      "Description": "The ID of the Private Route Table in Availibility Zone 1.",
       "Type": "String"
     },
     "PrivateRouteTableAZ2": {
-      "Description": "The ID of the Private Route Table in Avalibility Zone 2.",
+      "Description": "The ID of the Private Route Table in Availibility Zone 2.",
       "Type": "String"
     },
     "PrivateRouteTableAZ3": {
-      "Description": "The ID of the Private Route Table in Avalibility Zone 3.",
+      "Description": "The ID of the Private Route Table in Availibility Zone 3.",
       "Type": "String"
     },
     "BgpAutonomousSystemNumber": {
@@ -80,7 +80,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.1.0"
+      "Default": "v1.3.0-dev"
     }
   },
   "Resources": {

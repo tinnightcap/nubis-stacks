@@ -22,7 +22,7 @@ declare -a FILES_LIST
 validate-file () {
     echo -n "Validating $1: "
     export AWS_DEFAULT_REGION=us-west-2
-    aws cloudformation --profile "$PROFILE" validate-template --template-body file://"$1" > /dev/null
+    aws cloudformation validate-template --template-body file://"$1" > /dev/null
     if [ "$?" = "0" ]; then
         echo "Passed"
         FILES_LIST=("${FILES_LIST[@]}" $1)
@@ -78,7 +78,7 @@ push-files () {
         MD5=$(openssl md5 -binary < $FILE | base64)
 
         # Upload the file
-        OUT=$(aws s3api put-object --bucket "$S3_BUCKET" --acl public-read --profile "$PROFILE" --content-md5 "$MD5" --content-type "$CONTENT_TYPE" --key ${S3_PATH}/${FILE} --body "$FILE" 2>&1) 2> /dev/null
+        OUT=$(aws s3api put-object --bucket "$S3_BUCKET" --acl public-read --content-md5 "$MD5" --content-type "$CONTENT_TYPE" --key ${S3_PATH}/${FILE} --body "$FILE" 2>&1) 2> /dev/null
         RV=$?
         if [ $RV != 0 ]; then
             echo "ERROR: $OUT"

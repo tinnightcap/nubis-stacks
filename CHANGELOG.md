@@ -1,10 +1,38 @@
 # Change Log
 
-## [v1.2.0](https://github.com/nubisproject/nubis-stacks/tree/v1.2.0) (2016-07-07)
-[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.1.0...v1.2.0)
+## [v1.2.1](https://github.com/nubisproject/nubis-stacks/tree/v1.2.1) (2016-07-30)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.0...v1.2.1)
+
+**Closed issues:**
+
+- \[rds\] Slaves need the same storage size and storage type as their masters [\#333](https://github.com/nubisproject/nubis-stacks/issues/333)
+- \[RDS\] Make DBParameterGroup an option, default to Nubis one [\#331](https://github.com/nubisproject/nubis-stacks/issues/331)
 
 **Merged pull requests:**
 
+- Update storage AMI Ids for v1.2.1 release [\#339](https://github.com/nubisproject/nubis-stacks/pull/339) ([tinnightcap](https://github.com/tinnightcap))
+- Update nat AMI Ids for v1.2.1 release [\#338](https://github.com/nubisproject/nubis-stacks/pull/338) ([tinnightcap](https://github.com/tinnightcap))
+- Updated lambda function bundles for v1.2.1 release [\#337](https://github.com/nubisproject/nubis-stacks/pull/337) ([tinnightcap](https://github.com/tinnightcap))
+- Update StacksVersion for v1.2.1 release [\#336](https://github.com/nubisproject/nubis-stacks/pull/336) ([tinnightcap](https://github.com/tinnightcap))
+- Pass down AllocatedStorage and StorageType down to RDS slaves [\#334](https://github.com/nubisproject/nubis-stacks/pull/334) ([gozer](https://github.com/gozer))
+- Add DBParameterGroupName option to allow picking a non-default ParamaterGroup [\#332](https://github.com/nubisproject/nubis-stacks/pull/332) ([gozer](https://github.com/gozer))
+- Typo fixes and one clarification [\#330](https://github.com/nubisproject/nubis-stacks/pull/330) ([floatingatoll](https://github.com/floatingatoll))
+- Update StacksVersion for v1.3.0-dev release [\#329](https://github.com/nubisproject/nubis-stacks/pull/329) ([tinnightcap](https://github.com/tinnightcap))
+- Update storage AMI Ids for v1.3.0-dev release [\#328](https://github.com/nubisproject/nubis-stacks/pull/328) ([tinnightcap](https://github.com/tinnightcap))
+- Update nat AMI Ids for v1.3.0-dev release [\#327](https://github.com/nubisproject/nubis-stacks/pull/327) ([tinnightcap](https://github.com/tinnightcap))
+
+## [v1.2.0](https://github.com/nubisproject/nubis-stacks/tree/v1.2.0) (2016-07-07)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.1.0...v1.2.0)
+
+**Closed issues:**
+
+- Tag v1.2.0 release [\#325](https://github.com/nubisproject/nubis-stacks/issues/325)
+- \[dummy\] Include PrivateAvailabilityZone\[1-3\] in outputs [\#320](https://github.com/nubisproject/nubis-stacks/issues/320)
+- \[dummy\] Dummy VPC missing Stage/Prod substacks [\#318](https://github.com/nubisproject/nubis-stacks/issues/318)
+
+**Merged pull requests:**
+
+- Update CHANGELOG for v1.2.0 release [\#326](https://github.com/nubisproject/nubis-stacks/pull/326) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.2.0 release [\#324](https://github.com/nubisproject/nubis-stacks/pull/324) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.2.0 release [\#323](https://github.com/nubisproject/nubis-stacks/pull/323) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.2.0 release [\#322](https://github.com/nubisproject/nubis-stacks/pull/322) ([tinnightcap](https://github.com/tinnightcap))
@@ -36,8 +64,6 @@
 
 **Closed issues:**
 
-- \[dummy\] Include PrivateAvailabilityZone\[1-3\] in outputs [\#320](https://github.com/nubisproject/nubis-stacks/issues/320)
-- \[dummy\] Dummy VPC missing Stage/Prod substacks [\#318](https://github.com/nubisproject/nubis-stacks/issues/318)
 - Create Dummy stacks for MetaInfo/VPCInfo backwards-compatibility [\#306](https://github.com/nubisproject/nubis-stacks/issues/306)
 - \[nat\] stack has wrong NUBIS\_ACCOUNT value [\#294](https://github.com/nubisproject/nubis-stacks/issues/294)
 - \[nat\] Don't use the ec2 stack, it's a circular-dependency \(via vpcinfo\) [\#291](https://github.com/nubisproject/nubis-stacks/issues/291)

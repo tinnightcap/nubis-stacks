@@ -9,7 +9,6 @@
 #+ Options given from the command line always get precidence
 S3_BUCKET='nubis-stacks'
 S3_PATH='master'
-PROFILE='default'
 
 # Source the variables file if it exists
 #+ Options given from the command line always get precidence

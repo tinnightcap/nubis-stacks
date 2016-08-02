@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.2.2](https://github.com/nubisproject/nubis-stacks/tree/v1.2.2) (2016-08-02)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.1...v1.2.2)
+
+**Merged pull requests:**
+
+- Update storage AMI Ids for v1.2.2 release [\#345](https://github.com/nubisproject/nubis-stacks/pull/345) ([tinnightcap](https://github.com/tinnightcap))
+- Update nat AMI Ids for v1.2.2 release [\#344](https://github.com/nubisproject/nubis-stacks/pull/344) ([tinnightcap](https://github.com/tinnightcap))
+- Update StacksVersion for v1.2.2 release [\#343](https://github.com/nubisproject/nubis-stacks/pull/343) ([tinnightcap](https://github.com/tinnightcap))
+- Remove profile stuff as it breaks aws-vault [\#341](https://github.com/nubisproject/nubis-stacks/pull/341) ([tinnightcap](https://github.com/tinnightcap))
+
 ## [v1.2.1](https://github.com/nubisproject/nubis-stacks/tree/v1.2.1) (2016-07-30)
 [Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.0...v1.2.1)
 
@@ -7,9 +17,11 @@
 
 - \[rds\] Slaves need the same storage size and storage type as their masters [\#333](https://github.com/nubisproject/nubis-stacks/issues/333)
 - \[RDS\] Make DBParameterGroup an option, default to Nubis one [\#331](https://github.com/nubisproject/nubis-stacks/issues/331)
+- Tag v1.2.1 release [\#335](https://github.com/nubisproject/nubis-stacks/issues/335)
 
 **Merged pull requests:**
 
+- Update CHANGELOG for v1.2.1 release [\#340](https://github.com/nubisproject/nubis-stacks/pull/340) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.2.1 release [\#339](https://github.com/nubisproject/nubis-stacks/pull/339) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.2.1 release [\#338](https://github.com/nubisproject/nubis-stacks/pull/338) ([tinnightcap](https://github.com/tinnightcap))
 - Updated lambda function bundles for v1.2.1 release [\#337](https://github.com/nubisproject/nubis-stacks/pull/337) ([tinnightcap](https://github.com/tinnightcap))

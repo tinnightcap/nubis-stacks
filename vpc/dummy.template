@@ -5,7 +5,7 @@
     "StacksVersion": {
       "Description": "Version of Nubis Stacks to use for the nested stacks.",
       "Type": "String",
-      "Default": "v1.2.2"
+      "Default": "v1.2.3"
     },
     "ServiceName": {
       "Type": "String"

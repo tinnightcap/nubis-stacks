@@ -104,10 +104,10 @@
   "Mappings": {
     "AMIs": {
       "us-west-2": {
-        "AMI": ""
+        "AMI": "ami-0c945c6c"
       },
       "us-east-1": {
-        "AMI": ""
+        "AMI": "ami-b779eba0"
       }
     }
   },

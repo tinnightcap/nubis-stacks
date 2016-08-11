@@ -19,6 +19,9 @@ To use this stack you will need to set the required input parameters and include
         "TemplateURL": { "Fn::Join": [ "/", [ "https://s3.amazonaws.com/nubis-stacks", { "Ref": "StacksVersion" }, "rds-mysql.template" ] ] },
         "TimeoutInMinutes": "60",
         "Parameters": {
+          "StackName": {
+            "Ref": "AWS::StackName"
+          },
           "ServiceName": {
             "Ref": "ServiceName"
           },

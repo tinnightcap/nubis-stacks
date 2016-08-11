@@ -2,6 +2,12 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "RDS Stack with; DBInstance, SecurityGroup and DBSubnetGroup",
   "Parameters": {
+    "StackName": {
+      "Description": "Name of the parent stack",
+      "AllowedPattern": "^[a-zA-Z][a-zA-Z0-9-]{0,254}$",
+      "ConstraintDescription": "A stack name can contain only alphanumeric characters (case sensitive) and hyphens. It must start with an alphabetic character and cannot be longer than 255 characters.",
+      "Type": "String"
+    },
     "ServiceName": {
       "Description": "The name of the service this belongs to",
       "AllowedPattern": "^[a-z0-9][a-z0-9-.]*$",
@@ -85,6 +91,11 @@
       "Type": "String",
       "Default": "false"
     },
+    "SSHKeyName": {
+      "Description": "Existing ssh key to deploy to instances",
+      "Type": "String",
+      "Default": "nubis"
+    },
     "DBStorageType": {
       "Description": "Storage Type for the database, one of standard (magnetic) or gp2 (SSD)",
       "Type": "String",
@@ -93,6 +104,15 @@
         "standard",
         "gp2"
       ]
+    },
+    "AdminHost": {
+      "Description": "Create an administrative host",
+      "AllowedValues": [
+        "true",
+        "false"
+      ],
+      "Type": "String",
+      "Default": "true"
     },
     "DBParameterGroupName": {
       "Description": "Name of the DB Parameter Group to use",
@@ -103,6 +123,16 @@
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
       "Default": "v1.2.3"
+    }
+  },
+  "Mappings": {
+    "AdminHostAMIs": {
+      "us-west-2": {
+        "AMI": "ami-e4dc1784"
+      },
+      "us-east-1": {
+        "AMI": "ami-d6f56bc1"
+      }
     }
   },
   "Conditions": {
@@ -122,6 +152,14 @@
       "Fn::Equals": [
         {
           "Ref": "ReadOnlySlave"
+        },
+        "true"
+      ]
+    },
+    "WithAdminHost": {
+      "Fn::Equals": [
+        {
+          "Ref": "AdminHost"
         },
         "true"
       ]
@@ -465,6 +503,56 @@
             "Value": "Never"
           }
         ]
+      }
+    },
+    "EC2StackAdmin": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Condition": "WithAdminHost",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              "https://s3.amazonaws.com/nubis-stacks",
+              {
+                "Ref": "StacksVersion"
+              },
+              "ec2.template"
+            ]
+          ]
+        },
+        "TimeoutInMinutes": "60",
+        "Parameters": {
+          "StackName": {
+            "Ref": "StackName"
+          },
+          "ServiceName": {
+            "Ref": "ServiceName"
+          },
+          "TechnicalOwner": {
+            "Ref": "TechnicalOwner"
+          },
+          "Environment": {
+            "Ref": "Environment"
+          },
+          "AmiId": {
+            "Fn::FindInMap": [
+              "AdminHostAMIs",
+              {
+                "Ref": "AWS::Region"
+              },
+              "AMI"
+            ]
+          },
+          "SSHKeyName": {
+            "Ref": "SSHKeyName"
+          },
+          "Purpose": "db-admin",
+          "SecurityGroup": {
+            "Ref": "EC2SecurityGroup"
+          },
+          "InstanceType": "t2.nano"
+        }
       }
     }
   },

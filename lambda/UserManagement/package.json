@@ -8,7 +8,6 @@
   "license": "MPL",
   "dependencies": {
     "node-lambda": "0.1.5",
-    "child_process": "*",
-    "UserManagement": "*"
+    "child_process": "*"
   }
 }

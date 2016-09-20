@@ -1,0 +1,13 @@
+{
+  "command": "./nubis-user-management",
+  "args": [
+    "-execType=consul",
+    "-useDynamo=true",
+    "-region=us-west-2",
+    "-environment=stage",
+    "-service=nubis",
+    "-nubis-account=nubis-lab",
+    "-key=<configpath>",
+    "-lambda=true"
+  ]
+}

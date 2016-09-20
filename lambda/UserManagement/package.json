@@ -1,0 +1,13 @@
+{
+  "name": "UserManagement",
+  "version": "0.0.1",
+  "description": "Queries ldap and inserts to consul",
+  "main": "index.js",
+  "author": "nubis",
+  "private": "true",
+  "license": "MPL",
+  "dependencies": {
+    "node-lambda": "0.1.5",
+    "child_process": "*"
+  }
+}

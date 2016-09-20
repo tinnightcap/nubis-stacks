@@ -123,6 +123,9 @@ push-lambda () {
         FILES_LIST=("${FILES_LIST[@]}" lambda/$FUNCTION.zip)
     done
 
+    #XXX: Temporary workaround until we can build this
+    FILES_LIST=("${FILES_LIST[@]}" lambda/UserManagement.zip)
+
     push-files
 }
 

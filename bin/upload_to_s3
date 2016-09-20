@@ -10,6 +10,13 @@
 S3_BUCKET='nubis-stacks'
 S3_PATH='master'
 
+if [ "$AWS_DEFAULT_REGION" == "" ]; then
+    AWS_DEFAULT_REGION="us-west-2"
+fi
+
+# Multi region S3 disabled by default
+S3_MULTI_REGION=0
+
 # Source the variables file if it exists
 #+ Options given from the command line always get precidence
 if [ -f "bin/variables" ]; then
@@ -20,8 +27,7 @@ declare -a FILES_LIST
 
 validate-file () {
     echo -n "Validating $1: "
-    export AWS_DEFAULT_REGION=us-west-2
-    aws cloudformation validate-template --template-body file://"$1" > /dev/null
+    aws --region $AWS_DEFAULT_REGION cloudformation validate-template --template-body file://"$1" > /dev/null
     if [ "$?" = "0" ]; then
         echo "Passed"
         FILES_LIST=("${FILES_LIST[@]}" $1)
@@ -70,6 +76,16 @@ get_lambda_list () {
 push-files () {
     # FILE=/path/to/file/to/upload.tar.gz
     echo "Uploading ${#FILES_LIST[@]} files to $S3_PATH"
+
+    # Determine the destination buckets
+    BUCKETS="$S3_BUCKET"
+    if [ "$S3_MULTI_REGION" == "1" ]; then
+        S3_BUCKET_REGIONS=$( aws --region $AWS_DEFAULT_REGION ec2 describe-regions --query 'Regions[].{Name:RegionName}' --output text | sort )
+        for region in ${S3_BUCKET_REGIONS}; do
+            BUCKETS="${BUCKETS} ${S3_BUCKET}-$region"
+        done
+    fi
+
     COUNT=1
     for FILE in "${FILES_LIST[@]}"; do
         echo "Uploading: $FILE ($COUNT of ${#FILES_LIST[@]})"
@@ -77,13 +93,23 @@ push-files () {
         MD5=$(openssl md5 -binary < $FILE | base64)
 
         # Upload the file
-        OUT=$(aws s3api put-object --bucket "$S3_BUCKET" --acl public-read --content-md5 "$MD5" --content-type "$CONTENT_TYPE" --key ${S3_PATH}/${FILE} --body "$FILE" 2>&1) 2> /dev/null
-        RV=$?
-        if [ $RV != 0 ]; then
-            echo "ERROR: $OUT"
-            exit $RV
-        fi
+        for bucket in $BUCKETS; do
+          BUCKET_REGION=$(aws s3api get-bucket-location --bucket $bucket | jq -r .LocationConstraint)
+          if [ "$BUCKET_REGION" != "null" ]; then
+              BUCKET_REGION_ARGS="--region $BUCKET_REGION"
+          fi
 
+          echo -n " - Uploading to $bucket: "
+
+          OUT=$(aws $BUCKET_REGION_ARGS s3api put-object --bucket "$bucket" --acl public-read --content-md5 "$MD5" --content-type "$CONTENT_TYPE" --key ${S3_PATH}/${FILE} --body "$FILE" 2>&1) 2> /dev/null
+          RV=$?
+          if [ $RV != 0 ]; then
+              echo "ERROR: $OUT"
+              exit $RV
+          else
+            echo "OK"
+          fi
+        done
         let COUNT=$COUNT+1
     done
 }
@@ -128,6 +154,10 @@ while [ "$1" != "" ]; do
             S3_PATH=$2
             shift
         ;;
+        -m | --muitl-region )
+            # Should we upload to multiple regions, using <bucket>-<region> naming
+            S3_MULTI_REGION=1
+        ;;
 
          -h | -H | --help )
             echo -en "$0\n\n"
@@ -145,6 +175,8 @@ while [ "$1" != "" ]; do
             echo -en "                      Defaults to '$S3_BUCKET'\n"
             echo -en "  --path      -p    Specify a path to place the files in the s3 bucket\n"
             echo -en "                      Defaults to '$S3_PATH'\n"
+            echo -en "  --multi-region -m Upload files to one bucket per region, prefix at --bucket\n"
+            echo -en "                       Defaults to not being used\n"
             echo -en "  --verbose   -v    Turn on verbosity, this should be set as the first argument\n"
             echo -en "                      Basically set -x\n\n"
             exit 0

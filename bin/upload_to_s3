@@ -154,7 +154,7 @@ while [ "$1" != "" ]; do
             S3_PATH=$2
             shift
         ;;
-        -m | --muitl-region )
+        -m | --multi-region )
             # Should we upload to multiple regions, using <bucket>-<region> naming
             S3_MULTI_REGION=1
         ;;

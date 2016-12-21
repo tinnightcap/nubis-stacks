@@ -1,10 +1,53 @@
 # Change Log
 
-## [v1.2.2](https://github.com/nubisproject/nubis-stacks/tree/v1.2.2) (2016-08-02)
-[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.1...v1.2.2)
+## [v1.3.0](https://github.com/nubisproject/nubis-stacks/tree/v1.3.0) (2016-12-20)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.3...v1.3.0)
+
+**Implemented enhancements:**
+
+- Create an ENI stack [\#191](https://github.com/nubisproject/nubis-stacks/issues/191)
+
+**Closed issues:**
+
+- Fixing typo in upload\_to\_s3 script [\#361](https://github.com/nubisproject/nubis-stacks/issues/361)
+- Publish to region named buckets [\#355](https://github.com/nubisproject/nubis-stacks/issues/355)
+- \[rds\] Create DB Admin host [\#352](https://github.com/nubisproject/nubis-stacks/issues/352)
 
 **Merged pull requests:**
 
+- Update nat AMI Ids for v1.3.0 release [\#366](https://github.com/nubisproject/nubis-stacks/pull/366) ([tinnightcap](https://github.com/tinnightcap))
+- Update StacksVersion for v1.3.0 release [\#365](https://github.com/nubisproject/nubis-stacks/pull/365) ([tinnightcap](https://github.com/tinnightcap))
+- Fixing typo [\#362](https://github.com/nubisproject/nubis-stacks/pull/362) ([limed](https://github.com/limed))
+- User management binary bump [\#360](https://github.com/nubisproject/nubis-stacks/pull/360) ([limed](https://github.com/limed))
+- Bump nubis-bastionsshkey binary [\#359](https://github.com/nubisproject/nubis-stacks/pull/359) ([limed](https://github.com/limed))
+- User management binary [\#358](https://github.com/nubisproject/nubis-stacks/pull/358) ([limed](https://github.com/limed))
+- Add a -m option to publish to multi-region buckets [\#356](https://github.com/nubisproject/nubis-stacks/pull/356) ([gozer](https://github.com/gozer))
+- \[rds\] Add a new AdminHost boolean to instanciate a DB monitoring/admin host [\#353](https://github.com/nubisproject/nubis-stacks/pull/353) ([gozer](https://github.com/gozer))
+
+## [v1.2.3](https://github.com/nubisproject/nubis-stacks/tree/v1.2.3) (2016-08-10)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.2...v1.2.3)
+
+**Closed issues:**
+
+- Tag v1.2.3 release [\#347](https://github.com/nubisproject/nubis-stacks/issues/347)
+
+**Merged pull requests:**
+
+- Update storage AMI Ids for v1.3.0-dev release [\#351](https://github.com/nubisproject/nubis-stacks/pull/351) ([gozer](https://github.com/gozer))
+- Update storage AMI Ids for v1.2.3 release [\#350](https://github.com/nubisproject/nubis-stacks/pull/350) ([gozer](https://github.com/gozer))
+- Update nat AMI Ids for v1.2.3 release [\#349](https://github.com/nubisproject/nubis-stacks/pull/349) ([gozer](https://github.com/gozer))
+- Update StacksVersion for v1.2.3 release [\#348](https://github.com/nubisproject/nubis-stacks/pull/348) ([gozer](https://github.com/gozer))
+
+## [v1.2.2](https://github.com/nubisproject/nubis-stacks/tree/v1.2.2) (2016-08-02)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.1...v1.2.2)
+
+**Closed issues:**
+
+- Tag v1.2.2 release [\#342](https://github.com/nubisproject/nubis-stacks/issues/342)
+
+**Merged pull requests:**
+
+- Update CHANGELOG for v1.2.2 release [\#346](https://github.com/nubisproject/nubis-stacks/pull/346) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.2.2 release [\#345](https://github.com/nubisproject/nubis-stacks/pull/345) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.2.2 release [\#344](https://github.com/nubisproject/nubis-stacks/pull/344) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.2.2 release [\#343](https://github.com/nubisproject/nubis-stacks/pull/343) ([tinnightcap](https://github.com/tinnightcap))

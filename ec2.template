@@ -150,7 +150,7 @@
     "StacksVersion": {
       "Description": "Version of the Nubis Stacks",
       "Type": "String",
-      "Default": "v1.3.0"
+      "Default": "v1.4.0-dev"
     },
     "RollingUpgradePauseTime": {
       "Description": "Rolling upgrade pause time beween instances ( ISO8601 duration format : PT#H#M#S )",

@@ -1,6 +1,14 @@
 # Change Log
 
-## [v1.3.0](https://github.com/nubisproject/nubis-stacks/tree/v1.3.0) (2016-12-20)
+## [v1.4.0](https://github.com/nubisproject/nubis-stacks/tree/v1.4.0) (2017-03-22)
+[Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.3.0...v1.4.0)
+
+**Merged pull requests:**
+
+- Update nat AMI Ids for v1.4.0-dev release [\#369](https://github.com/nubisproject/nubis-stacks/pull/369) ([tinnightcap](https://github.com/tinnightcap))
+- Update StacksVersion for v1.4.0-dev release [\#368](https://github.com/nubisproject/nubis-stacks/pull/368) ([tinnightcap](https://github.com/tinnightcap))
+
+## [v1.3.0](https://github.com/nubisproject/nubis-stacks/tree/v1.3.0) (2016-12-21)
 [Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.2.3...v1.3.0)
 
 **Implemented enhancements:**
@@ -12,9 +20,11 @@
 - Fixing typo in upload\_to\_s3 script [\#361](https://github.com/nubisproject/nubis-stacks/issues/361)
 - Publish to region named buckets [\#355](https://github.com/nubisproject/nubis-stacks/issues/355)
 - \[rds\] Create DB Admin host [\#352](https://github.com/nubisproject/nubis-stacks/issues/352)
+- Tag v1.3.0 release [\#364](https://github.com/nubisproject/nubis-stacks/issues/364)
 
 **Merged pull requests:**
 
+- Update CHANGELOG for v1.3.0 release [\#367](https://github.com/nubisproject/nubis-stacks/pull/367) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.3.0 release [\#366](https://github.com/nubisproject/nubis-stacks/pull/366) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.3.0 release [\#365](https://github.com/nubisproject/nubis-stacks/pull/365) ([tinnightcap](https://github.com/tinnightcap))
 - Fixing typo [\#362](https://github.com/nubisproject/nubis-stacks/pull/362) ([limed](https://github.com/limed))

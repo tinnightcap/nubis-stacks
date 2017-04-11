@@ -3,8 +3,14 @@
 ## [v1.4.0](https://github.com/nubisproject/nubis-stacks/tree/v1.4.0) (2017-03-22)
 [Full Changelog](https://github.com/nubisproject/nubis-stacks/compare/v1.3.0...v1.4.0)
 
+**Closed issues:**
+
+- Tag v1.4.0 release [\#370](https://github.com/nubisproject/nubis-stacks/issues/370)
+
 **Merged pull requests:**
 
+- Merge v1.4.0 release into develop. \[skip ci\] [\#372](https://github.com/nubisproject/nubis-stacks/pull/372) ([tinnightcap](https://github.com/tinnightcap))
+- Update CHANGELOG for v1.4.0 release \[skip ci\] [\#371](https://github.com/nubisproject/nubis-stacks/pull/371) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.4.0-dev release [\#369](https://github.com/nubisproject/nubis-stacks/pull/369) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.4.0-dev release [\#368](https://github.com/nubisproject/nubis-stacks/pull/368) ([tinnightcap](https://github.com/tinnightcap))
 
@@ -57,7 +63,6 @@
 
 **Merged pull requests:**
 
-- Update CHANGELOG for v1.2.2 release [\#346](https://github.com/nubisproject/nubis-stacks/pull/346) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.2.2 release [\#345](https://github.com/nubisproject/nubis-stacks/pull/345) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.2.2 release [\#344](https://github.com/nubisproject/nubis-stacks/pull/344) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.2.2 release [\#343](https://github.com/nubisproject/nubis-stacks/pull/343) ([tinnightcap](https://github.com/tinnightcap))
@@ -74,14 +79,11 @@
 
 **Merged pull requests:**
 
-- Update CHANGELOG for v1.2.1 release [\#340](https://github.com/nubisproject/nubis-stacks/pull/340) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.2.1 release [\#339](https://github.com/nubisproject/nubis-stacks/pull/339) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.2.1 release [\#338](https://github.com/nubisproject/nubis-stacks/pull/338) ([tinnightcap](https://github.com/tinnightcap))
 - Updated lambda function bundles for v1.2.1 release [\#337](https://github.com/nubisproject/nubis-stacks/pull/337) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.2.1 release [\#336](https://github.com/nubisproject/nubis-stacks/pull/336) ([tinnightcap](https://github.com/tinnightcap))
 - Pass down AllocatedStorage and StorageType down to RDS slaves [\#334](https://github.com/nubisproject/nubis-stacks/pull/334) ([gozer](https://github.com/gozer))
-- Add DBParameterGroupName option to allow picking a non-default ParamaterGroup [\#332](https://github.com/nubisproject/nubis-stacks/pull/332) ([gozer](https://github.com/gozer))
-- Typo fixes and one clarification [\#330](https://github.com/nubisproject/nubis-stacks/pull/330) ([floatingatoll](https://github.com/floatingatoll))
 - Update StacksVersion for v1.3.0-dev release [\#329](https://github.com/nubisproject/nubis-stacks/pull/329) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.3.0-dev release [\#328](https://github.com/nubisproject/nubis-stacks/pull/328) ([tinnightcap](https://github.com/tinnightcap))
 - Update nat AMI Ids for v1.3.0-dev release [\#327](https://github.com/nubisproject/nubis-stacks/pull/327) ([tinnightcap](https://github.com/tinnightcap))
@@ -99,7 +101,6 @@
 
 - Update CHANGELOG for v1.2.0 release [\#326](https://github.com/nubisproject/nubis-stacks/pull/326) ([tinnightcap](https://github.com/tinnightcap))
 - Update storage AMI Ids for v1.2.0 release [\#324](https://github.com/nubisproject/nubis-stacks/pull/324) ([tinnightcap](https://github.com/tinnightcap))
-- Update nat AMI Ids for v1.2.0 release [\#323](https://github.com/nubisproject/nubis-stacks/pull/323) ([tinnightcap](https://github.com/tinnightcap))
 - Update StacksVersion for v1.2.0 release [\#322](https://github.com/nubisproject/nubis-stacks/pull/322) ([tinnightcap](https://github.com/tinnightcap))
 
 ## [v1.1.0](https://github.com/nubisproject/nubis-stacks/tree/v1.1.0) (2016-05-10)
@@ -165,7 +166,6 @@
 - Cleanup old NAT references [\#304](https://github.com/nubisproject/nubis-stacks/pull/304) ([limed](https://github.com/limed))
 - AMI bump [\#302](https://github.com/nubisproject/nubis-stacks/pull/302) ([limed](https://github.com/limed))
 - Depend on more items to create ENI, this fixes \#300 [\#301](https://github.com/nubisproject/nubis-stacks/pull/301) ([limed](https://github.com/limed))
-- Move ENI's to public subnet [\#299](https://github.com/nubisproject/nubis-stacks/pull/299) ([limed](https://github.com/limed))
 - COpy the VPCServiceName trick from proxy [\#295](https://github.com/nubisproject/nubis-stacks/pull/295) ([gozer](https://github.com/gozer))
 - Add shared services security group to nat ENI [\#293](https://github.com/nubisproject/nubis-stacks/pull/293) ([limed](https://github.com/limed))
 - Unwind vpc-nat's use of the ec2 stack and create what we need ourselves. [\#292](https://github.com/nubisproject/nubis-stacks/pull/292) ([gozer](https://github.com/gozer))
